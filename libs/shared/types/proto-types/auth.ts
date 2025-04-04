@@ -10,6 +10,9 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "user";
 
+export interface Empty {
+}
+
 export interface SignupInterface {
   username: string;
   password: string;
@@ -28,6 +31,12 @@ export interface RefreshTokenInterface {
 export interface AssignRoleInterface {
   userId: string;
   role: string;
+}
+
+export interface GetUserListResponse {
+  data: UserModel[];
+  success: boolean;
+  error: ErrorInterface | undefined;
 }
 
 export interface SignupResponse {
@@ -78,6 +87,8 @@ export interface UsersServiceClient {
   refreshToken(request: RefreshTokenInterface): Observable<SigninResponse>;
 
   assignRole(request: AssignRoleInterface): Observable<AssignRoleResponse>;
+
+  getUserList(request: Empty): Observable<GetUserListResponse>;
 }
 
 export interface UsersServiceController {
@@ -90,11 +101,13 @@ export interface UsersServiceController {
   assignRole(
     request: AssignRoleInterface,
   ): Promise<AssignRoleResponse> | Observable<AssignRoleResponse> | AssignRoleResponse;
+
+  getUserList(request: Empty): Promise<GetUserListResponse> | Observable<GetUserListResponse> | GetUserListResponse;
 }
 
 export function UsersServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["signup", "signin", "refreshToken", "assignRole"];
+    const grpcMethods: string[] = ["signup", "signin", "refreshToken", "assignRole", "getUserList"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("UsersService", method)(constructor.prototype[method], method, descriptor);

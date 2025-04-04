@@ -34,4 +34,8 @@ export class UserRepository extends Repository<UserEntity> {
         const updateResult: UpdateResult = await this.update(userId, { role });
         return !!updateResult.affected;
     }
+
+    async findAll(): Promise<UserEntity[]> {
+        return this.find();
+    }
 }

@@ -13,9 +13,11 @@ import {
 import {
     AssignRoleResponse,
     ErrorInterface,
+    GetUserListResponse,
     RedisHelperService,
     SigninResponse,
     SignupResponse,
+    UserModel,
     uuid,
 } from '@lib/shared';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
@@ -177,6 +179,27 @@ export class AuthService {
             data: 'Role assigned successfully',
             success: true,
             error: null,
+        };
+    }
+
+    async getUserList(): Promise<GetUserListResponse> {
+        const users: UserEntity[] = await this._userRepository.findAll();
+        return {
+            data: users.map(this._mapUserEntityToUserModel),
+            success: true,
+            error: null,
+        };
+    }
+
+    private _mapUserEntityToUserModel(user: UserEntity): UserModel {
+        return {
+            id: user.id,
+            createdAt: user.createdAt.toISOString(),
+            updatedAt: user.updatedAt.toISOString(),
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            password: null,
         };
     }
 

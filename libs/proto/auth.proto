@@ -7,7 +7,10 @@ service UsersService {
     rpc signin(SigninInterface) returns (SigninResponse);
     rpc refreshToken(RefreshTokenInterface) returns (SigninResponse);
     rpc assignRole(AssignRoleInterface) returns (AssignRoleResponse);
+    rpc getUserList(Empty) returns (GetUserListResponse);
 }
+
+message Empty {};
 
 message SignupInterface {
     string username = 1;
@@ -27,6 +30,12 @@ message RefreshTokenInterface {
 message AssignRoleInterface {
     string userId = 1;
     string role = 2;
+}
+
+message GetUserListResponse {
+    repeated UserModel data = 1;
+    bool success = 2;
+    ErrorInterface error = 3;
 }
 
 message SignupResponse {

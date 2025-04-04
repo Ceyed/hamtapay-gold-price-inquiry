@@ -1,30 +1,42 @@
 import { AssignRoleDto, RefreshTokenDto, SigninDto, SignupDto } from '@lib/auth';
-import { AssignRoleResponse, SigninResponse, SignupResponse } from '@lib/shared';
-import { Body, Controller, Post } from '@nestjs/common';
+import {
+    AssignRoleResponse,
+    GetUserListResponse,
+    SigninResponse,
+    SignupResponse,
+} from '@lib/shared';
+import { Body, Controller, Get, Post, Put } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
 @Controller('users')
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
+    constructor(private readonly _authService: AuthService) {}
 
     @Post('signup')
     signup(@Body() userSignupDto: SignupDto): Observable<SignupResponse> {
-        return this.authService.signup(userSignupDto);
+        return this._authService.signup(userSignupDto);
     }
 
     @Post('signin')
     signin(@Body() userSigninDto: SigninDto): Observable<SigninResponse> {
-        return this.authService.signin(userSigninDto);
+        return this._authService.signin(userSigninDto);
     }
 
     @Post('refresh-token')
     refreshToken(@Body() refreshTokenDto: RefreshTokenDto): Observable<SigninResponse> {
-        return this.authService.refreshToken(refreshTokenDto);
+        return this._authService.refreshToken(refreshTokenDto);
     }
 
-    @Post('assign-role')
+    @Put('assign-role')
     assignRole(@Body() assignRoleDto: AssignRoleDto): Observable<AssignRoleResponse> {
-        return this.authService.assignRole(assignRoleDto);
+        return this._authService.assignRole(assignRoleDto);
+    }
+
+    @Get('all')
+    getUserList(): Observable<GetUserListResponse> {
+        // TODO: Only admin can get user list
+        // TODO: Pagination
+        return this._authService.getUserList();
     }
 }
