@@ -24,7 +24,8 @@
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": false,
         "paths": {
-            "@app/shared": ["libs/shared/index.ts"]
+            "@lib/auth": ["libs/auth/index.ts"],
+            "@lib/shared": ["libs/shared/index.ts"]
         }
     },
     "exclude": ["node_modules", "tmp"]

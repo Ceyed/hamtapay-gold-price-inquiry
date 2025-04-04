@@ -5,7 +5,7 @@ dotenv.config();
 
 const dataSource = new DataSource({
     type: 'postgres',
-    host: 'localhost',
+    host: process.env.AUTH_DATABASE_HOST,
     port: Number(process.env.AUTH_DATABASE_PORT),
     username: process.env.AUTH_DATABASE_USERNAME,
     password: process.env.AUTH_DATABASE_PASSWORD,
