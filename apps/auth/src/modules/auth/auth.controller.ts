@@ -1,6 +1,7 @@
-import { UserSignupDto } from '@lib/auth';
+import { UserSigninDto, UserSignupDto } from '@lib/auth';
 import {
-    UserSignupResponse,
+    SigninResponse,
+    SignupResponse,
     UsersServiceController,
     UsersServiceControllerMethods,
 } from '@lib/shared';
@@ -12,7 +13,11 @@ import { AuthService } from './auth.service';
 export class AuthController implements UsersServiceController {
     constructor(private readonly _authService: AuthService) {}
 
-    async signup(userSignupDto: UserSignupDto): Promise<UserSignupResponse> {
+    async signup(userSignupDto: UserSignupDto): Promise<SignupResponse> {
         return this._authService.signup(userSignupDto);
+    }
+
+    async signin(userSigninDto: UserSigninDto): Promise<SigninResponse> {
+        return this._authService.signin(userSigninDto);
     }
 }

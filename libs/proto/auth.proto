@@ -3,7 +3,8 @@ syntax = "proto3";
 package user;
 
 service UsersService {
-    rpc signup(UserSignupInterface) returns (UserSignupResponse);
+    rpc signup(UserSignupInterface) returns (SignupResponse);
+    rpc signin(UserSigninInterface) returns (SigninResponse);
 }
 
 message UserSignupInterface {
@@ -12,16 +13,32 @@ message UserSignupInterface {
     string email = 3;
 }
 
-message UserSignupResponse {
+message UserSigninInterface {
+    string username = 1;
+    string password = 2;
+}
+
+message SignupResponse {
     string data = 1;
     bool success = 2;
     ErrorInterface error = 3;
 }
 
+message SigninResponse {
+    TokensInterface data = 1;
+    bool success = 2;
+    ErrorInterface error = 3;
+}
+
+message TokensInterface {
+    string accessToken = 1;
+    string refreshToken = 2;
+}
+
 message UserModel {
     string id = 1;
-    string created_at = 2;
-    string updated_at = 3;
+    string createdAt = 2;
+    string updatedAt = 3;
     string username = 4;
     string password = 5;
     string email = 6;

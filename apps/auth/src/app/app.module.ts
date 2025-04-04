@@ -1,4 +1,4 @@
-import { typeormConfig } from '@lib/auth';
+import { jwtConfig, typeormConfig } from '@lib/auth';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -9,6 +9,7 @@ import { AuthModule } from '../modules/auth/auth.module';
 @Module({
     imports: [
         ConfigModule.forFeature(typeormConfig),
+        ConfigModule.forFeature(jwtConfig),
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule.forFeature(typeormConfig)],
             useFactory: (

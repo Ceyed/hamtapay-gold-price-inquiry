@@ -16,10 +16,26 @@ export interface UserSignupInterface {
   email: string;
 }
 
-export interface UserSignupResponse {
+export interface UserSigninInterface {
+  username: string;
+  password: string;
+}
+
+export interface SignupResponse {
   data: string;
   success: boolean;
   error: ErrorInterface | undefined;
+}
+
+export interface SigninResponse {
+  data: TokensInterface | undefined;
+  success: boolean;
+  error: ErrorInterface | undefined;
+}
+
+export interface TokensInterface {
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface UserModel {
@@ -40,18 +56,20 @@ export interface ErrorInterface {
 export const USER_PACKAGE_NAME = "user";
 
 export interface UsersServiceClient {
-  signup(request: UserSignupInterface): Observable<UserSignupResponse>;
+  signup(request: UserSignupInterface): Observable<SignupResponse>;
+
+  signin(request: UserSigninInterface): Observable<SigninResponse>;
 }
 
 export interface UsersServiceController {
-  signup(
-    request: UserSignupInterface,
-  ): Promise<UserSignupResponse> | Observable<UserSignupResponse> | UserSignupResponse;
+  signup(request: UserSignupInterface): Promise<SignupResponse> | Observable<SignupResponse> | SignupResponse;
+
+  signin(request: UserSigninInterface): Promise<SigninResponse> | Observable<SigninResponse> | SigninResponse;
 }
 
 export function UsersServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["signup"];
+    const grpcMethods: string[] = ["signup", "signin"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("UsersService", method)(constructor.prototype[method], method, descriptor);

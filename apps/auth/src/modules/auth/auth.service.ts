@@ -1,15 +1,34 @@
-import { UserEntity, UserRepository, UserSignupDto } from '@lib/auth';
-import { ErrorInterface, RedisHelperService, UserModel, UserSignupResponse } from '@lib/shared';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import {
+    jwtConfig,
+    JwtConfig,
+    TokenPayload,
+    TokensInterface,
+    UserEntity,
+    UserRepository,
+    UserSigninDto,
+    UserSignupDto,
+} from '@lib/auth';
+import {
+    ErrorInterface,
+    RedisHelperService,
+    SigninResponse,
+    SignupResponse,
+    uuid,
+} from '@lib/shared';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly _userRepository: UserRepository,
         private readonly _redisHelperService: RedisHelperService,
+        private readonly _jwtService: JwtService,
+        @Inject(jwtConfig.KEY) private readonly _jwtConfig: JwtConfig,
     ) {}
 
-    async signup(userSignupDto: UserSignupDto): Promise<UserSignupResponse> {
+    async signup(userSignupDto: UserSignupDto): Promise<SignupResponse> {
         // TODO: Two steps validation
         const validationResult = await this._signupValidation(userSignupDto);
         if (validationResult) {
@@ -19,7 +38,12 @@ export class AuthService {
                 error: validationResult,
             };
         }
-        const user: UserEntity = await this._userRepository.add(userSignupDto);
+
+        const hashedPassword: string = await this._hashPassword(userSignupDto.password);
+        const user: UserEntity = await this._userRepository.add({
+            ...userSignupDto,
+            password: hashedPassword,
+        });
         if (user) {
             return {
                 // data: this._mapUserEntityToUserModel(user),
@@ -38,16 +62,56 @@ export class AuthService {
         };
     }
 
-    private _mapUserEntityToUserModel(user: UserEntity, skipPassword = true): UserModel {
+    async signin(userSigninDto: UserSigninDto): Promise<SigninResponse> {
+        const user: UserEntity = await this._userRepository.findByUsername(userSigninDto.username);
+        if (!user) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.NOT_FOUND,
+                    message: 'User not found',
+                },
+            };
+        }
+
+        const isEqual: boolean = await this._comparePassword(userSigninDto.password, user.password);
+        if (!isEqual) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.UNAUTHORIZED,
+                    message: 'Password is incorrect',
+                },
+            };
+        }
         return {
-            id: user.id,
-            createdAt: user.createdAt.toISOString(),
-            updatedAt: user.updatedAt.toISOString(),
-            email: user.email,
-            username: user.username,
-            role: user.role,
-            ...(!skipPassword && { password: user.password }),
+            data: await this._generateTokens(user),
+            success: true,
+            error: null,
         };
+    }
+
+    // private _mapUserEntityToUserModel(user: UserEntity, skipPassword = true): UserModel {
+    //     return {
+    //         id: user.id,
+    //         createdAt: user.createdAt.toISOString(),
+    //         updatedAt: user.updatedAt.toISOString(),
+    //         email: user.email,
+    //         username: user.username,
+    //         role: user.role,
+    //         ...(!skipPassword && { password: user.password }),
+    //     };
+    // }
+
+    private async _hashPassword(password: string): Promise<string> {
+        // TODO: Move 10 to env
+        return bcrypt.hash(password, 10);
+    }
+
+    private async _comparePassword(password: string, hashedPassword: string): Promise<boolean> {
+        return bcrypt.compare(password, hashedPassword);
     }
 
     private async _signupValidation(userSignupDto: UserSignupDto): Promise<ErrorInterface | void> {
@@ -62,5 +126,39 @@ export class AuthService {
                 message: 'Email or Username is used already',
             };
         }
+    }
+
+    async _generateTokens(user: UserEntity): Promise<TokensInterface> {
+        const [accessToken, refreshToken] = await Promise.all([
+            this._signToken<Partial<TokenPayload>>(user.id, this._jwtConfig.accessTokenTtl, {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+            }),
+            this._signToken(user.id, this._jwtConfig.refreshTokenTtl, {
+                id: user.id,
+            }),
+        ]);
+
+        return {
+            accessToken,
+            refreshToken,
+        };
+    }
+
+    private async _signToken<T>(userId: uuid, expiresIn: number, payload?: T) {
+        return this._jwtService.signAsync(
+            {
+                sub: userId,
+                ...payload,
+            },
+            {
+                audience: this._jwtConfig.audience,
+                issuer: this._jwtConfig.issuer,
+                secret: this._jwtConfig.secret,
+                expiresIn,
+            },
+        );
     }
 }

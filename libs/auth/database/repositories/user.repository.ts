@@ -21,4 +21,8 @@ export class UserRepository extends Repository<UserEntity> {
     async duplicateData(username: string, email: string): Promise<number> {
         return this.countBy([{ username }, { email }]);
     }
+
+    async findByUsername(username: string): Promise<UserEntity> {
+        return this.findOneBy({ username });
+    }
 }

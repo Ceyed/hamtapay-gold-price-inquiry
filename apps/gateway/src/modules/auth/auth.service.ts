@@ -1,5 +1,10 @@
-import { AUTH_SERVICE, UserSignupDto } from '@lib/auth';
-import { USERS_SERVICE_NAME, UserSignupResponse, UsersServiceClient } from '@lib/shared';
+import { AUTH_SERVICE, UserSigninDto, UserSignupDto } from '@lib/auth';
+import {
+    SigninResponse,
+    SignupResponse,
+    USERS_SERVICE_NAME,
+    UsersServiceClient,
+} from '@lib/shared';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
@@ -14,7 +19,11 @@ export class AuthService implements OnModuleInit {
         this.usersService = this.client.getService<UsersServiceClient>(USERS_SERVICE_NAME);
     }
 
-    signup(userSignupDto: UserSignupDto): Observable<UserSignupResponse> {
+    signup(userSignupDto: UserSignupDto): Observable<SignupResponse> {
         return this.usersService.signup(userSignupDto);
+    }
+
+    signin(userSigninDto: UserSigninDto): Observable<SigninResponse> {
+        return this.usersService.signin(userSigninDto);
     }
 }
