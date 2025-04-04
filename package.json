@@ -16,6 +16,7 @@
         "@nestjs/jwt": "^11.0.0",
         "@nestjs/microservices": "^11.0.13",
         "@nestjs/platform-express": "^10.0.2",
+        "@nestjs/schedule": "^5.0.1",
         "@nestjs/typeorm": "^11.0.0",
         "axios": "^1.6.0",
         "bcrypt": "^5.1.1",

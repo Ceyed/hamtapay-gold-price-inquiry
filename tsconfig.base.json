@@ -25,6 +25,7 @@
         "noFallthroughCasesInSwitch": false,
         "paths": {
             "@lib/auth": ["libs/auth/index.ts"],
+            "@lib/market-data": ["libs/market-data/index.ts"],
             "@lib/shared": ["libs/shared/index.ts"]
         }
     },

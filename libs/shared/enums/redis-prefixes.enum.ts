@@ -1,3 +1,4 @@
 export enum RedisPrefixesEnum {
-    User = 'user',
+    User = 'User',
+    GoldPrice = 'GoldPrice',
 }
