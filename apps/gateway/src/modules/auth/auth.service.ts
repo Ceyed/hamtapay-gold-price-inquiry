@@ -1,5 +1,6 @@
-import { AUTH_SERVICE, RefreshTokenDto, SigninDto, SignupDto } from '@lib/auth';
+import { AssignRoleDto, AUTH_SERVICE, RefreshTokenDto, SigninDto, SignupDto } from '@lib/auth';
 import {
+    AssignRoleResponse,
     SigninResponse,
     SignupResponse,
     USERS_SERVICE_NAME,
@@ -29,5 +30,9 @@ export class AuthService implements OnModuleInit {
 
     refreshToken(refreshTokenDto: RefreshTokenDto): Observable<SigninResponse> {
         return this.usersService.refreshToken(refreshTokenDto);
+    }
+
+    assignRole(assignRoleDto: AssignRoleDto): Observable<AssignRoleResponse> {
+        return this.usersService.assignRole(assignRoleDto);
     }
 }

@@ -25,6 +25,11 @@ export interface RefreshTokenInterface {
   refreshToken: string;
 }
 
+export interface AssignRoleInterface {
+  userId: string;
+  role: string;
+}
+
 export interface SignupResponse {
   data: string;
   success: boolean;
@@ -40,6 +45,12 @@ export interface SigninResponse {
 export interface TokensInterface {
   accessToken: string;
   refreshToken: string;
+}
+
+export interface AssignRoleResponse {
+  data: string;
+  success: boolean;
+  error: ErrorInterface | undefined;
 }
 
 export interface UserModel {
@@ -65,6 +76,8 @@ export interface UsersServiceClient {
   signin(request: SigninInterface): Observable<SigninResponse>;
 
   refreshToken(request: RefreshTokenInterface): Observable<SigninResponse>;
+
+  assignRole(request: AssignRoleInterface): Observable<AssignRoleResponse>;
 }
 
 export interface UsersServiceController {
@@ -73,11 +86,15 @@ export interface UsersServiceController {
   signin(request: SigninInterface): Promise<SigninResponse> | Observable<SigninResponse> | SigninResponse;
 
   refreshToken(request: RefreshTokenInterface): Promise<SigninResponse> | Observable<SigninResponse> | SigninResponse;
+
+  assignRole(
+    request: AssignRoleInterface,
+  ): Promise<AssignRoleResponse> | Observable<AssignRoleResponse> | AssignRoleResponse;
 }
 
 export function UsersServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["signup", "signin", "refreshToken"];
+    const grpcMethods: string[] = ["signup", "signin", "refreshToken", "assignRole"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("UsersService", method)(constructor.prototype[method], method, descriptor);

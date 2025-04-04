@@ -1,4 +1,5 @@
 import {
+    AssignRoleDto,
     jwtConfig,
     JwtConfig,
     RefreshTokenDto,
@@ -10,6 +11,7 @@ import {
     UserRepository,
 } from '@lib/auth';
 import {
+    AssignRoleResponse,
     ErrorInterface,
     RedisHelperService,
     SigninResponse,
@@ -130,6 +132,52 @@ export class AuthService {
                 },
             };
         }
+    }
+
+    async assignRole(assignRoleDto: AssignRoleDto): Promise<AssignRoleResponse> {
+        const user: UserEntity = await this._userRepository.findById(assignRoleDto.userId);
+        if (!user) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.NOT_FOUND,
+                    message: 'User not found',
+                },
+            };
+        }
+
+        // * Check if the user is already the role
+        if (user.role === assignRoleDto.role) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.CONFLICT,
+                    message: 'User already has this role',
+                },
+            };
+        }
+
+        const isUpdated: boolean = await this._userRepository.updateRole(
+            user.id,
+            assignRoleDto.role,
+        );
+        if (!isUpdated) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+                    message: 'Something went wrong',
+                },
+            };
+        }
+        return {
+            data: 'Role assigned successfully',
+            success: true,
+            error: null,
+        };
     }
 
     private async _hashPassword(password: string): Promise<string> {

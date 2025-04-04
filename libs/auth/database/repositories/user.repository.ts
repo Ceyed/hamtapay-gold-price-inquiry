@@ -1,7 +1,7 @@
 import { UserRoleEnum, uuid } from '@lib/shared';
 import { Injectable } from '@nestjs/common';
 import { SignupDto } from 'libs/auth/dtos';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Repository, UpdateResult } from 'typeorm';
 import { UserEntity } from '../entities';
 
 @Injectable()
@@ -28,5 +28,10 @@ export class UserRepository extends Repository<UserEntity> {
 
     async findById(id: uuid): Promise<UserEntity> {
         return this.findOneBy({ id });
+    }
+
+    async updateRole(userId: uuid, role: UserRoleEnum): Promise<boolean> {
+        const updateResult: UpdateResult = await this.update(userId, { role });
+        return !!updateResult.affected;
     }
 }

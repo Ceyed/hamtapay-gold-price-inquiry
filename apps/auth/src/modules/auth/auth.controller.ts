@@ -1,5 +1,6 @@
-import { RefreshTokenDto, SigninDto, SignupDto } from '@lib/auth';
+import { AssignRoleDto, RefreshTokenDto, SigninDto, SignupDto } from '@lib/auth';
 import {
+    AssignRoleResponse,
     SigninResponse,
     SignupResponse,
     UsersServiceController,
@@ -23,5 +24,10 @@ export class AuthController implements UsersServiceController {
 
     async refreshToken(refreshTokenDto: RefreshTokenDto): Promise<SigninResponse> {
         return this._authService.refreshTokens(refreshTokenDto);
+    }
+
+    async assignRole(assignRoleDto: AssignRoleDto): Promise<AssignRoleResponse> {
+        // TODO: Only admin can assign role
+        return this._authService.assignRole(assignRoleDto);
     }
 }

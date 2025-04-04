@@ -6,6 +6,7 @@ service UsersService {
     rpc signup(SignupInterface) returns (SignupResponse);
     rpc signin(SigninInterface) returns (SigninResponse);
     rpc refreshToken(RefreshTokenInterface) returns (SigninResponse);
+    rpc assignRole(AssignRoleInterface) returns (AssignRoleResponse);
 }
 
 message SignupInterface {
@@ -23,6 +24,11 @@ message RefreshTokenInterface {
     string refreshToken = 1;
 }
 
+message AssignRoleInterface {
+    string userId = 1;
+    string role = 2;
+}
+
 message SignupResponse {
     string data = 1;
     bool success = 2;
@@ -38,6 +44,12 @@ message SigninResponse {
 message TokensInterface {
     string accessToken = 1;
     string refreshToken = 2;
+}
+
+message AssignRoleResponse {
+    string data = 1;
+    bool success = 2;
+    ErrorInterface error = 3;
 }
 
 message UserModel {
