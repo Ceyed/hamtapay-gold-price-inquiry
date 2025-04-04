@@ -10,29 +10,43 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "user";
 
-export interface User {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  username: string;
-  password: string;
-  email: string;
-}
-
 export interface UserSignupInterface {
   username: string;
   password: string;
   email: string;
 }
 
+export interface UserSignupResponse {
+  data: string;
+  success: boolean;
+  error: ErrorInterface | undefined;
+}
+
+export interface UserModel {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  username: string;
+  password: string;
+  email: string;
+  role: string;
+}
+
+export interface ErrorInterface {
+  statusCode: number;
+  message: string;
+}
+
 export const USER_PACKAGE_NAME = "user";
 
 export interface UsersServiceClient {
-  signup(request: UserSignupInterface): Observable<User>;
+  signup(request: UserSignupInterface): Observable<UserSignupResponse>;
 }
 
 export interface UsersServiceController {
-  signup(request: UserSignupInterface): Promise<User> | Observable<User> | User;
+  signup(
+    request: UserSignupInterface,
+  ): Promise<UserSignupResponse> | Observable<UserSignupResponse> | UserSignupResponse;
 }
 
 export function UsersServiceControllerMethods() {

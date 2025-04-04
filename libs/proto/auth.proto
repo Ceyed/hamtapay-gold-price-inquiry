@@ -2,22 +2,33 @@ syntax = "proto3";
 
 package user;
 
-
 service UsersService {
-    rpc signup(UserSignupInterface) returns (User);
-}
-
-message User {
-    string id = 1;
-    string created_at = 2;
-    string updated_at = 3;
-    string username = 4;
-    string password = 5;
-    string email = 6;
+    rpc signup(UserSignupInterface) returns (UserSignupResponse);
 }
 
 message UserSignupInterface {
     string username = 1;
     string password = 2;
     string email = 3;
+}
+
+message UserSignupResponse {
+    string data = 1;
+    bool success = 2;
+    ErrorInterface error = 3;
+}
+
+message UserModel {
+    string id = 1;
+    string created_at = 2;
+    string updated_at = 3;
+    string username = 4;
+    string password = 5;
+    string email = 6;
+    string role = 7;
+}
+
+message ErrorInterface {
+    int32 status_code = 1;
+    string message = 2;
 }

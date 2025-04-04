@@ -25,7 +25,12 @@ import { AuthModule } from '../modules/auth/auth.module';
                     synchronize: typeormConfigService.synchronize,
                     autoLoadEntities: true,
                     logging: 'all',
-                    entities: [`${path.join(__dirname, './')}entities/**/*.entity.{ts,js}`],
+                    entities: [
+                        `${path.join(
+                            __dirname,
+                            '../../../../libs/auth/database/entities/**/*.entity.{ts,js}',
+                        )}`,
+                    ],
                     migrationsTableName: 'migrations',
                 } as DataSourceOptions),
             inject: [typeormConfig.KEY],

@@ -3,7 +3,7 @@
     "version": "0.0.0",
     "license": "MIT",
     "scripts": {
-        "typeorm": "ts-node -P ./tsconfig.base.json -r tsconfig-paths/register --transpile-only node_modules/typeorm/cli.js"
+        "typeorm": "ts-node -P libs/auth/tsconfig.migration.json -r tsconfig-paths/register --transpile-only node_modules/typeorm/cli.js"
     },
     "private": true,
     "dependencies": {
