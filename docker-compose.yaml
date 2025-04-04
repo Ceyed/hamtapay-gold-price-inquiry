@@ -1,0 +1,43 @@
+version: '3.8'
+
+# TODO: Read from .env (if possible)
+
+services:
+    postgres-auth:
+        image: postgres:17.0
+        container_name: postgres-auth
+        environment:
+            POSTGRES_DB: auth_db
+            POSTGRES_USER: auth_user
+            POSTGRES_PASSWORD: auth_pass
+            POSTGRES_HOST_AUTH_METHOD: trust
+        volumes:
+            - pgdata-auth:/var/lib/postgresql/data
+        ports:
+            - '5433:5432'
+        command: postgres -c 'listen_addresses=*'
+
+    postgres-order:
+        image: postgres:17.0
+        container_name: postgres-order
+        environment:
+            POSTGRES_DB: order_db
+            POSTGRES_USER: order_user
+            POSTGRES_PASSWORD: order_pass
+        volumes:
+            - pgdata-order:/var/lib/postgresql/data
+        ports:
+            - '5434:5432'
+
+    redis:
+        image: redis:7.4.1
+        container_name: redis
+        ports:
+            - '6380:6379'
+        volumes:
+            - redis-data:/data
+
+volumes:
+    pgdata-auth:
+    pgdata-order:
+    redis-data:

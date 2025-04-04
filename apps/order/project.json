@@ -1,38 +1,73 @@
 {
-  "name": "order",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/order/src",
-  "projectType": "application",
-  "tags": [],
-  "targets": {
-    "build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "webpack-cli build",
-        "args": ["node-env=production"]
-      },
-      "configurations": {
-        "development": {
-          "args": ["node-env=development"]
-        }
-      }
-    },
-    "serve": {
-      "executor": "@nx/js:node",
-      "defaultConfiguration": "development",
-      "dependsOn": ["build"],
-      "options": {
-        "buildTarget": "order:build",
-        "runBuildTargetDependencies": false
-      },
-      "configurations": {
-        "development": {
-          "buildTarget": "order:build:development"
+    "name": "order",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/order/src",
+    "projectType": "application",
+    "tags": [],
+    "targets": {
+        "build": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "webpack-cli build",
+                "args": ["node-env=production"],
+                "assets": [
+                    {
+                        "input": "libs/proto",
+                        "glob": "**/*.proto",
+                        "output": "proto"
+                    }
+                ]
+            },
+            "configurations": {
+                "development": {
+                    "args": ["node-env=development"]
+                }
+            }
         },
-        "production": {
-          "buildTarget": "order:build:production"
+        "serve": {
+            "executor": "@nx/js:node",
+            "defaultConfiguration": "development",
+            "dependsOn": ["build"],
+            "options": {
+                "buildTarget": "order:build",
+                "runBuildTargetDependencies": false
+            },
+            "configurations": {
+                "development": {
+                    "buildTarget": "order:build:development"
+                },
+                "production": {
+                    "buildTarget": "order:build:production"
+                }
+            }
+        },
+        "migration:create": {
+            "executor": "nx:run-commands",
+            "outputs": [],
+            "options": {
+                "command": "npm run typeorm migration:create libs/order/database/migrations/{args.name}"
+            }
+        },
+        "migration:run": {
+            "executor": "nx:run-commands",
+            "outputs": [],
+            "options": {
+                "command": "npm run typeorm -- migration:run -t each -d libs/order/database/data-source.ts"
+            }
+        },
+        "migration:revert": {
+            "executor": "nx:run-commands",
+            "outputs": [],
+            "options": {
+                "command": "npm run typeorm -- migration:revert -t each -d libs/order/database/data-source.ts"
+            }
+        },
+        "migration:generate": {
+            "executor": "nx:run-commands",
+            "outputs": [],
+            "options": {
+                "command": "npm run typeorm -- migration:generate -d libs/order/database/data-source.ts libs/order/database/migrations/{args.name}"
+            }
         }
-      }
     }
-  }
 }

@@ -1,38 +1,45 @@
 {
-  "name": "pricing",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/pricing/src",
-  "projectType": "application",
-  "tags": [],
-  "targets": {
-    "build": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "webpack-cli build",
-        "args": ["node-env=production"]
-      },
-      "configurations": {
-        "development": {
-          "args": ["node-env=development"]
-        }
-      }
-    },
-    "serve": {
-      "executor": "@nx/js:node",
-      "defaultConfiguration": "development",
-      "dependsOn": ["build"],
-      "options": {
-        "buildTarget": "pricing:build",
-        "runBuildTargetDependencies": false
-      },
-      "configurations": {
-        "development": {
-          "buildTarget": "pricing:build:development"
+    "name": "pricing",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/pricing/src",
+    "projectType": "application",
+    "tags": [],
+    "targets": {
+        "build": {
+            "executor": "nx:run-commands",
+            "options": {
+                "command": "webpack-cli build",
+                "args": ["node-env=production"],
+                "assets": [
+                    {
+                        "input": "libs/proto",
+                        "glob": "**/*.proto",
+                        "output": "proto"
+                    }
+                ]
+            },
+            "configurations": {
+                "development": {
+                    "args": ["node-env=development"]
+                }
+            }
         },
-        "production": {
-          "buildTarget": "pricing:build:production"
+        "serve": {
+            "executor": "@nx/js:node",
+            "defaultConfiguration": "development",
+            "dependsOn": ["build"],
+            "options": {
+                "buildTarget": "pricing:build",
+                "runBuildTargetDependencies": false
+            },
+            "configurations": {
+                "development": {
+                    "buildTarget": "pricing:build:development"
+                },
+                "production": {
+                    "buildTarget": "pricing:build:production"
+                }
+            }
         }
-      }
     }
-  }
 }
