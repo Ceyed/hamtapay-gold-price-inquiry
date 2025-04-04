@@ -1,4 +1,4 @@
-import { UserSigninDto, UserSignupDto } from '@lib/auth';
+import { RefreshTokenDto, SigninDto, SignupDto } from '@lib/auth';
 import {
     SigninResponse,
     SignupResponse,
@@ -13,11 +13,15 @@ import { AuthService } from './auth.service';
 export class AuthController implements UsersServiceController {
     constructor(private readonly _authService: AuthService) {}
 
-    async signup(userSignupDto: UserSignupDto): Promise<SignupResponse> {
+    async signup(userSignupDto: SignupDto): Promise<SignupResponse> {
         return this._authService.signup(userSignupDto);
     }
 
-    async signin(userSigninDto: UserSigninDto): Promise<SigninResponse> {
+    async signin(userSigninDto: SigninDto): Promise<SigninResponse> {
         return this._authService.signin(userSigninDto);
+    }
+
+    async refreshToken(refreshTokenDto: RefreshTokenDto): Promise<SigninResponse> {
+        return this._authService.refreshTokens(refreshTokenDto);
     }
 }

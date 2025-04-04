@@ -1,7 +1,7 @@
-import { UserSigninInterface, UserSignupInterface } from '@lib/shared';
+import { SignupInterface } from '@lib/shared';
 import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
-export class UserSignupDto implements UserSignupInterface {
+export class SignupDto implements SignupInterface {
     @IsString()
     @IsNotEmpty()
     @IsEmail()
@@ -17,14 +17,4 @@ export class UserSignupDto implements UserSignupInterface {
     @MinLength(3)
     @MaxLength(20)
     username: string;
-}
-
-export class UserSigninDto implements UserSigninInterface {
-    @IsString()
-    @IsNotEmpty()
-    username: string;
-
-    @IsString()
-    @IsNotEmpty()
-    password: string;
 }

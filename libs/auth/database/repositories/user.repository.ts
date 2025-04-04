@@ -1,6 +1,6 @@
-import { UserRoleEnum } from '@lib/shared';
+import { UserRoleEnum, uuid } from '@lib/shared';
 import { Injectable } from '@nestjs/common';
-import { UserSignupDto } from 'libs/auth/dtos';
+import { SignupDto } from 'libs/auth/dtos';
 import { DataSource, Repository } from 'typeorm';
 import { UserEntity } from '../entities';
 
@@ -10,7 +10,7 @@ export class UserRepository extends Repository<UserEntity> {
         super(UserEntity, _dataSource.createEntityManager());
     }
 
-    async add(userSignupDto: UserSignupDto): Promise<UserEntity> {
+    async add(userSignupDto: SignupDto): Promise<UserEntity> {
         console.log(UserRoleEnum.User);
         return this.save({
             ...userSignupDto,
@@ -24,5 +24,9 @@ export class UserRepository extends Repository<UserEntity> {
 
     async findByUsername(username: string): Promise<UserEntity> {
         return this.findOneBy({ username });
+    }
+
+    async findById(id: uuid): Promise<UserEntity> {
+        return this.findOneBy({ id });
     }
 }

@@ -3,19 +3,24 @@ syntax = "proto3";
 package user;
 
 service UsersService {
-    rpc signup(UserSignupInterface) returns (SignupResponse);
-    rpc signin(UserSigninInterface) returns (SigninResponse);
+    rpc signup(SignupInterface) returns (SignupResponse);
+    rpc signin(SigninInterface) returns (SigninResponse);
+    rpc refreshToken(RefreshTokenInterface) returns (SigninResponse);
 }
 
-message UserSignupInterface {
+message SignupInterface {
     string username = 1;
     string password = 2;
     string email = 3;
 }
 
-message UserSigninInterface {
+message SigninInterface {
     string username = 1;
     string password = 2;
+}
+
+message RefreshTokenInterface {
+    string refreshToken = 1;
 }
 
 message SignupResponse {

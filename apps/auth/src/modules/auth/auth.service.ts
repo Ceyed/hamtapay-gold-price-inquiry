@@ -1,12 +1,13 @@
 import {
     jwtConfig,
     JwtConfig,
+    RefreshTokenDto,
+    SigninDto,
+    SignupDto,
     TokenPayload,
     TokensInterface,
     UserEntity,
     UserRepository,
-    UserSigninDto,
-    UserSignupDto,
 } from '@lib/auth';
 import {
     ErrorInterface,
@@ -28,7 +29,7 @@ export class AuthService {
         @Inject(jwtConfig.KEY) private readonly _jwtConfig: JwtConfig,
     ) {}
 
-    async signup(userSignupDto: UserSignupDto): Promise<SignupResponse> {
+    async signup(userSignupDto: SignupDto): Promise<SignupResponse> {
         // TODO: Two steps validation
         const validationResult = await this._signupValidation(userSignupDto);
         if (validationResult) {
@@ -62,7 +63,7 @@ export class AuthService {
         };
     }
 
-    async signin(userSigninDto: UserSigninDto): Promise<SigninResponse> {
+    async signin(userSigninDto: SigninDto): Promise<SigninResponse> {
         const user: UserEntity = await this._userRepository.findByUsername(userSigninDto.username);
         if (!user) {
             return {
@@ -93,17 +94,43 @@ export class AuthService {
         };
     }
 
-    // private _mapUserEntityToUserModel(user: UserEntity, skipPassword = true): UserModel {
-    //     return {
-    //         id: user.id,
-    //         createdAt: user.createdAt.toISOString(),
-    //         updatedAt: user.updatedAt.toISOString(),
-    //         email: user.email,
-    //         username: user.username,
-    //         role: user.role,
-    //         ...(!skipPassword && { password: user.password }),
-    //     };
-    // }
+    async refreshTokens(refreshTokenDto: RefreshTokenDto): Promise<SigninResponse> {
+        try {
+            const { sub } = await this._jwtService.verifyAsync<Pick<TokenPayload, 'sub'>>(
+                refreshTokenDto.refreshToken,
+                {
+                    secret: this._jwtConfig.secret,
+                    audience: this._jwtConfig.audience,
+                    issuer: this._jwtConfig.issuer,
+                },
+            );
+            const user: UserEntity = await this._userRepository.findById(sub);
+            if (!user) {
+                return {
+                    data: null,
+                    success: false,
+                    error: {
+                        statusCode: HttpStatus.NOT_FOUND,
+                        message: 'User not found',
+                    },
+                };
+            }
+            return {
+                data: await this._generateTokens(user),
+                success: true,
+                error: null,
+            };
+        } catch (_) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.UNAUTHORIZED,
+                    message: 'Invalid refresh token',
+                },
+            };
+        }
+    }
 
     private async _hashPassword(password: string): Promise<string> {
         // TODO: Move 10 to env
@@ -114,7 +141,7 @@ export class AuthService {
         return bcrypt.compare(password, hashedPassword);
     }
 
-    private async _signupValidation(userSignupDto: UserSignupDto): Promise<ErrorInterface | void> {
+    private async _signupValidation(userSignupDto: SignupDto): Promise<ErrorInterface | void> {
         // * Check if username or email is used before
         const existingRecords: number = await this._userRepository.duplicateData(
             userSignupDto.username,
@@ -131,7 +158,7 @@ export class AuthService {
     async _generateTokens(user: UserEntity): Promise<TokensInterface> {
         const [accessToken, refreshToken] = await Promise.all([
             this._signToken<Partial<TokenPayload>>(user.id, this._jwtConfig.accessTokenTtl, {
-                id: user.id,
+                sub: user.id,
                 username: user.username,
                 email: user.email,
                 role: user.role,

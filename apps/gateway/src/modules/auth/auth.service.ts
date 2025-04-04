@@ -1,4 +1,4 @@
-import { AUTH_SERVICE, UserSigninDto, UserSignupDto } from '@lib/auth';
+import { AUTH_SERVICE, RefreshTokenDto, SigninDto, SignupDto } from '@lib/auth';
 import {
     SigninResponse,
     SignupResponse,
@@ -19,11 +19,15 @@ export class AuthService implements OnModuleInit {
         this.usersService = this.client.getService<UsersServiceClient>(USERS_SERVICE_NAME);
     }
 
-    signup(userSignupDto: UserSignupDto): Observable<SignupResponse> {
+    signup(userSignupDto: SignupDto): Observable<SignupResponse> {
         return this.usersService.signup(userSignupDto);
     }
 
-    signin(userSigninDto: UserSigninDto): Observable<SigninResponse> {
+    signin(userSigninDto: SigninDto): Observable<SigninResponse> {
         return this.usersService.signin(userSigninDto);
+    }
+
+    refreshToken(refreshTokenDto: RefreshTokenDto): Observable<SigninResponse> {
+        return this.usersService.refreshToken(refreshTokenDto);
     }
 }

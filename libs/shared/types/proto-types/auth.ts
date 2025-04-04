@@ -10,15 +10,19 @@ import { Observable } from "rxjs";
 
 export const protobufPackage = "user";
 
-export interface UserSignupInterface {
+export interface SignupInterface {
   username: string;
   password: string;
   email: string;
 }
 
-export interface UserSigninInterface {
+export interface SigninInterface {
   username: string;
   password: string;
+}
+
+export interface RefreshTokenInterface {
+  refreshToken: string;
 }
 
 export interface SignupResponse {
@@ -56,20 +60,24 @@ export interface ErrorInterface {
 export const USER_PACKAGE_NAME = "user";
 
 export interface UsersServiceClient {
-  signup(request: UserSignupInterface): Observable<SignupResponse>;
+  signup(request: SignupInterface): Observable<SignupResponse>;
 
-  signin(request: UserSigninInterface): Observable<SigninResponse>;
+  signin(request: SigninInterface): Observable<SigninResponse>;
+
+  refreshToken(request: RefreshTokenInterface): Observable<SigninResponse>;
 }
 
 export interface UsersServiceController {
-  signup(request: UserSignupInterface): Promise<SignupResponse> | Observable<SignupResponse> | SignupResponse;
+  signup(request: SignupInterface): Promise<SignupResponse> | Observable<SignupResponse> | SignupResponse;
 
-  signin(request: UserSigninInterface): Promise<SigninResponse> | Observable<SigninResponse> | SigninResponse;
+  signin(request: SigninInterface): Promise<SigninResponse> | Observable<SigninResponse> | SigninResponse;
+
+  refreshToken(request: RefreshTokenInterface): Promise<SigninResponse> | Observable<SigninResponse> | SigninResponse;
 }
 
 export function UsersServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["signup", "signin"];
+    const grpcMethods: string[] = ["signup", "signin", "refreshToken"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("UsersService", method)(constructor.prototype[method], method, descriptor);
