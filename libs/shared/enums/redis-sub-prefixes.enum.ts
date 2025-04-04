@@ -1,1 +1,4 @@
-export enum RedisSubPrefixesEnum {}
+export enum RedisSubPrefixesEnum {
+    Single = 'Single',
+    All = 'All',
+}

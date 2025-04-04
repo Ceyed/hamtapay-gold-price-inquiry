@@ -44,10 +44,6 @@ export class RedisHelperService {
         return this._redisClient.ttl(key);
     }
 
-    cacheMultipleHashListKeys(hashKey: string, keys: Record<string, string>) {
-        this._redisClient.hset(hashKey, keys);
-    }
-
     getStandardKey(
         project: RedisProjectEnum,
         keyPrefix: RedisPrefixesEnum,
@@ -73,5 +69,40 @@ export class RedisHelperService {
         let pattern = project + ':' + keyPrefix + ':';
         if (subPrefix) pattern += subPrefix + ':';
         return pattern + '*';
+    }
+
+    /**
+     * This function checks to see if there is data with your key in redis, else will
+     * fetch it from db and store it as cache if it does not exists it will return null
+     * @param key: Your redis key
+     * @param getDataCallback: The function and repo query to get your data
+     */
+    async getFromCacheOrDb<T>(
+        key: string,
+        getDataCallback: () => Promise<T>,
+        ttl?: number,
+        saveToRedis = true,
+    ): Promise<T> {
+        const valueFromRedis: T = await this.getCache<T>(key);
+        if (valueFromRedis) {
+            // TODO: Remove logs
+            console.log('from redis');
+            return valueFromRedis;
+        }
+
+        console.log('from db');
+
+        const valueFromDb: T = await getDataCallback();
+        if (!valueFromDb) return;
+
+        if (saveToRedis) {
+            this.setCache<T>(key, valueFromDb, ttl);
+        }
+
+        return valueFromDb;
+    }
+
+    async getKeysByPattern(pattern: string): Promise<string[]> {
+        return this._redisClient.keys(pattern);
     }
 }

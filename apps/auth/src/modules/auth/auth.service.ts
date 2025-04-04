@@ -15,23 +15,31 @@ import {
     ErrorInterface,
     GetUserListResponse,
     RedisHelperService,
+    RedisPrefixesEnum,
+    RedisProjectEnum,
+    RedisSubPrefixesEnum,
     SigninResponse,
     SignupResponse,
     UserModel,
     uuid,
 } from '@lib/shared';
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
     constructor(
         private readonly _userRepository: UserRepository,
         private readonly _redisHelperService: RedisHelperService,
         private readonly _jwtService: JwtService,
         @Inject(jwtConfig.KEY) private readonly _jwtConfig: JwtConfig,
     ) {}
+
+    async onModuleInit() {
+        // * Add all users to redis
+        await this._saveAllUsersToRedis();
+    }
 
     async signup(userSignupDto: SignupDto): Promise<SignupResponse> {
         // TODO: Two steps validation
@@ -50,6 +58,14 @@ export class AuthService {
             password: hashedPassword,
         });
         if (user) {
+            // * Add user to redis
+            const redisKey: string = this._getCacheKeyForOneUser(user.id);
+            await this._redisHelperService.setCache(redisKey, {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+            });
             return {
                 // data: this._mapUserEntityToUserModel(user),
                 data: 'You registered successfully. you can login now',
@@ -175,6 +191,16 @@ export class AuthService {
                 },
             };
         }
+        // * Update user in redis
+        const redisKey: string = this._getCacheKeyForOneUser(user.id);
+        await this._redisHelperService.setCache(redisKey, {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            role: assignRoleDto.role,
+            createdAt: user.createdAt.toISOString(),
+            updatedAt: user.updatedAt.toISOString(),
+        });
         return {
             data: 'Role assigned successfully',
             success: true,
@@ -183,7 +209,29 @@ export class AuthService {
     }
 
     async getUserList(): Promise<GetUserListResponse> {
+        const pattern = this._getCacheKeyForAllUsers();
+        const keys = await this._redisHelperService.getKeysByPattern(pattern);
+
+        if (keys?.length) {
+            const users: UserModel[] = await Promise.all(
+                keys.map(async (key) => {
+                    const userData = await this._redisHelperService.getCache(key);
+                    return this._mapUserEntityToUserModel(userData as UserEntity);
+                }),
+            );
+
+            return {
+                data: users,
+                success: true,
+                error: null,
+            };
+        }
+
+        // * If no users in Redis, get from DB and cache them (if exists)
         const users: UserEntity[] = await this._userRepository.findAll();
+        if (users?.length) {
+            await this._saveAllUsersToRedis();
+        }
         return {
             data: users.map(this._mapUserEntityToUserModel),
             success: true,
@@ -194,8 +242,10 @@ export class AuthService {
     private _mapUserEntityToUserModel(user: UserEntity): UserModel {
         return {
             id: user.id,
-            createdAt: user.createdAt.toISOString(),
-            updatedAt: user.updatedAt.toISOString(),
+            createdAt:
+                typeof user.createdAt === 'string' ? user.createdAt : user.createdAt?.toISOString(),
+            updatedAt:
+                typeof user.updatedAt === 'string' ? user.updatedAt : user.updatedAt?.toISOString(),
             username: user.username,
             email: user.email,
             role: user.role,
@@ -257,6 +307,37 @@ export class AuthService {
                 secret: this._jwtConfig.secret,
                 expiresIn,
             },
+        );
+    }
+
+    private async _saveAllUsersToRedis(): Promise<void> {
+        const users: UserEntity[] = await this._userRepository.findAll();
+        for (const user of users) {
+            const redisKey: string = this._getCacheKeyForOneUser(user.id);
+            await this._redisHelperService.setCache(redisKey, {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+                createdAt: user.createdAt.toISOString(),
+                updatedAt: user.updatedAt.toISOString(),
+            });
+        }
+    }
+
+    private _getCacheKeyForOneUser(userId: uuid): string {
+        return this._redisHelperService.getStandardKey(
+            RedisProjectEnum.Auth,
+            RedisPrefixesEnum.User,
+            RedisSubPrefixesEnum.Single,
+            userId,
+        );
+    }
+
+    private _getCacheKeyForAllUsers(): string {
+        return this._redisHelperService.getPatternKey(
+            RedisProjectEnum.Auth,
+            RedisPrefixesEnum.User,
         );
     }
 }
