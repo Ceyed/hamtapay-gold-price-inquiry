@@ -9,7 +9,14 @@
             "executor": "nx:run-commands",
             "options": {
                 "command": "webpack-cli build",
-                "args": ["node-env=production"]
+                "args": ["node-env=production"],
+                "assets": [
+                    {
+                        "input": "libs/proto",
+                        "glob": "**/*.proto",
+                        "output": "proto"
+                    }
+                ]
             },
             "configurations": {
                 "development": {
