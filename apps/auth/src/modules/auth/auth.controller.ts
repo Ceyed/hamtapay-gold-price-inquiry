@@ -1,7 +1,16 @@
+import { UserSignupDto } from '@lib/auth';
+import { User, UsersServiceController, UsersServiceControllerMethods } from '@lib/shared';
 import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Controller()
-export class AuthController {
+@UsersServiceControllerMethods()
+export class AuthController implements UsersServiceController {
     constructor(private readonly _authService: AuthService) {}
+
+    async signup(userSignupDto: UserSignupDto): Promise<User> {
+        const a = await this._authService.signup(userSignupDto);
+        console.log(a);
+        return a;
+    }
 }
