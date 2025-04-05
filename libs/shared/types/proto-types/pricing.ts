@@ -11,13 +11,13 @@ import { ErrorInterface } from "./common";
 
 export const protobufPackage = "pricing";
 
-export interface GetPriceInterface {
+export interface CalculatePriceInterface {
   grams: string;
   currentStock: number;
   totalStock: number;
 }
 
-export interface GetPriceResponse {
+export interface CalculatePriceResponse {
   data: number;
   success: boolean;
   error: ErrorInterface | undefined;
@@ -26,16 +26,18 @@ export interface GetPriceResponse {
 export const PRICING_PACKAGE_NAME = "pricing";
 
 export interface PricingServiceClient {
-  getPrice(request: GetPriceInterface): Observable<GetPriceResponse>;
+  calculatePrice(request: CalculatePriceInterface): Observable<CalculatePriceResponse>;
 }
 
 export interface PricingServiceController {
-  getPrice(request: GetPriceInterface): Promise<GetPriceResponse> | Observable<GetPriceResponse> | GetPriceResponse;
+  calculatePrice(
+    request: CalculatePriceInterface,
+  ): Promise<CalculatePriceResponse> | Observable<CalculatePriceResponse> | CalculatePriceResponse;
 }
 
 export function PricingServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["getPrice"];
+    const grpcMethods: string[] = ["calculatePrice"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PricingService", method)(constructor.prototype[method], method, descriptor);

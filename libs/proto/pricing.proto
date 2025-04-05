@@ -5,16 +5,16 @@ package pricing;
 import "libs/proto/common.proto";
 
 service PricingService {
-    rpc getPrice(GetPriceInterface) returns (GetPriceResponse);
+    rpc calculatePrice(CalculatePriceInterface) returns (CalculatePriceResponse);
 }
 
-message GetPriceInterface {
+message CalculatePriceInterface {
     string grams = 1;
     int32 currentStock = 2;
     int32 totalStock = 3;
 }
 
-message GetPriceResponse {
+message CalculatePriceResponse {
     int32 data = 1;
     bool success = 2;
     common.ErrorInterface error = 3;

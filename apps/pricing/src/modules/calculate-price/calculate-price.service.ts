@@ -1,5 +1,5 @@
 import { MARKET_DATA_SERVICE } from '@libs/market-data';
-import { GetPriceDto, GoldGramsEnum } from '@libs/pricing';
+import { CalculatePriceDto, GoldGramsEnum } from '@libs/pricing';
 import {
     GetGoldPricesRedisKey,
     GoldPriceDataType,
@@ -9,18 +9,19 @@ import {
 } from '@libs/shared';
 import { HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 import { catchError, timeout } from 'rxjs/operators';
 
 @Injectable()
 export class CalculatePriceService implements OnModuleInit {
     private _marketDataService: marketData.MarketDataServiceClient;
+    private readonly _waitTime: number = 2000;
 
     constructor(
         private readonly _redisHelperService: RedisHelperService,
         @Inject(MARKET_DATA_SERVICE) private readonly _grpcClient: ClientGrpc,
     ) {
-        this.getPrice({ currentStock: 1, totalStock: 9, grams: GoldGramsEnum.Gram24K });
+        this.calculatePrice({ currentStock: 1, totalStock: 9, grams: GoldGramsEnum.Gram24K });
     }
 
     onModuleInit() {
@@ -29,21 +30,23 @@ export class CalculatePriceService implements OnModuleInit {
         );
     }
 
-    async getPrice({
+    async calculatePrice({
         currentStock,
         totalStock,
         grams,
-    }: GetPriceDto): Promise<pricing.GetPriceResponse> {
+    }: CalculatePriceDto): Promise<pricing.CalculatePriceResponse> {
         const redisKey: string = GetGoldPricesRedisKey(this._redisHelperService);
         let prices: GoldPriceDataType = await this._redisHelperService.getCache(redisKey);
 
         if (prices === undefined) {
             // * Wait for market data with 2 seconds timeout
             try {
-                const response = this._marketDataService.getGoldPrice({}).pipe(
-                    timeout(2000),
-                    catchError(() => of(undefined)),
-                );
+                const response: Observable<marketData.GoldPriceResponse> = this._marketDataService
+                    .getGoldPrice({})
+                    .pipe(
+                        timeout(this._waitTime),
+                        catchError(() => of(undefined)),
+                    );
                 const res: marketData.GoldPriceResponse = await firstValueFrom(response);
                 prices = res.data as unknown as GoldPriceDataType;
             } catch {
