@@ -1,5 +1,4 @@
-import { USER_PACKAGE_NAME } from '@lib/shared';
-import { ValidationPipe } from '@nestjs/common';
+import { GetValidationPipeConfig, USER_PACKAGE_NAME } from '@lib/shared';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
@@ -13,20 +12,7 @@ async function bootstrap() {
             package: USER_PACKAGE_NAME,
         },
     });
-    app.useGlobalPipes(
-        new ValidationPipe({
-            transform: true,
-            whitelist: true,
-            stopAtFirstError: true,
-            forbidNonWhitelisted: true,
-            forbidUnknownValues: true,
-            disableErrorMessages: false,
-            transformOptions: {
-                enableImplicitConversion: true,
-                exposeDefaultValues: true,
-            },
-        }),
-    );
+    app.useGlobalPipes(GetValidationPipeConfig());
 
     await app.listen();
 }
