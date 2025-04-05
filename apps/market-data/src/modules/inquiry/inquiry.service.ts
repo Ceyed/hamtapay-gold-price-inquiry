@@ -11,9 +11,7 @@ export class InquiryService {
         private readonly _redisHelperService: RedisHelperService,
         @Inject(goldApiConfig.KEY) private readonly _goldApiConfig: GoldApiConfig,
     ) {
-        this._fetchGoldPrice().then(() => {
-            // this._readGoldPriceFromRedis();
-        });
+        this._fetchGoldPrice();
     }
 
     // ? Runs every 5 minutes, Monday–Friday, from 9:00 to 16:55
@@ -76,17 +74,4 @@ export class InquiryService {
             };
         }
     }
-
-    // private async _readGoldPriceFromRedis() {
-    //     const redisKey: string = this._getRedisKey();
-    //     const data: GoldPriceDataType = await this._redisHelperService.getCache<GoldPriceDataType>(
-    //         redisKey,
-    //     );
-    //     if (!data) {
-    //         this.logger.warn('No gold price data found in Redis cache');
-    //         return null;
-    //     }
-    //     console.log(data.price_gram_16k);
-    //     return data;
-    // }
 }

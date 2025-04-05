@@ -9,7 +9,8 @@ import {
 } from '@libs/shared';
 import { HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
+import { firstValueFrom, of } from 'rxjs';
+import { catchError, timeout } from 'rxjs/operators';
 
 @Injectable()
 export class CalculatePriceService implements OnModuleInit {
@@ -38,36 +39,16 @@ export class CalculatePriceService implements OnModuleInit {
 
         if (prices === undefined) {
             // * Wait for market data with 2 seconds timeout
-            prices = await new Promise<GoldPriceDataType>((resolve) => {
-                let resolved = false;
-                const response: Observable<marketData.GoldPriceResponse> =
-                    this._marketDataService.getGoldPrice({});
-
-                // * Set timeout for 2 seconds
-                const timeout = setTimeout(() => {
-                    if (!resolved) {
-                        resolved = true;
-                        resolve(undefined);
-                    }
-                }, 2000);
-
-                response.subscribe({
-                    next: (res) => {
-                        if (!resolved) {
-                            resolved = true;
-                            clearTimeout(timeout);
-                            resolve(res.data as unknown as GoldPriceDataType);
-                        }
-                    },
-                    error: (_) => {
-                        if (!resolved) {
-                            resolved = true;
-                            clearTimeout(timeout);
-                            resolve(undefined);
-                        }
-                    },
-                });
-            });
+            try {
+                const response = this._marketDataService.getGoldPrice({}).pipe(
+                    timeout(2000),
+                    catchError(() => of(undefined)),
+                );
+                const res: marketData.GoldPriceResponse = await firstValueFrom(response);
+                prices = res.data as unknown as GoldPriceDataType;
+            } catch {
+                prices = undefined;
+            }
             if (!prices) {
                 return {
                     data: null,
