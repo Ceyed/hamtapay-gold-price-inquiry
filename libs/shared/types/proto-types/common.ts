@@ -13,4 +13,7 @@ export interface ErrorInterface {
   message: string;
 }
 
+export interface Empty {
+}
+
 export const COMMON_PACKAGE_NAME = "common";

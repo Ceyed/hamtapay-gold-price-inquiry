@@ -1,10 +1,5 @@
-import { goldApiConfig, GoldApiConfig, GoldPriceDataType } from '@libs/market-data';
-import {
-    RedisHelperService,
-    RedisPrefixesEnum,
-    RedisProjectEnum,
-    RedisSubPrefixesEnum,
-} from '@libs/shared';
+import { goldApiConfig, GoldApiConfig } from '@libs/market-data';
+import { GetGoldPricesRedisKey, GoldPriceDataType, RedisHelperService } from '@libs/shared';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 
@@ -16,9 +11,9 @@ export class InquiryService {
         private readonly _redisHelperService: RedisHelperService,
         @Inject(goldApiConfig.KEY) private readonly _goldApiConfig: GoldApiConfig,
     ) {
-        // this._fetchGoldPrice().then(() => {
-        //     this._readGoldPriceFromRedis();
-        // });
+        this._fetchGoldPrice().then(() => {
+            // this._readGoldPriceFromRedis();
+        });
     }
 
     // ? Runs every 5 minutes, Monday–Friday, from 9:00 to 16:55
@@ -50,7 +45,7 @@ export class InquiryService {
             }
 
             // * Store in DB/cache
-            const redisKey: string = this._getRedisKey();
+            const redisKey: string = GetGoldPricesRedisKey(this._redisHelperService);
             this._redisHelperService.setCache(redisKey, data);
         } catch (error) {
             this.logger.error('Error fetching gold price:', error);
@@ -69,12 +64,4 @@ export class InquiryService {
     //     console.log(data.price_gram_16k);
     //     return data;
     // }
-
-    private _getRedisKey() {
-        return this._redisHelperService.getStandardKeyWithoutId(
-            RedisProjectEnum.MarketData,
-            RedisPrefixesEnum.GoldPrice,
-            RedisSubPrefixesEnum.Single,
-        );
-    }
 }
