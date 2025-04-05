@@ -17,6 +17,7 @@ import {
     RedisPrefixesEnum,
     RedisProjectEnum,
     RedisSubPrefixesEnum,
+    UserRoleEnum,
     uuid,
 } from '@libs/shared';
 import { HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
@@ -55,7 +56,10 @@ export class AuthService implements OnModuleInit {
         });
         if (user) {
             // * Add user to redis
-            const redisKey: string = this._getCacheKeyForOneUser(user.id);
+            const redisKey: string = this._getCacheKeyForOneUser(
+                user.id,
+                this._mapUserRoleToRedisSubPrefix(user.role),
+            );
             await this._redisHelperService.setCache(redisKey, {
                 id: user.id,
                 username: user.username,
@@ -188,7 +192,10 @@ export class AuthService implements OnModuleInit {
             };
         }
         // * Update user in redis
-        const redisKey: string = this._getCacheKeyForOneUser(user.id);
+        const redisKey: string = this._getCacheKeyForOneUser(
+            user.id,
+            this._mapUserRoleToRedisSubPrefix(user.role),
+        );
         await this._redisHelperService.setCache(redisKey, {
             id: user.id,
             username: user.username,
@@ -215,7 +222,6 @@ export class AuthService implements OnModuleInit {
                     return this._mapUserEntityToUserModel(userData as UserEntity);
                 }),
             );
-
             return {
                 data: users,
                 success: true,
@@ -311,7 +317,10 @@ export class AuthService implements OnModuleInit {
     private async _saveAllUsersToRedis(): Promise<void> {
         const users: UserEntity[] = await this._userRepository.findAll();
         for (const user of users) {
-            const redisKey: string = this._getCacheKeyForOneUser(user.id);
+            const redisKey: string = this._getCacheKeyForOneUser(
+                user.id,
+                this._mapUserRoleToRedisSubPrefix(user.role),
+            );
             await this._redisHelperService.setCache(redisKey, {
                 id: user.id,
                 username: user.username,
@@ -323,11 +332,22 @@ export class AuthService implements OnModuleInit {
         }
     }
 
-    private _getCacheKeyForOneUser(userId: uuid): string {
+    private _mapUserRoleToRedisSubPrefix(
+        userRole: UserRoleEnum,
+    ): RedisSubPrefixesEnum.User | RedisSubPrefixesEnum.Admin {
+        return userRole === UserRoleEnum.Admin
+            ? RedisSubPrefixesEnum.Admin
+            : RedisSubPrefixesEnum.User;
+    }
+
+    private _getCacheKeyForOneUser(
+        userId: uuid,
+        userRole: RedisSubPrefixesEnum.User | RedisSubPrefixesEnum.Admin,
+    ): string {
         return this._redisHelperService.getStandardKey(
             RedisProjectEnum.Auth,
             RedisPrefixesEnum.User,
-            RedisSubPrefixesEnum.Single,
+            userRole,
             userId,
         );
     }
