@@ -1,7 +1,7 @@
-import { AssignRoleInterface, UserRoleEnum } from '@lib/shared';
+import { auth, UserRoleEnum } from '@libs/shared';
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
-export class AssignRoleDto implements AssignRoleInterface {
+export class AssignRoleDto implements auth.AssignRoleInterface {
     @IsString()
     @IsNotEmpty()
     userId: string;

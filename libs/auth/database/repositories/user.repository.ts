@@ -1,4 +1,4 @@
-import { UserRoleEnum, uuid } from '@lib/shared';
+import { UserRoleEnum, uuid } from '@libs/shared';
 import { Injectable } from '@nestjs/common';
 import { SignupDto } from 'libs/auth/dtos';
 import { DataSource, Repository, UpdateResult } from 'typeorm';

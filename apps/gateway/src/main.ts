@@ -1,4 +1,4 @@
-import { GetValidationPipeConfig } from '@lib/shared';
+import { GetValidationPipeConfig } from '@libs/shared';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import 'reflect-metadata';

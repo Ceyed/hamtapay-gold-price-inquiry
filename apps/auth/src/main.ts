@@ -1,4 +1,4 @@
-import { GetValidationPipeConfig, USER_PACKAGE_NAME } from '@lib/shared';
+import { GetValidationPipeConfig, auth } from '@libs/shared';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
@@ -9,7 +9,7 @@ async function bootstrap() {
         transport: Transport.GRPC,
         options: {
             protoPath: join(__dirname, 'proto', 'auth.proto'),
-            package: USER_PACKAGE_NAME,
+            package: auth.AUTH_PACKAGE_NAME,
         },
     });
     app.useGlobalPipes(GetValidationPipeConfig());

@@ -1,5 +1,5 @@
-import { jwtConfig, UserEntity, UserRepository } from '@lib/auth';
-import { RedisHelperModule } from '@lib/shared';
+import { jwtConfig, UserEntity, UserRepository } from '@libs/auth';
+import { RedisHelperModule } from '@libs/shared';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';

@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-package user;
+package auth;
+
+import "libs/proto/common.proto";
 
 service UsersService {
     rpc signup(SignupInterface) returns (SignupResponse);
@@ -35,19 +37,19 @@ message AssignRoleInterface {
 message GetUserListResponse {
     repeated UserModel data = 1;
     bool success = 2;
-    ErrorInterface error = 3;
+    common.ErrorInterface error = 3;
 }
 
 message SignupResponse {
     string data = 1;
     bool success = 2;
-    ErrorInterface error = 3;
+    common.ErrorInterface error = 3;
 }
 
 message SigninResponse {
     TokensInterface data = 1;
     bool success = 2;
-    ErrorInterface error = 3;
+    common.ErrorInterface error = 3;
 }
 
 message TokensInterface {
@@ -58,7 +60,7 @@ message TokensInterface {
 message AssignRoleResponse {
     string data = 1;
     bool success = 2;
-    ErrorInterface error = 3;
+    common.ErrorInterface error = 3;
 }
 
 message UserModel {
@@ -69,9 +71,4 @@ message UserModel {
     string password = 5;
     string email = 6;
     string role = 7;
-}
-
-message ErrorInterface {
-    int32 status_code = 1;
-    string message = 2;
 }

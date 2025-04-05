@@ -1,5 +1,5 @@
-import { goldApiConfig } from '@lib/market-data';
-import { RedisHelperModule } from '@lib/shared';
+import { goldApiConfig } from '@libs/market-data';
+import { RedisHelperModule } from '@libs/shared';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { InquiryService } from './inquiry.service';

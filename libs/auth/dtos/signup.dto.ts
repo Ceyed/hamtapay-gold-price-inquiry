@@ -1,7 +1,7 @@
-import { SignupInterface } from '@lib/shared';
+import { auth } from '@libs/shared';
 import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
-export class SignupDto implements SignupInterface {
+export class SignupDto implements auth.SignupInterface {
     @IsString()
     @IsNotEmpty()
     @IsEmail()

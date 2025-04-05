@@ -1,5 +1,5 @@
-import { AUTH_SERVICE } from '@lib/auth';
-import { USER_PACKAGE_NAME } from '@lib/shared';
+import { AUTH_SERVICE } from '@libs/auth';
+import { auth } from '@libs/shared';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
                 name: AUTH_SERVICE,
                 transport: Transport.GRPC,
                 options: {
-                    package: USER_PACKAGE_NAME,
+                    package: auth.AUTH_PACKAGE_NAME,
                     protoPath: join(__dirname, 'proto', 'auth.proto'),
                 },
             },

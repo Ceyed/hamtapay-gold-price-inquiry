@@ -1,4 +1,4 @@
-import { UserRoleEnum } from '@lib/shared';
+import { UserRoleEnum } from '@libs/shared';
 
 export interface TokenPayload {
     sub: string;

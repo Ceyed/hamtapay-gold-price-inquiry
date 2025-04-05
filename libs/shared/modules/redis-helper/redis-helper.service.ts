@@ -1,5 +1,5 @@
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
-import { uuid } from '@lib/shared';
+import { uuid } from '@libs/shared';
 import { Injectable } from '@nestjs/common';
 import Redis, { ChainableCommander } from 'ioredis';
 import { RedisPrefixesEnum } from 'libs/shared/enums/redis-prefixes.enum';

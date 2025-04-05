@@ -15,6 +15,11 @@
                         "input": "libs/proto",
                         "glob": "**/*.proto",
                         "output": "proto"
+                    },
+                    {
+                        "input": "libs/proto",
+                        "glob": "common.proto",
+                        "output": "proto/libs/proto"
                     }
                 ]
             },

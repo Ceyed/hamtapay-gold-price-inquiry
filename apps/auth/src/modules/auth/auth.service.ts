@@ -9,20 +9,16 @@ import {
     TokensInterface,
     UserEntity,
     UserRepository,
-} from '@lib/auth';
+} from '@libs/auth';
 import {
-    AssignRoleResponse,
-    ErrorInterface,
-    GetUserListResponse,
+    auth,
+    common,
     RedisHelperService,
     RedisPrefixesEnum,
     RedisProjectEnum,
     RedisSubPrefixesEnum,
-    SigninResponse,
-    SignupResponse,
-    UserModel,
     uuid,
-} from '@lib/shared';
+} from '@libs/shared';
 import { HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -41,7 +37,7 @@ export class AuthService implements OnModuleInit {
         await this._saveAllUsersToRedis();
     }
 
-    async signup(userSignupDto: SignupDto): Promise<SignupResponse> {
+    async signup(userSignupDto: SignupDto): Promise<auth.SignupResponse> {
         // TODO: Two steps validation
         const validationResult = await this._signupValidation(userSignupDto);
         if (validationResult) {
@@ -83,7 +79,7 @@ export class AuthService implements OnModuleInit {
         };
     }
 
-    async signin(userSigninDto: SigninDto): Promise<SigninResponse> {
+    async signin(userSigninDto: SigninDto): Promise<auth.SigninResponse> {
         const user: UserEntity = await this._userRepository.findByUsername(userSigninDto.username);
         if (!user) {
             return {
@@ -114,7 +110,7 @@ export class AuthService implements OnModuleInit {
         };
     }
 
-    async refreshTokens(refreshTokenDto: RefreshTokenDto): Promise<SigninResponse> {
+    async refreshTokens(refreshTokenDto: RefreshTokenDto): Promise<auth.SigninResponse> {
         try {
             const { sub } = await this._jwtService.verifyAsync<Pick<TokenPayload, 'sub'>>(
                 refreshTokenDto.refreshToken,
@@ -152,7 +148,7 @@ export class AuthService implements OnModuleInit {
         }
     }
 
-    async assignRole(assignRoleDto: AssignRoleDto): Promise<AssignRoleResponse> {
+    async assignRole(assignRoleDto: AssignRoleDto): Promise<auth.AssignRoleResponse> {
         const user: UserEntity = await this._userRepository.findById(assignRoleDto.userId);
         if (!user) {
             return {
@@ -208,12 +204,12 @@ export class AuthService implements OnModuleInit {
         };
     }
 
-    async getUserList(): Promise<GetUserListResponse> {
+    async getUserList(): Promise<auth.GetUserListResponse> {
         const pattern = this._getCacheKeyForAllUsers();
         const keys = await this._redisHelperService.getKeysByPattern(pattern);
 
         if (keys?.length) {
-            const users: UserModel[] = await Promise.all(
+            const users: auth.UserModel[] = await Promise.all(
                 keys.map(async (key) => {
                     const userData = await this._redisHelperService.getCache(key);
                     return this._mapUserEntityToUserModel(userData as UserEntity);
@@ -239,7 +235,7 @@ export class AuthService implements OnModuleInit {
         };
     }
 
-    private _mapUserEntityToUserModel(user: UserEntity): UserModel {
+    private _mapUserEntityToUserModel(user: UserEntity): auth.UserModel {
         return {
             id: user.id,
             createdAt:
@@ -262,7 +258,9 @@ export class AuthService implements OnModuleInit {
         return bcrypt.compare(password, hashedPassword);
     }
 
-    private async _signupValidation(userSignupDto: SignupDto): Promise<ErrorInterface | void> {
+    private async _signupValidation(
+        userSignupDto: SignupDto,
+    ): Promise<common.ErrorInterface | void> {
         // * Check if username or email is used before
         const existingRecords: number = await this._userRepository.duplicateData(
             userSignupDto.username,

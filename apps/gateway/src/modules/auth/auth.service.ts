@@ -1,43 +1,38 @@
-import { AssignRoleDto, AUTH_SERVICE, RefreshTokenDto, SigninDto, SignupDto } from '@lib/auth';
-import {
-    AssignRoleResponse,
-    GetUserListResponse,
-    SigninResponse,
-    SignupResponse,
-    USERS_SERVICE_NAME,
-    UsersServiceClient,
-} from '@lib/shared';
+import { AssignRoleDto, AUTH_SERVICE, RefreshTokenDto, SigninDto, SignupDto } from '@libs/auth';
+import { auth } from '@libs/shared';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
-    private _usersService: UsersServiceClient;
+    private _usersService: auth.UsersServiceClient;
 
     constructor(@Inject(AUTH_SERVICE) private readonly _grpcClient: ClientGrpc) {}
 
     onModuleInit() {
-        this._usersService = this._grpcClient.getService<UsersServiceClient>(USERS_SERVICE_NAME);
+        this._usersService = this._grpcClient.getService<auth.UsersServiceClient>(
+            auth.USERS_SERVICE_NAME,
+        );
     }
 
-    signup(userSignupDto: SignupDto): Observable<SignupResponse> {
+    signup(userSignupDto: SignupDto): Observable<auth.SignupResponse> {
         return this._usersService.signup(userSignupDto);
     }
 
-    signin(userSigninDto: SigninDto): Observable<SigninResponse> {
+    signin(userSigninDto: SigninDto): Observable<auth.SigninResponse> {
         return this._usersService.signin(userSigninDto);
     }
 
-    refreshToken(refreshTokenDto: RefreshTokenDto): Observable<SigninResponse> {
+    refreshToken(refreshTokenDto: RefreshTokenDto): Observable<auth.SigninResponse> {
         return this._usersService.refreshToken(refreshTokenDto);
     }
 
-    assignRole(assignRoleDto: AssignRoleDto): Observable<AssignRoleResponse> {
+    assignRole(assignRoleDto: AssignRoleDto): Observable<auth.AssignRoleResponse> {
         return this._usersService.assignRole(assignRoleDto);
     }
 
-    getUserList(): Observable<GetUserListResponse> {
+    getUserList(): Observable<auth.GetUserListResponse> {
         return this._usersService.getUserList({});
     }
 }

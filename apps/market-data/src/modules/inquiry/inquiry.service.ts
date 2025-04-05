@@ -1,10 +1,10 @@
-import { goldApiConfig, GoldApiConfig, GoldPriceDataType } from '@lib/market-data';
+import { goldApiConfig, GoldApiConfig, GoldPriceDataType } from '@libs/market-data';
 import {
     RedisHelperService,
     RedisPrefixesEnum,
     RedisProjectEnum,
     RedisSubPrefixesEnum,
-} from '@lib/shared';
+} from '@libs/shared';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 

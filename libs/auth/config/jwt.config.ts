@@ -1,4 +1,4 @@
-import { registerConfig } from '@lib/shared';
+import { registerConfig } from '@libs/shared';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import 'dotenv/config';
 

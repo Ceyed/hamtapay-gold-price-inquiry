@@ -1,4 +1,4 @@
-import { UserRoleEnum } from '@lib/shared';
+import { UserRoleEnum } from '@libs/shared';
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { BaseEntity } from 'libs/shared/entities/base.entity';
 import { Column, Entity } from 'typeorm';

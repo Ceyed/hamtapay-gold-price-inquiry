@@ -1,7 +1,7 @@
-import { SigninInterface } from '@lib/shared';
+import { auth } from '@libs/shared';
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class SigninDto implements SigninInterface {
+export class SigninDto implements auth.SigninInterface {
     @IsString()
     @IsNotEmpty()
     username: string;

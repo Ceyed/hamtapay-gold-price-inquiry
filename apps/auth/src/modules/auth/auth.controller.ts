@@ -1,38 +1,31 @@
-import { AssignRoleDto, RefreshTokenDto, SigninDto, SignupDto } from '@lib/auth';
-import {
-    AssignRoleResponse,
-    GetUserListResponse,
-    SigninResponse,
-    SignupResponse,
-    UsersServiceController,
-    UsersServiceControllerMethods,
-} from '@lib/shared';
+import { AssignRoleDto, RefreshTokenDto, SigninDto, SignupDto } from '@libs/auth';
+import { auth } from '@libs/shared';
 import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
 
 @Controller()
-@UsersServiceControllerMethods()
-export class AuthController implements UsersServiceController {
+@auth.UsersServiceControllerMethods()
+export class AuthController implements auth.UsersServiceController {
     constructor(private readonly _authService: AuthService) {}
 
-    async signup(userSignupDto: SignupDto): Promise<SignupResponse> {
+    async signup(userSignupDto: SignupDto): Promise<auth.SignupResponse> {
         return this._authService.signup(userSignupDto);
     }
 
-    async signin(userSigninDto: SigninDto): Promise<SigninResponse> {
+    async signin(userSigninDto: SigninDto): Promise<auth.SigninResponse> {
         return this._authService.signin(userSigninDto);
     }
 
-    async refreshToken(refreshTokenDto: RefreshTokenDto): Promise<SigninResponse> {
+    async refreshToken(refreshTokenDto: RefreshTokenDto): Promise<auth.SigninResponse> {
         return this._authService.refreshTokens(refreshTokenDto);
     }
 
-    async assignRole(assignRoleDto: AssignRoleDto): Promise<AssignRoleResponse> {
+    async assignRole(assignRoleDto: AssignRoleDto): Promise<auth.AssignRoleResponse> {
         // TODO: Only admin can assign role
         return this._authService.assignRole(assignRoleDto);
     }
 
-    async getUserList(): Promise<GetUserListResponse> {
+    async getUserList(): Promise<auth.GetUserListResponse> {
         return this._authService.getUserList();
     }
 }

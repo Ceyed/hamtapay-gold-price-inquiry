@@ -1,4 +1,4 @@
-import { jwtConfig, typeormConfig } from '@lib/auth';
+import { jwtConfig, typeormConfig } from '@libs/auth';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';

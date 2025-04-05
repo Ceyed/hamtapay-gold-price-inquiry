@@ -24,9 +24,9 @@
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": false,
         "paths": {
-            "@lib/auth": ["libs/auth/index.ts"],
-            "@lib/market-data": ["libs/market-data/index.ts"],
-            "@lib/shared": ["libs/shared/index.ts"]
+            "@libs/auth": ["libs/auth/index.ts"],
+            "@libs/market-data": ["libs/market-data/index.ts"],
+            "@libs/shared": ["libs/shared/index.ts"]
         }
     },
     "exclude": ["node_modules", "tmp"]
