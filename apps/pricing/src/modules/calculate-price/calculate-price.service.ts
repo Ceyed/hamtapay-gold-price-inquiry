@@ -1,16 +1,31 @@
+import { MARKET_DATA_SERVICE } from '@libs/market-data';
 import { GetPriceDto, GoldGramsEnum } from '@libs/pricing';
 import {
     GetGoldPricesRedisKey,
     GoldPriceDataType,
+    marketData,
     pricing,
     RedisHelperService,
 } from '@libs/shared';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { ClientGrpc } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
 
 @Injectable()
-export class CalculatePriceService {
-    constructor(private readonly _redisHelperService: RedisHelperService) {
-        // this.getPrice({ currentStock: 1, totalStock: 9, grams: GoldGramsEnum.Gram24K });
+export class CalculatePriceService implements OnModuleInit {
+    private _marketDataService: marketData.MarketDataServiceClient;
+
+    constructor(
+        private readonly _redisHelperService: RedisHelperService,
+        @Inject(MARKET_DATA_SERVICE) private readonly _grpcClient: ClientGrpc,
+    ) {
+        this.getPrice({ currentStock: 1, totalStock: 9, grams: GoldGramsEnum.Gram24K });
+    }
+
+    onModuleInit() {
+        this._marketDataService = this._grpcClient.getService<marketData.MarketDataServiceClient>(
+            marketData.MARKET_DATA_SERVICE_NAME,
+        );
     }
 
     async getPrice({
@@ -19,21 +34,59 @@ export class CalculatePriceService {
         grams,
     }: GetPriceDto): Promise<pricing.GetPriceResponse> {
         const redisKey: string = GetGoldPricesRedisKey(this._redisHelperService);
-        const prices: GoldPriceDataType = await this._redisHelperService.getCache(redisKey);
-        console.log(prices);
+        let prices: GoldPriceDataType = await this._redisHelperService.getCache(redisKey);
 
         if (prices === undefined) {
-            // TODO: CAll market-data and force it to update, then get prices from it
+            // * Wait for market data with 2 seconds timeout
+            prices = await new Promise<GoldPriceDataType>((resolve) => {
+                let resolved = false;
+                const response: Observable<marketData.GoldPriceResponse> =
+                    this._marketDataService.getGoldPrice({});
+
+                // * Set timeout for 2 seconds
+                const timeout = setTimeout(() => {
+                    if (!resolved) {
+                        resolved = true;
+                        resolve(undefined);
+                    }
+                }, 2000);
+
+                response.subscribe({
+                    next: (res) => {
+                        if (!resolved) {
+                            resolved = true;
+                            clearTimeout(timeout);
+                            resolve(res.data as unknown as GoldPriceDataType);
+                        }
+                    },
+                    error: (_) => {
+                        if (!resolved) {
+                            resolved = true;
+                            clearTimeout(timeout);
+                            resolve(undefined);
+                        }
+                    },
+                });
+            });
+            if (!prices) {
+                return {
+                    data: null,
+                    success: false,
+                    error: {
+                        statusCode: HttpStatus.SERVICE_UNAVAILABLE,
+                        message: 'Gold price data unavailable after timeout',
+                    },
+                };
+            }
         }
 
         const requestedGoldGram: number = this._getRequestedGoldGram(prices, grams);
-        console.log(requestedGoldGram);
         if (requestedGoldGram === -1) {
             return {
                 data: 0,
                 success: false,
                 error: {
-                    statusCode: 400,
+                    statusCode: HttpStatus.BAD_REQUEST,
                     message: 'Invalid gold gram',
                 },
             };

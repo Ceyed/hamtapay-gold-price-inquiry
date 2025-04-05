@@ -13,7 +13,6 @@ async function bootstrap() {
         },
     });
     app.useGlobalPipes(GetValidationPipeConfig());
-
     await app.listen();
 }
 bootstrap();
