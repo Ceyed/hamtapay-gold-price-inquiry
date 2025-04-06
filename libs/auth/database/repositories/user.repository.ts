@@ -11,7 +11,6 @@ export class UserRepository extends Repository<UserEntity> {
     }
 
     async add(userSignupDto: SignupDto): Promise<UserEntity> {
-        console.log(UserRoleEnum.User);
         return this.save({
             ...userSignupDto,
             role: UserRoleEnum.User,

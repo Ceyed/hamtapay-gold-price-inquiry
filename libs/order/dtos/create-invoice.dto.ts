@@ -2,7 +2,7 @@ import { GoldGramsEnum } from '@libs/pricing';
 import { order, uuid } from '@libs/shared';
 import { IsEnum, IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 
-export class CreateInvoiceDto implements order.CreateInvoiceInterface {
+export class CreateOrderDto implements order.CreateOrderInterface {
     @IsString()
     @IsNotEmpty()
     customerId: uuid;

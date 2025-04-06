@@ -8,6 +8,8 @@ async function bootstrap() {
     const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
         transport: Transport.GRPC,
         options: {
+            // TODO: Move to .env
+            url: '0.0.0.0:5005',
             protoPath: join(__dirname, 'proto', 'notification.proto'),
             package: notification.NOTIFICATION_PACKAGE_NAME,
         },

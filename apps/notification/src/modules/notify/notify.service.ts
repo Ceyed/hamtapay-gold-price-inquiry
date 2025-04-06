@@ -46,8 +46,9 @@ export class NotifyService {
     async orderRegistered({ orderId, newStock, totalStock }: OrderRegisteredDto): Promise<void> {
         // * Get order info from redis
         const invoiceRedisKey: string = GetInvoiceRedisKey(this._redisHelperService, orderId);
-        const invoice: order.InvoiceType =
-            await this._redisHelperService.getCache<order.InvoiceType>(invoiceRedisKey);
+        const invoice: order.OrderType = await this._redisHelperService.getCache<order.OrderType>(
+            invoiceRedisKey,
+        );
         if (!invoice) {
             console.log('Invoice not found');
             return;
@@ -112,7 +113,7 @@ export class NotifyService {
     private async _generateEmailHtml(
         template: EmailTemplateEnum,
         customer: UserType,
-        invoice?: order.InvoiceType,
+        order?: order.OrderType,
         confirmationCode?: string,
     ): Promise<string> {
         switch (template) {
@@ -121,15 +122,16 @@ export class NotifyService {
                 <h1>Invoice Confirmation</h1>
                 <p>Dear ${customer.username},</p>
                 <p>We are pleased to confirm that your invoice has been successfully created.</p>
-                <p>Invoice ID: ${invoice.id}</p>
-                <p>Invoice Amount: ${invoice.amount}</p>
-                <p>Invoice Date: ${invoice.createdAt}</p>
+                <p>Invoice Grams: ${order.goldGrams}</p>
+                <p>Invoice Amount: ${order.amount}</p>
+                <p>Invoice Total Price: ${order.totalPrice}</p>
+                <p>Invoice Date: ${order.createdAt}</p>
                 `;
             case EmailTemplateEnum.NotifyAdmins:
                 return `
                 <h1>Stock Alert</h1>
                 <p>Dear Admin,</p>
-                <p>We have less than 10% of ${invoice.goldGrams} stock left.</p>
+                <p>We have less than 10% of ${order.goldGrams} stock left.</p>
                 `;
             case EmailTemplateEnum.ConfirmationCode:
                 return `

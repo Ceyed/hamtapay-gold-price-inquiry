@@ -93,10 +93,11 @@ And join the Nx community:
 
 [ ] 2 step registration
 [ ] firstname and lastname of users
-[ ] order registration
-[ ] list of orders
+[x] order registration
+[x] list of orders
 [ ] list of products
 [ ] stockIn products
+[ ] list of stock histories
 [ ] role access control
 [ ] test
 [ ] document

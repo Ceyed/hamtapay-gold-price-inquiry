@@ -8,8 +8,8 @@
         "build": {
             "executor": "nx:run-commands",
             "options": {
-                "command": "webpack-cli build",
-                "args": ["node-env=production"],
+                "command": "webpack-cli --config apps/market-data/webpack.config.js",
+                "cwd": ".",
                 "assets": [
                     {
                         "input": "libs/proto",
@@ -25,7 +25,7 @@
             },
             "configurations": {
                 "development": {
-                    "args": ["node-env=development"]
+                    "command": "webpack-cli --config apps/market-data/webpack.config.js --env node-env=development"
                 }
             }
         },

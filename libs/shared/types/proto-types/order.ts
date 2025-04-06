@@ -11,25 +11,25 @@ import { Empty, ErrorInterface } from "./common";
 
 export const protobufPackage = "order";
 
-export interface CreateInvoiceInterface {
+export interface CreateOrderInterface {
   customerId: string;
   goldGrams: string;
   amount: number;
 }
 
-export interface CreateInvoiceResponse {
-  data: InvoiceType | undefined;
+export interface CreateOrderResponse {
+  data: OrderType | undefined;
   success: boolean;
   error: ErrorInterface | undefined;
 }
 
-export interface GetInvoiceListResponse {
-  data: InvoiceType[];
+export interface GetOrderListResponse {
+  data: OrderType[];
   success: boolean;
   error: ErrorInterface | undefined;
 }
 
-export interface InvoiceType {
+export interface OrderType {
   id: string;
   createdAt: string;
   updatedAt: string;
@@ -43,24 +43,22 @@ export interface InvoiceType {
 export const ORDER_PACKAGE_NAME = "order";
 
 export interface OrderServiceClient {
-  createInvoice(request: CreateInvoiceInterface): Observable<CreateInvoiceResponse>;
+  createOrder(request: CreateOrderInterface): Observable<CreateOrderResponse>;
 
-  getInvoiceList(request: Empty): Observable<GetInvoiceListResponse>;
+  getOrderList(request: Empty): Observable<GetOrderListResponse>;
 }
 
 export interface OrderServiceController {
-  createInvoice(
-    request: CreateInvoiceInterface,
-  ): Promise<CreateInvoiceResponse> | Observable<CreateInvoiceResponse> | CreateInvoiceResponse;
+  createOrder(
+    request: CreateOrderInterface,
+  ): Promise<CreateOrderResponse> | Observable<CreateOrderResponse> | CreateOrderResponse;
 
-  getInvoiceList(
-    request: Empty,
-  ): Promise<GetInvoiceListResponse> | Observable<GetInvoiceListResponse> | GetInvoiceListResponse;
+  getOrderList(request: Empty): Promise<GetOrderListResponse> | Observable<GetOrderListResponse> | GetOrderListResponse;
 }
 
 export function OrderServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createInvoice", "getInvoiceList"];
+    const grpcMethods: string[] = ["createOrder", "getOrderList"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("OrderService", method)(constructor.prototype[method], method, descriptor);

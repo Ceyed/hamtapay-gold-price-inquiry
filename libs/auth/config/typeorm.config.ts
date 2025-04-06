@@ -9,6 +9,7 @@ enum TYPEORM_CONFIG {
     AUTH_DATABASE_PASSWORD = 'AUTH_DATABASE_PASSWORD',
 }
 
+// TODO: Move to shared
 export class TypeormConfig {
     @IsString()
     connection = 'postgres' as const;
@@ -43,7 +44,7 @@ export class TypeormConfig {
     }
 }
 
-export const typeormConfig = registerConfig(TypeormConfig, () => {
+export const authTypeormConfig = registerConfig(TypeormConfig, () => {
     const port = process.env[TYPEORM_CONFIG.AUTH_DATABASE_PORT];
     return new TypeormConfig({
         host: process.env[TYPEORM_CONFIG.AUTH_DATABASE_HOST],

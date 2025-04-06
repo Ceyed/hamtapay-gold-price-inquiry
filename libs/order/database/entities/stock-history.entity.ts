@@ -17,7 +17,7 @@ export class StockHistoryEntity extends BaseEntity {
 
     @Column({ type: 'uuid' })
     @IsUUID()
-    inventoryId: uuid;
+    productId: uuid;
 
     @ManyToOne(() => ProductEntity, (product) => product.stockHistories)
     @JoinColumn({ name: 'productId' })

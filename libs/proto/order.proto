@@ -5,29 +5,29 @@ package order;
 import "libs/proto/common.proto";
 
 service OrderService {
-    rpc createInvoice(CreateInvoiceInterface) returns (CreateInvoiceResponse);
-    rpc getInvoiceList(common.Empty) returns (GetInvoiceListResponse);
+    rpc createOrder(CreateOrderInterface) returns (CreateOrderResponse);
+    rpc getOrderList(common.Empty) returns (GetOrderListResponse);
 }
 
-message CreateInvoiceInterface {
+message CreateOrderInterface {
     string customerId = 1;
     string goldGrams = 2;
     int32 amount = 3;
 }
 
-message CreateInvoiceResponse {
-    InvoiceType data = 1;
+message CreateOrderResponse {
+    OrderType data = 1;
     bool success = 2;
     common.ErrorInterface error = 3;
 }
 
-message GetInvoiceListResponse {
-    repeated InvoiceType data = 1;
+message GetOrderListResponse {
+    repeated OrderType data = 1;
     bool success = 2;
     common.ErrorInterface error = 3;
 }
 
-message InvoiceType {
+message OrderType {
     string id = 1;
     string createdAt = 2;
     string updatedAt = 3;
