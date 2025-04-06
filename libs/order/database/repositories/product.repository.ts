@@ -12,4 +12,10 @@ export class ProductRepository extends Repository<ProductEntity> {
     async findByGoldGrams(goldGrams: GoldGramsEnum): Promise<ProductEntity> {
         return this.findOneBy({ goldGrams });
     }
+
+    async findAll(withRelations = false): Promise<ProductEntity[]> {
+        return this.find({
+            relations: withRelations ? { orders: true, stockHistories: true } : undefined,
+        });
+    }
 }

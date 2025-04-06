@@ -5,6 +5,7 @@ import {
     OrderRepository,
     ProductEntity,
     ProductRepository,
+    StockHistoryEntity,
     StockHistoryRepository,
 } from '@libs/order';
 import { GoldGramsEnum, PRICING_SERVICE } from '@libs/pricing';
@@ -37,14 +38,7 @@ export class OrderService {
         private readonly _orderRepository: OrderRepository,
         private readonly _productRepository: ProductRepository,
         private readonly _stockHistoryRepository: StockHistoryRepository,
-    ) {
-        // this.createOrder({
-        //     customerId: '1cb67fff-95ba-4a60-9a78-02dd5bd38a0d',
-        //     goldGrams: GoldGramsEnum.Gram18K,
-        //     amount: 2,
-        // }).then((res) => console.log(res));
-        // this.getOrderList().then((res) => console.log(res));
-    }
+    ) {}
 
     onModuleInit() {
         this._pricingService = this._pricingGrpcClient.getService<pricing.PricingServiceClient>(
@@ -93,7 +87,7 @@ export class OrderService {
             };
         }
 
-        const orderType: order.OrderType = this._mapOrderToOrderType(order);
+        const orderType: order.OrderProtoType = this._mapOrderToOrderType(order);
         const orderRedisKey: string = GetInvoiceRedisKey(this._redisHelperService, order.id);
         await this._redisHelperService.setCache(orderRedisKey, orderType);
 
@@ -129,7 +123,7 @@ export class OrderService {
         const keys = await this._redisHelperService.getKeysByPattern(pattern);
 
         if (keys?.length) {
-            const orders: order.OrderType[] = await Promise.all(
+            const orders: order.OrderProtoType[] = await Promise.all(
                 keys.map(async (key) => {
                     return this._redisHelperService.getCache(key);
                 }),
@@ -147,15 +141,70 @@ export class OrderService {
             await this._saveAllOrdersToRedis(orders);
         }
         return {
-            data: orders.map(this._mapOrderToOrderType),
+            data: orders.map((order) => this._mapOrderToOrderType(order)),
             success: true,
             error: null,
         };
     }
 
+    async getProductList(): Promise<order.GetProductListResponse> {
+        const products: ProductEntity[] = await this._productRepository.findAll();
+        return {
+            data: products.map(this._mapProductToProductType),
+            success: true,
+            error: null,
+        };
+    }
+
+    async getProductListByAdmin(): Promise<order.GetProductListResponse> {
+        const products: ProductEntity[] = await this._productRepository.findAll(true);
+        return {
+            data: products.map((product) => this._mapProductToProductTypeByAdmin(product)),
+            success: true,
+            error: null,
+        };
+    }
+
+    private _mapProductToProductType(product: ProductEntity): order.ProductProtoType {
+        return {
+            id: product.id,
+            createdAt: product.createdAt.toISOString(),
+            updatedAt: product.updatedAt.toISOString(),
+            goldGrams: product.goldGrams,
+            currentStock: product.currentStock,
+            totalStock: product.totalStock,
+            orders: [],
+            stockHistories: [],
+        };
+    }
+
+    private _mapProductToProductTypeByAdmin(product: ProductEntity): order.ProductProtoType {
+        const orders: order.OrderProtoType[] = product.orders?.length
+            ? product.orders.map((order) => {
+                  order.product = product;
+                  return this._mapOrderToOrderType(order);
+              })
+            : [];
+        const stockHistories: order.StockHistoryProtoType[] = product.stockHistories?.length
+            ? product.stockHistories.map((history) =>
+                  this._mapStockHistoryToStockHistoryType(history),
+              )
+            : [];
+        return {
+            id: product.id,
+            createdAt: product.createdAt.toISOString(),
+            updatedAt: product.updatedAt.toISOString(),
+            goldGrams: product.goldGrams,
+            currentStock: product.currentStock,
+            totalStock: product.totalStock,
+            orders,
+            stockHistories,
+        };
+    }
+
     private async _saveAllOrdersToRedis(orders: OrderEntity[]): Promise<void> {
         for (const order of orders) {
-            const orderType: order.OrderType = this._mapOrderToOrderType(order);
+            const orderType: order.OrderProtoType = this._mapOrderToOrderType(order);
             const orderRedisKey: string = GetInvoiceRedisKey(this._redisHelperService, order.id);
             await this._redisHelperService.setCache(orderRedisKey, orderType);
         }
@@ -166,6 +215,20 @@ export class OrderService {
             RedisProjectEnum.Order,
             RedisPrefixesEnum.Invoice,
         );
+    }
+
+    private _mapStockHistoryToStockHistoryType(
+        stockHistory: StockHistoryEntity,
+    ): order.StockHistoryProtoType {
+        return {
+            id: stockHistory.id,
+            createdAt: stockHistory.createdAt.toISOString(),
+            updatedAt: stockHistory.updatedAt.toISOString(),
+            type: stockHistory.type,
+            amount: stockHistory.amount,
+            productId: stockHistory.productId,
+            product: null,
+        };
     }
 
     private async _createOrderValidation({
@@ -209,7 +272,7 @@ export class OrderService {
         }
     }
 
-    private _mapOrderToOrderType(order: OrderEntity): order.OrderType {
+    private _mapOrderToOrderType(order: OrderEntity): order.OrderProtoType {
         return {
             id: order.id,
             createdAt:

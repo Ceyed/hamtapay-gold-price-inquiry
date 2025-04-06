@@ -23,4 +23,12 @@ export class OrderService implements OnModuleInit {
     getOrderList(): Observable<order.GetOrderListResponse> {
         return this._orderService.getOrderList({});
     }
+
+    getProductList(): Observable<order.GetProductListResponse> {
+        return this._orderService.getProductList({});
+    }
+
+    getProductListByAdmin(): Observable<order.GetProductListResponse> {
+        return this._orderService.getProductListByAdmin({});
+    }
 }

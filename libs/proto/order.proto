@@ -7,6 +7,8 @@ import "libs/proto/common.proto";
 service OrderService {
     rpc createOrder(CreateOrderInterface) returns (CreateOrderResponse);
     rpc getOrderList(common.Empty) returns (GetOrderListResponse);
+    rpc getProductList(common.Empty) returns (GetProductListResponse);
+    rpc getProductListByAdmin(common.Empty) returns (GetProductListByAdminResponse);
 }
 
 message CreateOrderInterface {
@@ -16,18 +18,30 @@ message CreateOrderInterface {
 }
 
 message CreateOrderResponse {
-    OrderType data = 1;
+    OrderProtoType data = 1;
     bool success = 2;
     common.ErrorInterface error = 3;
 }
 
 message GetOrderListResponse {
-    repeated OrderType data = 1;
+    repeated OrderProtoType data = 1;
     bool success = 2;
     common.ErrorInterface error = 3;
 }
 
-message OrderType {
+message GetProductListResponse {
+    repeated ProductProtoType data = 1;
+    bool success = 2;
+    common.ErrorInterface error = 3;
+}
+
+message GetProductListByAdminResponse {
+    repeated ProductProtoType data = 1;
+    bool success = 2;
+    common.ErrorInterface error = 3;
+}
+
+message OrderProtoType {
     string id = 1;
     string createdAt = 2;
     string updatedAt = 3;
@@ -37,3 +51,24 @@ message OrderType {
     int32 gramPrice = 7;
     int32 totalPrice = 8;
 };
+
+message StockHistoryProtoType {
+    string id = 1;
+    string createdAt = 2;
+    string updatedAt = 3;
+    string type = 4;
+    int32 amount = 5;
+    string productId = 6;
+    ProductProtoType product = 7;
+}
+
+message ProductProtoType {
+    string id = 1;
+    string createdAt = 2;
+    string updatedAt = 3;
+    string goldGrams = 4;
+    int32 currentStock = 5;
+    int32 totalStock = 6;
+    repeated OrderProtoType orders = 7;
+    repeated StockHistoryProtoType stockHistories = 8;
+}

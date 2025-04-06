@@ -15,4 +15,12 @@ export class OrderController implements order.OrderServiceController {
     async getOrderList(): Promise<order.GetOrderListResponse> {
         return this._orderService.getOrderList();
     }
+
+    async getProductList(): Promise<order.GetProductListResponse> {
+        return this._orderService.getProductList();
+    }
+
+    async getProductListByAdmin(): Promise<order.GetProductListResponse> {
+        return this._orderService.getProductListByAdmin();
+    }
 }
