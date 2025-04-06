@@ -1,5 +1,6 @@
 import { GoldGramsEnum } from '@libs/pricing';
 import { order, uuid } from '@libs/shared';
+import { OmitType } from '@nestjs/mapped-types';
 import { IsEnum, IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 
 export class CreateOrderDto implements order.CreateOrderInterface {
@@ -15,3 +16,5 @@ export class CreateOrderDto implements order.CreateOrderInterface {
     @Min(1)
     amount: number;
 }
+
+export class CreateOrderGatewayDto extends OmitType(CreateOrderDto, ['customerId']) {}

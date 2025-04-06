@@ -3,6 +3,7 @@ import { order } from '@libs/shared';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
+import { CommonModule } from '../common/common.module';
 import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
 import { ProductsController } from './product.controller';
@@ -20,6 +21,7 @@ import { ProductsController } from './product.controller';
                 },
             },
         ]),
+        CommonModule,
     ],
     controllers: [OrderController, ProductsController],
     providers: [OrderService],

@@ -46,9 +46,8 @@ export class NotifyService {
     async orderRegistered({ orderId, newStock, totalStock }: OrderRegisteredDto): Promise<void> {
         // * Get order info from redis
         const invoiceRedisKey: string = GetInvoiceRedisKey(this._redisHelperService, orderId);
-        const invoice: order.OrderType = await this._redisHelperService.getCache<order.OrderType>(
-            invoiceRedisKey,
-        );
+        const invoice: order.OrderProtoType =
+            await this._redisHelperService.getCache<order.OrderProtoType>(invoiceRedisKey);
         if (!invoice) {
             console.log('Invoice not found');
             return;
@@ -113,7 +112,7 @@ export class NotifyService {
     private async _generateEmailHtml(
         template: EmailTemplateEnum,
         customer: UserType,
-        order?: order.OrderType,
+        order?: order.OrderProtoType,
         confirmationCode?: string,
     ): Promise<string> {
         switch (template) {

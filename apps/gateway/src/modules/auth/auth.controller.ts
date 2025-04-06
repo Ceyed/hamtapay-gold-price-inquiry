@@ -1,7 +1,9 @@
 import { AssignRoleDto, RefreshTokenDto, SigninDto, SignupDto } from '@libs/auth';
-import { auth } from '@libs/shared';
-import { Body, Controller, Get, Post, Put } from '@nestjs/common';
+import { auth, UserRoleEnum } from '@libs/shared';
+import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { Roles } from '../common/decorators';
+import { JwtAuthGuard, RolesGuard } from '../common/guards';
 import { AuthService } from './auth.service';
 
 @Controller('users')
@@ -24,14 +26,16 @@ export class AuthController {
     }
 
     @Put('assign-role')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRoleEnum.Admin)
     assignRole(@Body() assignRoleDto: AssignRoleDto): Observable<auth.AssignRoleResponse> {
         return this._authService.assignRole(assignRoleDto);
     }
 
     @Get('all')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRoleEnum.Admin)
     getUserList(): Observable<auth.GetUserListResponse> {
-        // TODO: Only admin can get user list
-        // TODO: Pagination
         return this._authService.getUserList();
     }
 }

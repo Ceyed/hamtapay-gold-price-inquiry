@@ -288,7 +288,9 @@ export class AuthService implements OnModuleInit {
 
     async _generateTokens(user: UserEntity): Promise<TokensInterface> {
         const [accessToken, refreshToken] = await Promise.all([
-            this._signToken<Partial<TokenPayload>>(user.id, this._jwtConfig.accessTokenTtl),
+            this._signToken<Partial<TokenPayload>>(user.id, this._jwtConfig.accessTokenTtl, {
+                role: user.role,
+            }),
             this._signToken(user.id, this._jwtConfig.refreshTokenTtl),
         ]);
 

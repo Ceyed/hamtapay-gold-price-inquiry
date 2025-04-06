@@ -1,4 +1,4 @@
-import { jwtConfig, typeormConfig } from '@libs/auth';
+import { authTypeormConfig, jwtConfig } from '@libs/auth';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,12 +8,12 @@ import { AuthModule } from '../modules/auth/auth.module';
 
 @Module({
     imports: [
-        ConfigModule.forFeature(typeormConfig),
+        ConfigModule.forFeature(authTypeormConfig),
         ConfigModule.forFeature(jwtConfig),
         TypeOrmModule.forRootAsync({
-            imports: [ConfigModule.forFeature(typeormConfig)],
+            imports: [ConfigModule.forFeature(authTypeormConfig)],
             useFactory: (
-                typeormConfigService: ConfigType<typeof typeormConfig>,
+                typeormConfigService: ConfigType<typeof authTypeormConfig>,
             ): DataSourceOptions =>
                 ({
                     schema: 'public',
@@ -34,7 +34,7 @@ import { AuthModule } from '../modules/auth/auth.module';
                     ],
                     migrationsTableName: 'migrations',
                 } as DataSourceOptions),
-            inject: [typeormConfig.KEY],
+            inject: [authTypeormConfig.KEY],
         }),
         AuthModule,
     ],
