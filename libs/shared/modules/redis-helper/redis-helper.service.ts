@@ -1,7 +1,7 @@
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
 import { uuid } from '@libs/shared';
 import { Injectable } from '@nestjs/common';
-import Redis, { ChainableCommander } from 'ioredis';
+import Redis from 'ioredis';
 import { RedisPrefixesEnum } from 'libs/shared/enums/redis-prefixes.enum';
 import { RedisProjectEnum } from 'libs/shared/enums/redis-project.enum';
 import { RedisSubPrefixesEnum } from 'libs/shared/enums/redis-sub-prefixes.enum';
@@ -10,8 +10,8 @@ import { RedisSubPrefixesEnum } from 'libs/shared/enums/redis-sub-prefixes.enum'
 export class RedisHelperService {
     constructor(@InjectRedis() private readonly _redisClient: Redis) {}
 
-    get pipeLine(): ChainableCommander {
-        return this._redisClient.multi();
+    get redisClient(): Redis {
+        return this._redisClient;
     }
 
     async getCache<T>(key: string): Promise<T> {

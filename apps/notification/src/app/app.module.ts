@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { MailSenderModule } from '../modules/mail-sender/mail-sender.module';
+import { NotifyModule } from '../modules/notify/notify.module';
 
 @Module({
-    imports: [MailSenderModule],
+    imports: [NotifyModule],
     controllers: [],
     providers: [],
 })

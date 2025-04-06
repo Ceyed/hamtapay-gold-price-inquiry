@@ -12,6 +12,7 @@ import { MailSenderService } from './mail-sender.service';
         MailerModule.forRootAsync({
             imports: [ConfigModule],
             useFactory: (configService: ConfigService) => ({
+                // TODO: mailConfig
                 transport: {
                     host: configService.get('MAIL_HOST'),
                     secure: true,
@@ -27,5 +28,6 @@ import { MailSenderService } from './mail-sender.service';
     ],
     controllers: [MailSenderController],
     providers: [MailSenderService],
+    exports: [MailSenderService],
 })
 export class MailSenderModule {}

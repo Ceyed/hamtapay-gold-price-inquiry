@@ -13,11 +13,13 @@ import {
 import {
     auth,
     common,
+    GetUserRedisKey,
     RedisHelperService,
     RedisPrefixesEnum,
     RedisProjectEnum,
     RedisSubPrefixesEnum,
     UserRoleEnum,
+    UserType,
     uuid,
 } from '@libs/shared';
 import { HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
@@ -56,15 +58,18 @@ export class AuthService implements OnModuleInit {
         });
         if (user) {
             // * Add user to redis
-            const redisKey: string = this._getCacheKeyForOneUser(
+            const redisKey: string = GetUserRedisKey(
+                this._redisHelperService,
                 user.id,
                 this._mapUserRoleToRedisSubPrefix(user.role),
             );
-            await this._redisHelperService.setCache(redisKey, {
+            await this._redisHelperService.setCache<UserType>(redisKey, {
                 id: user.id,
                 username: user.username,
                 email: user.email,
                 role: user.role,
+                createdAt: user.createdAt.toISOString(),
+                updatedAt: user.updatedAt.toISOString(),
             });
             return {
                 // data: this._mapUserEntityToUserModel(user),
@@ -192,11 +197,12 @@ export class AuthService implements OnModuleInit {
             };
         }
         // * Update user in redis
-        const redisKey: string = this._getCacheKeyForOneUser(
+        const redisKey: string = GetUserRedisKey(
+            this._redisHelperService,
             user.id,
             this._mapUserRoleToRedisSubPrefix(user.role),
         );
-        await this._redisHelperService.setCache(redisKey, {
+        await this._redisHelperService.setCache<UserType>(redisKey, {
             id: user.id,
             username: user.username,
             email: user.email,
@@ -282,15 +288,8 @@ export class AuthService implements OnModuleInit {
 
     async _generateTokens(user: UserEntity): Promise<TokensInterface> {
         const [accessToken, refreshToken] = await Promise.all([
-            this._signToken<Partial<TokenPayload>>(user.id, this._jwtConfig.accessTokenTtl, {
-                sub: user.id,
-                username: user.username,
-                email: user.email,
-                role: user.role,
-            }),
-            this._signToken(user.id, this._jwtConfig.refreshTokenTtl, {
-                id: user.id,
-            }),
+            this._signToken<Partial<TokenPayload>>(user.id, this._jwtConfig.accessTokenTtl),
+            this._signToken(user.id, this._jwtConfig.refreshTokenTtl),
         ]);
 
         return {
@@ -317,11 +316,12 @@ export class AuthService implements OnModuleInit {
     private async _saveAllUsersToRedis(): Promise<void> {
         const users: UserEntity[] = await this._userRepository.findAll();
         for (const user of users) {
-            const redisKey: string = this._getCacheKeyForOneUser(
+            const redisKey: string = GetUserRedisKey(
+                this._redisHelperService,
                 user.id,
                 this._mapUserRoleToRedisSubPrefix(user.role),
             );
-            await this._redisHelperService.setCache(redisKey, {
+            await this._redisHelperService.setCache<UserType>(redisKey, {
                 id: user.id,
                 username: user.username,
                 email: user.email,
@@ -338,18 +338,6 @@ export class AuthService implements OnModuleInit {
         return userRole === UserRoleEnum.Admin
             ? RedisSubPrefixesEnum.Admin
             : RedisSubPrefixesEnum.User;
-    }
-
-    private _getCacheKeyForOneUser(
-        userId: uuid,
-        userRole: RedisSubPrefixesEnum.User | RedisSubPrefixesEnum.Admin,
-    ): string {
-        return this._redisHelperService.getStandardKey(
-            RedisProjectEnum.Auth,
-            RedisPrefixesEnum.User,
-            userRole,
-            userId,
-        );
     }
 
     private _getCacheKeyForAllUsers(): string {

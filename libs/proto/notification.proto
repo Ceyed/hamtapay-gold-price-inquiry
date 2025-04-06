@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package notification;
+
+import "libs/proto/common.proto";
+
+
+service NotificationService {
+    rpc orderRegistered(OrderRegisteredInterface) returns (common.Empty);
+    rpc sendEmailConfirmationCode(SendEmailConfirmationCodeInterface) returns (common.Empty);
+}
+
+
+message OrderRegisteredInterface {
+    string orderId = 1;
+    int32 newStock = 2;
+    int32 totalStock = 3;
+}
+
+message SendEmailConfirmationCodeInterface {
+    string customerId = 1;
+    string confirmationCode = 2;
+}

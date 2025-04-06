@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 export class MailSenderService {
     constructor(private readonly mailerService: MailerService) {}
 
-    private async _sendMail(targetEmails: string[], subject: string, html: string) {
+    async sendMail(targetEmails: string[], subject: string, html: string) {
         try {
             const result = await this.mailerService.sendMail({
                 to: targetEmails,
@@ -12,7 +12,7 @@ export class MailSenderService {
                 subject: subject,
                 html: html,
             });
-            console.log(result);
+            // console.log(result);
             return true;
         } catch (_) {
             return false;
