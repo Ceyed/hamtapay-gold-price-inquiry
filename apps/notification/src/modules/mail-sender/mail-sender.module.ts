@@ -2,6 +2,7 @@ import { mailConfig } from '@libs/notification';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
+import { LoggerModule } from '@libs/shared';
 import { MailSenderController } from './mail-sender.controller';
 import { MailSenderService } from './mail-sender.service';
 
@@ -26,6 +27,7 @@ import { MailSenderService } from './mail-sender.service';
             }),
             inject: [mailConfig.KEY],
         }),
+        LoggerModule,
     ],
     controllers: [MailSenderController],
     providers: [MailSenderService],

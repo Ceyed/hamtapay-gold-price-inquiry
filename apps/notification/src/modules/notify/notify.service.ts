@@ -2,6 +2,8 @@ import { OrderRegisteredDto, SendEmailConfirmationCodeDto } from '@libs/notifica
 import {
     findUserById,
     GetInvoiceRedisKey,
+    LoggerService,
+    LogModuleEnum,
     order,
     RedisHelperService,
     RedisPrefixesEnum,
@@ -23,6 +25,7 @@ export class NotifyService {
     constructor(
         private readonly _mailSenderService: MailSenderService,
         private readonly _redisHelperService: RedisHelperService,
+        private readonly _loggerService: LoggerService,
     ) {}
 
     async sendEmailConfirmationCode({
@@ -31,7 +34,7 @@ export class NotifyService {
     }: SendEmailConfirmationCodeDto): Promise<void> {
         const customer: UserType = await findUserById(this._redisHelperService, customerId);
         if (!customer) {
-            console.log('Customer not found');
+            this._loggerService.info(LogModuleEnum.Notification, 'Customer not found');
             return;
         }
         const emailHtml: string = await this._generateEmailHtml(
@@ -44,17 +47,26 @@ export class NotifyService {
     }
 
     async orderRegistered({ orderId, newStock, totalStock }: OrderRegisteredDto): Promise<void> {
+        this._loggerService.info(
+            LogModuleEnum.Notification,
+            `Order registered ${JSON.stringify({
+                orderId,
+                newStock,
+                totalStock,
+            })}`,
+        );
+
         // * Get order info from redis
         const invoiceRedisKey: string = GetInvoiceRedisKey(this._redisHelperService, orderId);
         const invoice: order.OrderProtoType =
             await this._redisHelperService.getCache<order.OrderProtoType>(invoiceRedisKey);
         if (!invoice) {
-            console.log('Invoice not found');
+            this._loggerService.info(LogModuleEnum.Notification, 'Invoice not found');
             return;
         }
         const customer: UserType = await findUserById(this._redisHelperService, invoice.customerId);
         if (!customer) {
-            console.log('Customer not found');
+            this._loggerService.info(LogModuleEnum.Notification, 'Customer not found');
             return;
         }
 
@@ -76,6 +88,14 @@ export class NotifyService {
         }
 
         // * Send stock alert email to admins
+        this._loggerService.info(
+            LogModuleEnum.Notification,
+            `Sending stock alert email to admins. ${JSON.stringify({
+                goldGrams: invoice.goldGrams,
+                newStock,
+                totalStock,
+            })}`,
+        );
         const admins: UserType[] = await this._findAdmins();
         const notifyAdminsHtml: string = await this._generateEmailHtml(
             EmailTemplateEnum.NotifyAdmins,
@@ -106,6 +126,7 @@ export class NotifyService {
             const user: UserType = await this._redisHelperService.getCache<UserType>(key);
             admins.push(user);
         }
+        this._loggerService.debug(LogModuleEnum.Notification, `Found ${admins.length} admins`);
         return admins;
     }
 

@@ -19,6 +19,8 @@ import {
     auth,
     common,
     GetUserRedisKey,
+    LoggerService,
+    LogModuleEnum,
     notification,
     RedisHelperService,
     RedisPrefixesEnum,
@@ -41,6 +43,7 @@ export class AuthService implements OnModuleInit {
     private readonly _timeout: number = 2000;
 
     constructor(
+        private readonly _loggerService: LoggerService,
         private readonly _userRepository: UserRepository,
         private readonly _redisHelperService: RedisHelperService,
         private readonly _jwtService: JwtService,
@@ -59,6 +62,11 @@ export class AuthService implements OnModuleInit {
     }
 
     async signup(userSignupDto: SignupDto): Promise<auth.SignupResponse> {
+        this._loggerService.info(
+            LogModuleEnum.Auth,
+            `Signing up user: ${JSON.stringify(userSignupDto)}`,
+        );
+
         const validationResult = await this._signupValidation(userSignupDto);
         if (validationResult) {
             return {
@@ -98,6 +106,10 @@ export class AuthService implements OnModuleInit {
                 error: null,
             };
         }
+        this._loggerService.error(
+            LogModuleEnum.Auth,
+            `Something went wrong while signing up user: ${JSON.stringify(userSignupDto)}`,
+        );
         return {
             data: null,
             success: false,
@@ -111,6 +123,11 @@ export class AuthService implements OnModuleInit {
     async sendVerificationCode({
         email,
     }: SendVerificationCodeDto): Promise<auth.SendVerificationCodeResponse> {
+        this._loggerService.info(
+            LogModuleEnum.Auth,
+            `Sending verification code to email: ${email}`,
+        );
+
         const user: UserEntity = await this._userRepository.findByEmail(email);
         if (!user) {
             return {
@@ -150,7 +167,10 @@ export class AuthService implements OnModuleInit {
                 );
             await firstValueFrom(notificationResponse);
         } catch (error) {
-            console.error('Error sending verification code:', error);
+            this._loggerService.error(
+                LogModuleEnum.Auth,
+                `Something went wrong while sending verification code to email: ${email}. Error: ${error}`,
+            );
             return {
                 data: null,
                 success: false,
@@ -176,6 +196,11 @@ export class AuthService implements OnModuleInit {
     }
 
     async verifyAccount(verifyAccountDto: VerifyAccountDto): Promise<auth.VerifyAccountResponse> {
+        this._loggerService.info(
+            LogModuleEnum.Auth,
+            `Verifying account: ${JSON.stringify(verifyAccountDto)}`,
+        );
+
         const user: UserEntity = await this._userRepository.findByEmail(verifyAccountDto.email);
         if (!user) {
             return {
@@ -201,6 +226,10 @@ export class AuthService implements OnModuleInit {
             verifyAccountDto.email,
         );
         const code: string = await this._redisHelperService.getCache(verificationCodeRedisKey);
+        this._loggerService.debug(
+            LogModuleEnum.Auth,
+            `Verification code: ${code} - User entity: ${JSON.stringify(user)}`,
+        );
         if (!code) {
             return {
                 data: null,
@@ -223,6 +252,10 @@ export class AuthService implements OnModuleInit {
         }
         const isUpdated: boolean = await this._userRepository.verifyUser(verifyAccountDto.email);
         if (!isUpdated) {
+            this._loggerService.error(
+                LogModuleEnum.Auth,
+                `Something went wrong while verifying account: ${JSON.stringify(verifyAccountDto)}`,
+            );
             return {
                 data: null,
                 success: false,
@@ -257,6 +290,11 @@ export class AuthService implements OnModuleInit {
     }
 
     async signin(userSigninDto: SigninDto): Promise<auth.SigninResponse> {
+        this._loggerService.info(
+            LogModuleEnum.Auth,
+            `Signing in user: ${JSON.stringify(userSigninDto)}`,
+        );
+
         const user: UserEntity = await this._userRepository.findByUsername(userSigninDto.username);
         if (!user) {
             return {
@@ -299,6 +337,11 @@ export class AuthService implements OnModuleInit {
 
     async refreshTokens(refreshTokenDto: RefreshTokenDto): Promise<auth.SigninResponse> {
         try {
+            this._loggerService.info(
+                LogModuleEnum.Auth,
+                `Refreshing tokens: ${JSON.stringify(refreshTokenDto)}`,
+            );
+
             const { sub } = await this._jwtService.verifyAsync<Pick<TokenPayload, 'sub'>>(
                 refreshTokenDto.refreshToken,
                 {
@@ -336,6 +379,11 @@ export class AuthService implements OnModuleInit {
     }
 
     async assignRole(assignRoleDto: AssignRoleDto): Promise<auth.AssignRoleResponse> {
+        this._loggerService.info(
+            LogModuleEnum.Auth,
+            `Assigning role: ${JSON.stringify(assignRoleDto)}`,
+        );
+
         const user: UserEntity = await this._userRepository.findById(assignRoleDto.userId);
         if (!user) {
             return {
@@ -365,6 +413,10 @@ export class AuthService implements OnModuleInit {
             assignRoleDto.role,
         );
         if (!isUpdated) {
+            this._loggerService.error(
+                LogModuleEnum.Auth,
+                `Something went wrong while assigning role: ${JSON.stringify(assignRoleDto)}`,
+            );
             return {
                 data: null,
                 success: false,
@@ -399,6 +451,8 @@ export class AuthService implements OnModuleInit {
     }
 
     async getUserList(): Promise<auth.GetUserListResponse> {
+        this._loggerService.info(LogModuleEnum.Auth, 'Getting user list');
+
         const pattern = this._getCacheKeyForAllUsers();
         const keys = await this._redisHelperService.getKeysByPattern(pattern);
 

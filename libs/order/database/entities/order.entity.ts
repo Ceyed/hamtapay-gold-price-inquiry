@@ -18,7 +18,7 @@ export class OrderEntity extends BaseEntity {
     @Min(0)
     amount: number;
 
-    @Column({ type: 'int' })
+    @Column({ type: 'double precision' })
     @IsNumber()
     @Min(0)
     price: number;

@@ -3,6 +3,8 @@ import { CalculatePriceDto, GoldGramsEnum } from '@libs/pricing';
 import {
     GetGoldPricesRedisKey,
     GoldPriceDataType,
+    LoggerService,
+    LogModuleEnum,
     marketData,
     pricing,
     RedisHelperService,
@@ -20,6 +22,7 @@ export class CalculatePriceService implements OnModuleInit {
     constructor(
         private readonly _redisHelperService: RedisHelperService,
         @Inject(MARKET_DATA_SERVICE) private readonly _grpcClient: ClientGrpc,
+        private readonly _loggerService: LoggerService,
     ) {}
 
     onModuleInit() {
@@ -33,11 +36,14 @@ export class CalculatePriceService implements OnModuleInit {
         totalStock,
         grams,
     }: CalculatePriceDto): Promise<pricing.CalculatePriceResponse> {
+        this._loggerService.info(LogModuleEnum.Pricing, `Calculating price for ${grams}`);
+
         const redisKey: string = GetGoldPricesRedisKey(this._redisHelperService);
         let prices: GoldPriceDataType = await this._redisHelperService.getCache(redisKey);
 
         if (prices === undefined) {
             // * Wait for market data with 2 seconds timeout
+            this._loggerService.debug(LogModuleEnum.Pricing, 'Waiting for market data');
             try {
                 const response: Observable<marketData.GoldPriceResponse> = this._marketDataService
                     .getGoldPrice({})
@@ -46,11 +52,19 @@ export class CalculatePriceService implements OnModuleInit {
                         catchError(() => of(undefined)),
                     );
                 const res: marketData.GoldPriceResponse = await firstValueFrom(response);
+                this._loggerService.debug(
+                    LogModuleEnum.Pricing,
+                    `Market data received, ${JSON.stringify(res.data)}`,
+                );
                 prices = res.data as unknown as GoldPriceDataType;
             } catch {
                 prices = undefined;
             }
             if (!prices) {
+                this._loggerService.error(
+                    LogModuleEnum.Pricing,
+                    'Gold price data unavailable after timeout',
+                );
                 return {
                     data: null,
                     success: false,
@@ -79,6 +93,7 @@ export class CalculatePriceService implements OnModuleInit {
             totalStock,
             requestedGoldGram,
         );
+        this._loggerService.debug(LogModuleEnum.Pricing, `Calculated price for ${grams}: ${price}`);
         return {
             data: price,
             success: true,
@@ -116,18 +131,18 @@ export class CalculatePriceService implements OnModuleInit {
     ): number {
         // * stock > 50% -> no price increment
         if (currentStock > totalStock * 0.5) {
-            console.log('stock > 50% -> no price increment');
+            this._loggerService.debug(LogModuleEnum.Pricing, 'stock > 50% -> no price increment');
             return price;
         }
 
         // * 50% > stock > 20% -> 5% increment
         if (currentStock > totalStock * 0.2) {
-            console.log('50% > stock > 20% -> 5% increment');
+            this._loggerService.debug(LogModuleEnum.Pricing, '50% > stock > 20% -> 5% increment');
             return price * 1.05;
         }
 
         // * 20% > stock -> 10% increment
-        console.log('20% > stock -> 10% increment');
+        this._loggerService.debug(LogModuleEnum.Pricing, '20% > stock -> 10% increment');
         return price * 1.1;
     }
 }

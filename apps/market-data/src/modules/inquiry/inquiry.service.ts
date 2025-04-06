@@ -1,15 +1,20 @@
 import { goldApiConfig, GoldApiConfig } from '@libs/market-data';
-import { GetGoldPricesRedisKey, marketData, RedisHelperService } from '@libs/shared';
-import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
+import {
+    GetGoldPricesRedisKey,
+    LoggerService,
+    LogModuleEnum,
+    marketData,
+    RedisHelperService,
+} from '@libs/shared';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class InquiryService {
-    private readonly logger = new Logger(InquiryService.name);
-
     constructor(
         private readonly _redisHelperService: RedisHelperService,
         @Inject(goldApiConfig.KEY) private readonly _goldApiConfig: GoldApiConfig,
+        private readonly _loggerService: LoggerService,
     ) {
         this._fetchGoldPrice();
     }
@@ -17,14 +22,20 @@ export class InquiryService {
     // ? Runs every 5 minutes, Monday–Friday, from 9:00 to 16:55
     @Cron('*/5 9-16 * * 1-5')
     handleBusinessHoursCron() {
-        this.logger.log('[Cron in Business Hours] Fetching gold price...');
+        this._loggerService.info(
+            LogModuleEnum.MarketData,
+            '[Cron in Business Hours] Fetching gold price..',
+        );
         this._fetchGoldPrice();
     }
 
     // ? Runs once every hour on weekends
     @Cron('0 * * * 0,6')
     handleOffHoursCron() {
-        this.logger.log('[Cron in Off Hours] Light fetch of gold price...');
+        this._loggerService.info(
+            LogModuleEnum.MarketData,
+            '[Cron in Off Hours] Fetching gold price..',
+        );
         this._fetchGoldPrice();
     }
 
@@ -42,7 +53,10 @@ export class InquiryService {
             });
             const prices: marketData.GoldPriceDataProtoType = await response.json();
             if (!prices) {
-                this.logger.warn('No gold price data found in GoldAPI');
+                this._loggerService.error(
+                    LogModuleEnum.MarketData,
+                    'No gold price data found in GoldAPI',
+                );
                 return {
                     data: null,
                     success: false,
@@ -63,7 +77,10 @@ export class InquiryService {
                 error: null,
             };
         } catch (error) {
-            this.logger.error('Error fetching gold price:', error);
+            this._loggerService.error(
+                LogModuleEnum.MarketData,
+                `Error fetching gold price: ${error}`,
+            );
             return {
                 data: null,
                 success: false,

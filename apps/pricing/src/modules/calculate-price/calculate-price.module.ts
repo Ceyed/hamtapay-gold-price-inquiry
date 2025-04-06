@@ -1,5 +1,5 @@
 import { MARKET_DATA_SERVICE } from '@libs/market-data';
-import { marketData, RedisHelperModule, ServicesConfig } from '@libs/shared';
+import { marketData, RedisHelperModule, ServicesConfig, LoggerModule } from '@libs/shared';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
@@ -20,6 +20,7 @@ import { CalculatePriceService } from './calculate-price.service';
                 },
             },
         ]),
+        LoggerModule,
     ],
     controllers: [CalculatePriceController],
     providers: [CalculatePriceService],

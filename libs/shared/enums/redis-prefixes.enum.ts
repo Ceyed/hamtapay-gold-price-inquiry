@@ -3,4 +3,5 @@ export enum RedisPrefixesEnum {
     GoldPrice = 'GoldPrice',
     Invoice = 'Invoice',
     VerificationCode = 'VerificationCode',
+    Logs = 'Logs',
 }

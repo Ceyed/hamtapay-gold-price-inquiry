@@ -1,5 +1,5 @@
 import { ORDER_SERVICE } from '@libs/order';
-import { order, ServicesConfig } from '@libs/shared';
+import { LoggerModule, order, ServicesConfig } from '@libs/shared';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
@@ -23,6 +23,7 @@ import { StockHistoryController } from './stock-history.controller';
             },
         ]),
         CommonModule,
+        LoggerModule,
     ],
     controllers: [OrderController, ProductsController, StockHistoryController],
     providers: [OrderService],

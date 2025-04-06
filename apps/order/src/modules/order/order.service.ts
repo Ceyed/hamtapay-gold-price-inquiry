@@ -13,6 +13,8 @@ import { GoldGramsEnum, PRICING_SERVICE } from '@libs/pricing';
 import {
     findUserById,
     GetInvoiceRedisKey,
+    LoggerService,
+    LogModuleEnum,
     notification,
     order,
     pricing,
@@ -39,6 +41,7 @@ export class OrderService {
         private readonly _orderRepository: OrderRepository,
         private readonly _productRepository: ProductRepository,
         private readonly _stockHistoryRepository: StockHistoryRepository,
+        private readonly _loggerService: LoggerService,
     ) {}
 
     onModuleInit() {
@@ -52,6 +55,11 @@ export class OrderService {
     }
 
     async createOrder(createOrderDto: CreateOrderDto): Promise<order.CreateOrderResponse> {
+        this._loggerService.info(
+            LogModuleEnum.Order,
+            `Creating order ${JSON.stringify(createOrderDto)}`,
+        );
+
         const validationResult: order.CreateOrderResponse | undefined =
             await this._createOrderValidation(createOrderDto);
         if (validationResult) {
@@ -79,6 +87,12 @@ export class OrderService {
             price,
         );
         if (!order) {
+            this._loggerService.error(
+                LogModuleEnum.Order,
+                `Something went wrong while registering order transaction: ${JSON.stringify(
+                    createOrderDto,
+                )}`,
+            );
             return {
                 data: null,
                 success: false,
@@ -121,6 +135,8 @@ export class OrderService {
     }
 
     async getOrderList(): Promise<order.GetOrderListResponse> {
+        this._loggerService.info(LogModuleEnum.Order, 'Getting order list');
+
         const pattern = this._getCacheKeyForAllOrders();
         const keys = await this._redisHelperService.getKeysByPattern(pattern);
 
@@ -150,6 +166,8 @@ export class OrderService {
     }
 
     async getProductList(): Promise<order.GetProductListResponse> {
+        this._loggerService.info(LogModuleEnum.Order, 'Getting product list');
+
         const products: ProductEntity[] = await this._productRepository.findAll();
         return {
             data: products.map((product) => this._mapProductToProductType(product)),
@@ -159,6 +177,8 @@ export class OrderService {
     }
 
     async getProductListByAdmin(): Promise<order.GetProductListResponse> {
+        this._loggerService.info(LogModuleEnum.Order, 'Getting product list by admin');
+
         const products: ProductEntity[] = await this._productRepository.findAll(true);
         return {
             data: products.map((product) => this._mapProductToProductTypeByAdmin(product)),
@@ -170,6 +190,11 @@ export class OrderService {
     async stockInProduct(
         stockInProductDto: StockInProductDto,
     ): Promise<order.StockInProductResponse> {
+        this._loggerService.info(
+            LogModuleEnum.Order,
+            `Stocking in product ${JSON.stringify(stockInProductDto)}`,
+        );
+
         const product: ProductEntity = await this._productRepository.findById(
             stockInProductDto.productId,
         );
@@ -194,6 +219,8 @@ export class OrderService {
     }
 
     async getStockHistory(): Promise<order.GetStockHistoryResponse> {
+        this._loggerService.info(LogModuleEnum.Order, 'Getting stock history');
+
         const stockHistories: StockHistoryEntity[] = await this._stockHistoryRepository.findAll();
         return {
             data: stockHistories.map((history) =>
@@ -242,6 +269,8 @@ export class OrderService {
     }
 
     private async _saveAllOrdersToRedis(orders: OrderEntity[]): Promise<void> {
+        this._loggerService.info(LogModuleEnum.Order, `Saving all orders to Redis`);
+
         for (const order of orders) {
             const orderType: order.OrderProtoType = this._mapOrderToOrderType(order);
             const orderRedisKey: string = GetInvoiceRedisKey(this._redisHelperService, order.id);
@@ -340,6 +369,13 @@ export class OrderService {
                     catchError(() => of(undefined)),
                 );
             const res: pricing.CalculatePriceResponse = await firstValueFrom(response);
+            this._loggerService.debug(
+                LogModuleEnum.Order,
+                `Gram gold price ${JSON.stringify({
+                    goldGrams,
+                    price: res?.data,
+                })}`,
+            );
             return res?.data as number;
         } catch {
             return undefined;

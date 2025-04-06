@@ -1,5 +1,5 @@
 import { AUTH_SERVICE } from '@libs/auth';
-import { auth, ServicesConfig } from '@libs/shared';
+import { auth, LoggerModule, ServicesConfig } from '@libs/shared';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
@@ -9,6 +9,7 @@ import { AuthService } from './auth.service';
 
 @Module({
     imports: [
+        LoggerModule,
         ClientsModule.register([
             {
                 name: AUTH_SERVICE,

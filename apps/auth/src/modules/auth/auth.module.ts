@@ -1,6 +1,6 @@
 import { jwtConfig, UserEntity, UserRepository } from '@libs/auth';
 import { NOTIFICATION_SERVICE } from '@libs/notification';
-import { notification, RedisHelperModule, ServicesConfig } from '@libs/shared';
+import { LoggerModule, notification, RedisHelperModule, ServicesConfig } from '@libs/shared';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -27,6 +27,7 @@ import { AuthService } from './auth.service';
                 },
             },
         ]),
+        LoggerModule,
     ],
     controllers: [AuthController],
     providers: [AuthService, UserRepository],

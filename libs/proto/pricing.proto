@@ -15,7 +15,7 @@ message CalculatePriceInterface {
 }
 
 message CalculatePriceResponse {
-    int32 data = 1;
+    double data = 1;
     bool success = 2;
     common.ErrorInterface error = 3;
 }

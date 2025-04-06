@@ -8,7 +8,13 @@ import {
     StockHistoryRepository,
 } from '@libs/order';
 import { PRICING_SERVICE } from '@libs/pricing';
-import { notification, pricing, RedisHelperModule, ServicesConfig } from '@libs/shared';
+import {
+    LoggerModule,
+    notification,
+    pricing,
+    RedisHelperModule,
+    ServicesConfig,
+} from '@libs/shared';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -40,6 +46,7 @@ import { OrderService } from './order.service';
                 },
             },
         ]),
+        LoggerModule,
     ],
     controllers: [OrderController],
     providers: [OrderService, OrderRepository, ProductRepository, StockHistoryRepository],

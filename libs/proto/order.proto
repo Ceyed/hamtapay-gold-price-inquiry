@@ -67,8 +67,8 @@ message OrderProtoType {
     string customerId = 4;
     string goldGrams = 5;
     int32 amount = 6;
-    int32 gramPrice = 7;
-    int32 totalPrice = 8;
+    double gramPrice = 7;
+    double totalPrice = 8;
 };
 
 message StockHistoryProtoType {
