@@ -3,7 +3,7 @@ import { DataSource } from 'typeorm';
 
 dotenv.config();
 
-const dataSource = new DataSource({
+const authDataSource = new DataSource({
     type: 'postgres',
     host: process.env.AUTH_DATABASE_HOST,
     port: Number(process.env.AUTH_DATABASE_PORT),
@@ -15,4 +15,4 @@ const dataSource = new DataSource({
     migrationsTableName: 'migrations',
 });
 
-export default dataSource;
+export default authDataSource;

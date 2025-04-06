@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package order;
+
+import "libs/proto/common.proto";
+
+service OrderService {
+    rpc createInvoice(CreateInvoiceInterface) returns (CreateInvoiceResponse);
+    rpc getInvoiceList(common.Empty) returns (GetInvoiceListResponse);
+}
+
+message CreateInvoiceInterface {
+    string customerId = 1;
+    string goldGrams = 2;
+    int32 amount = 3;
+}
+
+message CreateInvoiceResponse {
+    InvoiceType data = 1;
+    bool success = 2;
+    common.ErrorInterface error = 3;
+}
+
+message GetInvoiceListResponse {
+    repeated InvoiceType data = 1;
+    bool success = 2;
+    common.ErrorInterface error = 3;
+}
+
+message InvoiceType {
+    string id = 1;
+    string createdAt = 2;
+    string updatedAt = 3;
+    string customerId = 4;
+    string goldGrams = 5;
+    int32 amount = 6;
+    int32 gramPrice = 7;
+    int32 totalPrice = 8;
+};

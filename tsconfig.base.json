@@ -28,6 +28,7 @@
             "@libs/market-data": ["libs/market-data/index.ts"],
             "@libs/pricing": ["libs/pricing/index.ts"],
             "@libs/notification": ["libs/notification/index.ts"],
+            "@libs/order": ["libs/order/index.ts"],
             "@libs/shared": ["libs/shared/index.ts"]
         }
     },

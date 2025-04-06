@@ -88,3 +88,13 @@ And join the Nx community:
 
 -   ts-proto
 -   different ports in docker compose
+
+### TODO:
+
+[ ] 2 step registration
+[ ] firstname and lastname of users
+[ ] order registration
+[ ] list of orders
+[ ] role access control
+[ ] test
+[ ] document

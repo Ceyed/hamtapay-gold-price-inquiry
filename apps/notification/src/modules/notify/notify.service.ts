@@ -1,7 +1,8 @@
 import { OrderRegisteredDto, SendEmailConfirmationCodeDto } from '@libs/notification';
 import {
+    findUserById,
     GetInvoiceRedisKey,
-    InvoiceType,
+    order,
     RedisHelperService,
     RedisPrefixesEnum,
     RedisProjectEnum,
@@ -28,7 +29,7 @@ export class NotifyService {
         customerId,
         confirmationCode,
     }: SendEmailConfirmationCodeDto): Promise<void> {
-        const customer: UserType = await this._findUserById(customerId);
+        const customer: UserType = await findUserById(this._redisHelperService, customerId);
         if (!customer) {
             console.log('Customer not found');
             return;
@@ -45,14 +46,13 @@ export class NotifyService {
     async orderRegistered({ orderId, newStock, totalStock }: OrderRegisteredDto): Promise<void> {
         // * Get order info from redis
         const invoiceRedisKey: string = GetInvoiceRedisKey(this._redisHelperService, orderId);
-        const invoice: InvoiceType = await this._redisHelperService.getCache<InvoiceType>(
-            invoiceRedisKey,
-        );
+        const invoice: order.InvoiceType =
+            await this._redisHelperService.getCache<order.InvoiceType>(invoiceRedisKey);
         if (!invoice) {
             console.log('Invoice not found');
             return;
         }
-        const customer: UserType = await this._findUserById(invoice.customerId);
+        const customer: UserType = await findUserById(this._redisHelperService, invoice.customerId);
         if (!customer) {
             console.log('Customer not found');
             return;
@@ -109,32 +109,10 @@ export class NotifyService {
         return admins;
     }
 
-    private async _findUserById(userId: string) {
-        const redis = this._redisHelperService.redisClient;
-        let pattern: string = this._redisHelperService.getPatternKey(
-            RedisProjectEnum.Auth,
-            RedisPrefixesEnum.User,
-        );
-        pattern += `:${userId}`;
-
-        let cursor = '0';
-        do {
-            const [nextCursor, keys] = await redis.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
-            cursor = nextCursor;
-
-            if (keys.length > 0) {
-                const userJson = await redis.get(keys[0]);
-                return userJson ? JSON.parse(userJson) : null;
-            }
-        } while (cursor !== '0');
-
-        return null;
-    }
-
     private async _generateEmailHtml(
         template: EmailTemplateEnum,
         customer: UserType,
-        invoice?: InvoiceType,
+        invoice?: order.InvoiceType,
         confirmationCode?: string,
     ): Promise<string> {
         switch (template) {
