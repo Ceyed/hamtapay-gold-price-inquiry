@@ -11,6 +11,17 @@ import { Empty, ErrorInterface } from "./common";
 
 export const protobufPackage = "order";
 
+export interface StockInProductInterface {
+  productId: string;
+  amount: number;
+}
+
+export interface StockInProductResponse {
+  data: ProductProtoType | undefined;
+  success: boolean;
+  error: ErrorInterface | undefined;
+}
+
 export interface CreateOrderInterface {
   customerId: string;
   productId: string;
@@ -83,6 +94,8 @@ export interface OrderServiceClient {
   getProductList(request: Empty): Observable<GetProductListResponse>;
 
   getProductListByAdmin(request: Empty): Observable<GetProductListByAdminResponse>;
+
+  stockInProduct(request: StockInProductInterface): Observable<StockInProductResponse>;
 }
 
 export interface OrderServiceController {
@@ -99,11 +112,21 @@ export interface OrderServiceController {
   getProductListByAdmin(
     request: Empty,
   ): Promise<GetProductListByAdminResponse> | Observable<GetProductListByAdminResponse> | GetProductListByAdminResponse;
+
+  stockInProduct(
+    request: StockInProductInterface,
+  ): Promise<StockInProductResponse> | Observable<StockInProductResponse> | StockInProductResponse;
 }
 
 export function OrderServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["createOrder", "getOrderList", "getProductList", "getProductListByAdmin"];
+    const grpcMethods: string[] = [
+      "createOrder",
+      "getOrderList",
+      "getProductList",
+      "getProductListByAdmin",
+      "stockInProduct",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("OrderService", method)(constructor.prototype[method], method, descriptor);

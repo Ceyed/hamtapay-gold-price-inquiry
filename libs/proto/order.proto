@@ -9,6 +9,18 @@ service OrderService {
     rpc getOrderList(common.Empty) returns (GetOrderListResponse);
     rpc getProductList(common.Empty) returns (GetProductListResponse);
     rpc getProductListByAdmin(common.Empty) returns (GetProductListByAdminResponse);
+    rpc stockInProduct(StockInProductInterface) returns (StockInProductResponse);
+}
+
+message StockInProductInterface {
+    string productId = 1;
+    int32 amount = 2;
+}
+
+message StockInProductResponse {
+    ProductProtoType data = 1;
+    bool success = 2;
+    common.ErrorInterface error = 3;
 }
 
 message CreateOrderInterface {

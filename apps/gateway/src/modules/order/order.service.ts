@@ -1,4 +1,4 @@
-import { CreateOrderDto, ORDER_SERVICE } from '@libs/order';
+import { CreateOrderDto, ORDER_SERVICE, StockInProductDto } from '@libs/order';
 import { order } from '@libs/shared';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -26,6 +26,10 @@ export class OrderService implements OnModuleInit {
 
     getProductList(): Observable<order.GetProductListResponse> {
         return this._orderService.getProductList({});
+    }
+
+    stockInProduct(stockInProductDto: StockInProductDto): Observable<order.StockInProductResponse> {
+        return this._orderService.stockInProduct(stockInProductDto);
     }
 
     getProductListByAdmin(): Observable<order.GetProductListResponse> {

@@ -7,6 +7,7 @@ import {
     ProductRepository,
     StockHistoryEntity,
     StockHistoryRepository,
+    StockInProductDto,
 } from '@libs/order';
 import { GoldGramsEnum, PRICING_SERVICE } from '@libs/pricing';
 import {
@@ -151,7 +152,7 @@ export class OrderService {
     async getProductList(): Promise<order.GetProductListResponse> {
         const products: ProductEntity[] = await this._productRepository.findAll();
         return {
-            data: products.map(this._mapProductToProductType),
+            data: products.map((product) => this._mapProductToProductType(product)),
             success: true,
             error: null,
         };
@@ -161,6 +162,32 @@ export class OrderService {
         const products: ProductEntity[] = await this._productRepository.findAll(true);
         return {
             data: products.map((product) => this._mapProductToProductTypeByAdmin(product)),
+            success: true,
+            error: null,
+        };
+    }
+
+    async stockInProduct(
+        stockInProductDto: StockInProductDto,
+    ): Promise<order.StockInProductResponse> {
+        const product: ProductEntity = await this._productRepository.findById(
+            stockInProductDto.productId,
+        );
+        if (!product) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: 404,
+                    message: 'Product not found',
+                },
+            };
+        }
+        product.currentStock += stockInProductDto.amount;
+        product.totalStock += stockInProductDto.amount;
+        await this._productRepository.save(product);
+        return {
+            data: this._mapProductToProductType(product),
             success: true,
             error: null,
         };

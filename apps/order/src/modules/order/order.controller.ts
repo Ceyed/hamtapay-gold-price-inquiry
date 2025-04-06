@@ -1,4 +1,4 @@
-import { CreateOrderDto } from '@libs/order';
+import { CreateOrderDto, StockInProductDto } from '@libs/order';
 import { order } from '@libs/shared';
 import { Controller } from '@nestjs/common';
 import { OrderService } from './order.service';
@@ -22,5 +22,11 @@ export class OrderController implements order.OrderServiceController {
 
     async getProductListByAdmin(): Promise<order.GetProductListResponse> {
         return this._orderService.getProductListByAdmin();
+    }
+
+    async stockInProduct(
+        stockInProductDto: StockInProductDto,
+    ): Promise<order.StockInProductResponse> {
+        return this._orderService.stockInProduct(stockInProductDto);
     }
 }

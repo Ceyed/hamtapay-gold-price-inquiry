@@ -1,5 +1,6 @@
+import { StockInProductDto } from '@libs/order';
 import { order, UserRoleEnum } from '@libs/shared';
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Roles } from '../common/decorators';
 import { JwtAuthGuard, RolesGuard } from '../common/guards';
@@ -19,5 +20,14 @@ export class ProductsController {
     @Get('all')
     getProductList(): Observable<order.GetProductListResponse> {
         return this._orderService.getProductList();
+    }
+
+    @Post('stock-in')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(UserRoleEnum.Admin)
+    stockInProduct(
+        @Body() stockInProductDto: StockInProductDto,
+    ): Observable<order.StockInProductResponse> {
+        return this._orderService.stockInProduct(stockInProductDto);
     }
 }

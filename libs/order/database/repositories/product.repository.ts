@@ -16,6 +16,7 @@ export class ProductRepository extends Repository<ProductEntity> {
     async findAll(withRelations = false): Promise<ProductEntity[]> {
         return this.find({
             relations: withRelations ? { orders: true, stockHistories: true } : undefined,
+            order: { goldGrams: 'ASC' },
         });
     }
 }
