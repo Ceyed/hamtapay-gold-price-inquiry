@@ -9,6 +9,7 @@ enum JWT_CONFIG {
     JWT_ACCESS_TOKEN_TTL = 'JWT_ACCESS_TOKEN_TTL',
     JWT_REFRESH_TOKEN_TTL = 'JWT_REFRESH_TOKEN_TTL',
     JWT_VERIFICATION_CODE_TTL = 'JWT_VERIFICATION_CODE_TTL',
+    JWT_BCRYPT_SALT = 'JWT_BCRYPT_SALT',
 }
 
 export class JwtConfig {
@@ -33,6 +34,9 @@ export class JwtConfig {
     @IsNumber()
     verificationCodeTtl: number;
 
+    @IsNumber()
+    bcryptSalt: number;
+
     constructor(obj: Partial<JwtConfig>) {
         Object.assign(this, obj);
     }
@@ -49,5 +53,6 @@ export const jwtConfig = registerConfig(JwtConfig, () => {
             process.env[JWT_CONFIG.JWT_VERIFICATION_CODE_TTL] ?? '300',
             10,
         ),
+        bcryptSalt: parseInt(process.env[JWT_CONFIG.JWT_BCRYPT_SALT] ?? '10', 10),
     });
 });

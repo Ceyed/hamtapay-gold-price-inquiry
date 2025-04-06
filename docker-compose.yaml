@@ -7,33 +7,33 @@ services:
         image: postgres:17.0
         container_name: postgres-auth
         environment:
-            POSTGRES_DB: auth_db
-            POSTGRES_USER: auth_user
-            POSTGRES_PASSWORD: auth_pass
+            POSTGRES_DB: ${AUTH_DATABASE_DB_NAME}
+            POSTGRES_USER: ${AUTH_DATABASE_USERNAME}
+            POSTGRES_PASSWORD: ${AUTH_DATABASE_PASSWORD}
             POSTGRES_HOST_AUTH_METHOD: trust
         volumes:
             - pgdata-auth:/var/lib/postgresql/data
         ports:
-            - '5433:5432'
+            - '${AUTH_DATABASE_PORT}:5432'
         command: postgres -c 'listen_addresses=*'
 
     postgres-order:
         image: postgres:17.0
         container_name: postgres-order
         environment:
-            POSTGRES_DB: order_db
-            POSTGRES_USER: order_user
-            POSTGRES_PASSWORD: order_pass
+            POSTGRES_DB: ${ORDER_DATABASE_DB_NAME}
+            POSTGRES_USER: ${ORDER_DATABASE_USERNAME}
+            POSTGRES_PASSWORD: ${ORDER_DATABASE_PASSWORD}
         volumes:
             - pgdata-order:/var/lib/postgresql/data
         ports:
-            - '5434:5432'
+            - '${ORDER_DATABASE_PORT}:5432'
 
     redis:
         image: redis:7.4.1
         container_name: redis
         ports:
-            - '6380:6379'
+            - '${REDIS_PORT}:6379'
         volumes:
             - redis-data:/data
 

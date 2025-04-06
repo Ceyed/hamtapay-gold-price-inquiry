@@ -443,8 +443,7 @@ export class AuthService implements OnModuleInit {
     }
 
     private async _hashPassword(password: string): Promise<string> {
-        // TODO: Move 10 to env
-        return bcrypt.hash(password, 10);
+        return bcrypt.hash(password, this._jwtConfig.bcryptSalt);
     }
 
     private async _comparePassword(password: string, hashedPassword: string): Promise<boolean> {
