@@ -94,7 +94,7 @@ export class AuthService implements OnModuleInit {
             });
             this.sendVerificationCode({ email: user.email });
             return {
-                data: 'You registered successfully. you can login now',
+                data: 'You registered successfully. Please verify your account',
                 success: true,
                 error: null,
             };
@@ -134,6 +134,7 @@ export class AuthService implements OnModuleInit {
             };
         }
 
+        // TODO: Do not generate new key IF it already generated and exists in redis
         const code: string = generateRandomKey();
         try {
             const notificationResponse = this._notificationService
@@ -248,9 +249,9 @@ export class AuthService implements OnModuleInit {
             createdAt: user.createdAt.toISOString(),
             updatedAt: user.updatedAt.toISOString(),
         });
-        await this._redisHelperService.removeCache(userRedisKey);
+        await this._redisHelperService.removeCache(verificationCodeRedisKey);
         return {
-            data: 'Account verified successfully',
+            data: 'Account verified successfully. You can login now',
             success: true,
             error: null,
         };
