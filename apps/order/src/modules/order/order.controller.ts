@@ -29,4 +29,8 @@ export class OrderController implements order.OrderServiceController {
     ): Promise<order.StockInProductResponse> {
         return this._orderService.stockInProduct(stockInProductDto);
     }
+
+    async getStockHistory(): Promise<order.GetStockHistoryResponse> {
+        return this._orderService.getStockHistory();
+    }
 }

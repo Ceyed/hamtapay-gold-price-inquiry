@@ -89,16 +89,17 @@ And join the Nx community:
 -   ts-proto
 -   different ports in docker compose
 -   Role exists on token
+-   known issues: pagination, filters
 
 ### TODO:
 
 [ ] 2 step registration
-[ ] firstname and lastname of users
+[x] firstname and lastname of users
 [x] order registration
 [x] list of orders
 [x] list of products
 [x] role based access control
-[ ] stockIn products
+[x] stockIn products
 [ ] list of stock histories
 [ ] test
 [ ] document

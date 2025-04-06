@@ -7,6 +7,7 @@ import { CommonModule } from '../common/common.module';
 import { OrderController } from './order.controller';
 import { OrderService } from './order.service';
 import { ProductsController } from './product.controller';
+import { StockHistoryController } from './stock-history.controller';
 
 @Module({
     imports: [
@@ -23,7 +24,7 @@ import { ProductsController } from './product.controller';
         ]),
         CommonModule,
     ],
-    controllers: [OrderController, ProductsController],
+    controllers: [OrderController, ProductsController, StockHistoryController],
     providers: [OrderService],
 })
 export class OrderModule {}

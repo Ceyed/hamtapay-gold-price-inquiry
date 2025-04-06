@@ -7,4 +7,8 @@ export class StockHistoryRepository extends Repository<StockHistoryEntity> {
     constructor(private readonly _dataSource: DataSource) {
         super(StockHistoryEntity, _dataSource.createEntityManager());
     }
+
+    async findAll(): Promise<StockHistoryEntity[]> {
+        return this.find({ relations: { product: true }, order: { createdAt: 'DESC' } });
+    }
 }

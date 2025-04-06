@@ -193,6 +193,17 @@ export class OrderService {
         };
     }
 
+    async getStockHistory(): Promise<order.GetStockHistoryResponse> {
+        const stockHistories: StockHistoryEntity[] = await this._stockHistoryRepository.findAll();
+        return {
+            data: stockHistories.map((history) =>
+                this._mapStockHistoryToStockHistoryType(history, true),
+            ),
+            success: true,
+            error: null,
+        };
+    }
+
     private _mapProductToProductType(product: ProductEntity): order.ProductProtoType {
         return {
             id: product.id,
@@ -247,6 +258,7 @@ export class OrderService {
 
     private _mapStockHistoryToStockHistoryType(
         stockHistory: StockHistoryEntity,
+        addProduct = false,
     ): order.StockHistoryProtoType {
         return {
             id: stockHistory.id,
@@ -255,7 +267,7 @@ export class OrderService {
             type: stockHistory.type,
             amount: stockHistory.amount,
             productId: stockHistory.productId,
-            product: null,
+            product: addProduct ? this._mapProductToProductType(stockHistory.product) : null,
         };
     }
 

@@ -22,6 +22,12 @@ export interface StockInProductResponse {
   error: ErrorInterface | undefined;
 }
 
+export interface GetStockHistoryResponse {
+  data: StockHistoryProtoType[];
+  success: boolean;
+  error: ErrorInterface | undefined;
+}
+
 export interface CreateOrderInterface {
   customerId: string;
   productId: string;
@@ -96,6 +102,8 @@ export interface OrderServiceClient {
   getProductListByAdmin(request: Empty): Observable<GetProductListByAdminResponse>;
 
   stockInProduct(request: StockInProductInterface): Observable<StockInProductResponse>;
+
+  getStockHistory(request: Empty): Observable<GetStockHistoryResponse>;
 }
 
 export interface OrderServiceController {
@@ -116,6 +124,10 @@ export interface OrderServiceController {
   stockInProduct(
     request: StockInProductInterface,
   ): Promise<StockInProductResponse> | Observable<StockInProductResponse> | StockInProductResponse;
+
+  getStockHistory(
+    request: Empty,
+  ): Promise<GetStockHistoryResponse> | Observable<GetStockHistoryResponse> | GetStockHistoryResponse;
 }
 
 export function OrderServiceControllerMethods() {
@@ -126,6 +138,7 @@ export function OrderServiceControllerMethods() {
       "getProductList",
       "getProductListByAdmin",
       "stockInProduct",
+      "getStockHistory",
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);

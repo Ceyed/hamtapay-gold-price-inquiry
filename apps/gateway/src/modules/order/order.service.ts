@@ -35,4 +35,8 @@ export class OrderService implements OnModuleInit {
     getProductListByAdmin(): Observable<order.GetProductListResponse> {
         return this._orderService.getProductListByAdmin({});
     }
+
+    getStockHistory(): Observable<order.GetStockHistoryResponse> {
+        return this._orderService.getStockHistory({});
+    }
 }

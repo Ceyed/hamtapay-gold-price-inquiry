@@ -10,6 +10,7 @@ service OrderService {
     rpc getProductList(common.Empty) returns (GetProductListResponse);
     rpc getProductListByAdmin(common.Empty) returns (GetProductListByAdminResponse);
     rpc stockInProduct(StockInProductInterface) returns (StockInProductResponse);
+    rpc getStockHistory(common.Empty) returns (GetStockHistoryResponse);
 }
 
 message StockInProductInterface {
@@ -19,6 +20,12 @@ message StockInProductInterface {
 
 message StockInProductResponse {
     ProductProtoType data = 1;
+    bool success = 2;
+    common.ErrorInterface error = 3;
+}
+
+message GetStockHistoryResponse {
+    repeated StockHistoryProtoType data = 1;
     bool success = 2;
     common.ErrorInterface error = 3;
 }
