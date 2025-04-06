@@ -38,7 +38,6 @@ export class AuthController implements auth.UsersServiceController {
     }
 
     async assignRole(assignRoleDto: AssignRoleDto): Promise<auth.AssignRoleResponse> {
-        // TODO: Only admin can assign role
         return this._authService.assignRole(assignRoleDto);
     }
 

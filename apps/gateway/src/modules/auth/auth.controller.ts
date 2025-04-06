@@ -35,6 +35,7 @@ export class AuthController {
     ): Observable<auth.SendVerificationCodeResponse> {
         return this._authService.sendVerificationCode(sendVerificationCodeDto);
     }
+    TODO;
 
     @Post('signin')
     signin(@Body() userSigninDto: SigninDto): Observable<auth.SigninResponse> {

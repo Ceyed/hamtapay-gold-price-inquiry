@@ -59,7 +59,6 @@ export class AuthService implements OnModuleInit {
     }
 
     async signup(userSignupDto: SignupDto): Promise<auth.SignupResponse> {
-        // TODO: Two steps validation
         const validationResult = await this._signupValidation(userSignupDto);
         if (validationResult) {
             return {
