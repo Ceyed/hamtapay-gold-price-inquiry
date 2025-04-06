@@ -143,7 +143,7 @@ export class NotifyService {
                 <h1>Confirmation Code</h1>
                 <p>Dear ${customer.firstName} ${customer.lastName},</p>
                 <p>Welcome to HGPI</p>
-                <p>Your confirmation code is ${confirmationCode}.</p>
+                <p>Your confirmation code is <b>${confirmationCode}</b>.</p>
                 <p>Please enter this code to confirm your account.</p>
                 <br/>
                 <p>Thank you for choosing HGPI.</p> 

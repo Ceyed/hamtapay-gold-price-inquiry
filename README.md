@@ -93,13 +93,13 @@ And join the Nx community:
 
 ### TODO:
 
-[ ] 2 step registration
+[x] 2 step registration
 [x] firstname and lastname of users
 [x] order registration
 [x] list of orders
 [x] list of products
 [x] role based access control
 [x] stockIn products
-[ ] list of stock histories
+[x] list of stock histories
 [ ] test
 [ ] document

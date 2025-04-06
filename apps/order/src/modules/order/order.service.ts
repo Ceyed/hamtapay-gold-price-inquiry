@@ -21,7 +21,7 @@ import {
     RedisProjectEnum,
     UserType,
 } from '@libs/shared';
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { catchError, firstValueFrom, Observable, of } from 'rxjs';
 import { timeout } from 'rxjs/operators';
@@ -66,7 +66,7 @@ export class OrderService {
                 data: null,
                 success: false,
                 error: {
-                    statusCode: 404,
+                    statusCode: HttpStatus.NOT_FOUND,
                     message: 'Gold price not found',
                 },
             };
@@ -83,7 +83,7 @@ export class OrderService {
                 data: null,
                 success: false,
                 error: {
-                    statusCode: 500,
+                    statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
                     message: 'Order not registered',
                 },
             };
@@ -178,7 +178,7 @@ export class OrderService {
                 data: null,
                 success: false,
                 error: {
-                    statusCode: 404,
+                    statusCode: HttpStatus.NOT_FOUND,
                     message: 'Product not found',
                 },
             };
@@ -282,7 +282,7 @@ export class OrderService {
                 data: null,
                 success: false,
                 error: {
-                    statusCode: 404,
+                    statusCode: HttpStatus.NOT_FOUND,
                     message: 'Customer not found',
                 },
             };
@@ -295,7 +295,7 @@ export class OrderService {
                 data: null,
                 success: false,
                 error: {
-                    statusCode: 404,
+                    statusCode: HttpStatus.NOT_FOUND,
                     message: 'Product not found',
                 },
             };
@@ -305,7 +305,7 @@ export class OrderService {
                 data: null,
                 success: false,
                 error: {
-                    statusCode: 404,
+                    statusCode: HttpStatus.NOT_FOUND,
                     message: 'Insufficient stock',
                 },
             };

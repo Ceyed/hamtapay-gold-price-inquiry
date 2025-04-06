@@ -1,4 +1,11 @@
-import { AssignRoleDto, RefreshTokenDto, SigninDto, SignupDto } from '@libs/auth';
+import {
+    AssignRoleDto,
+    RefreshTokenDto,
+    SendVerificationCodeDto,
+    SigninDto,
+    SignupDto,
+    VerifyAccountDto,
+} from '@libs/auth';
 import { auth } from '@libs/shared';
 import { Controller } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -10,6 +17,16 @@ export class AuthController implements auth.UsersServiceController {
 
     async signup(userSignupDto: SignupDto): Promise<auth.SignupResponse> {
         return this._authService.signup(userSignupDto);
+    }
+
+    async verifyAccount(verifyAccountDto: VerifyAccountDto): Promise<auth.VerifyAccountResponse> {
+        return this._authService.verifyAccount(verifyAccountDto);
+    }
+
+    async sendVerificationCode(
+        sendVerificationCodeDto: SendVerificationCodeDto,
+    ): Promise<auth.SendVerificationCodeResponse> {
+        return this._authService.sendVerificationCode(sendVerificationCodeDto);
     }
 
     async signin(userSigninDto: SigninDto): Promise<auth.SigninResponse> {

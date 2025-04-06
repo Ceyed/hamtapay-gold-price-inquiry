@@ -1,4 +1,12 @@
-import { AssignRoleDto, AUTH_SERVICE, RefreshTokenDto, SigninDto, SignupDto } from '@libs/auth';
+import {
+    AssignRoleDto,
+    AUTH_SERVICE,
+    RefreshTokenDto,
+    SendVerificationCodeDto,
+    SigninDto,
+    SignupDto,
+    VerifyAccountDto,
+} from '@libs/auth';
 import { auth } from '@libs/shared';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -20,6 +28,15 @@ export class AuthService implements OnModuleInit {
         return this._usersService.signup(userSignupDto);
     }
 
+    verifyAccount(verifyAccountDto: VerifyAccountDto): Observable<auth.VerifyAccountResponse> {
+        return this._usersService.verifyAccount(verifyAccountDto);
+    }
+
+    sendVerificationCode(
+        sendVerificationCodeDto: SendVerificationCodeDto,
+    ): Observable<auth.SendVerificationCodeResponse> {
+        return this._usersService.sendVerificationCode(sendVerificationCodeDto);
+    }
     signin(userSigninDto: SigninDto): Observable<auth.SigninResponse> {
         return this._usersService.signin(userSigninDto);
     }

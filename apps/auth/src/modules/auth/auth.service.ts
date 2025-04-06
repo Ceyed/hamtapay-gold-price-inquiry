@@ -1,19 +1,25 @@
 import {
     AssignRoleDto,
+    generateRandomKey,
     jwtConfig,
     JwtConfig,
     RefreshTokenDto,
+    SendVerificationCodeDto,
     SigninDto,
     SignupDto,
     TokenPayload,
     TokensInterface,
     UserEntity,
     UserRepository,
+    UserStatusEnum,
+    VerifyAccountDto,
 } from '@libs/auth';
+import { NOTIFICATION_SERVICE } from '@libs/notification';
 import {
     auth,
     common,
     GetUserRedisKey,
+    notification,
     RedisHelperService,
     RedisPrefixesEnum,
     RedisProjectEnum,
@@ -24,18 +30,30 @@ import {
 } from '@libs/shared';
 import { HttpStatus, Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { ClientGrpc } from '@nestjs/microservices';
 import * as bcrypt from 'bcrypt';
+import { catchError, firstValueFrom, of } from 'rxjs';
+import { timeout } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService implements OnModuleInit {
+    private _notificationService: notification.NotificationServiceClient;
+    private readonly _timeout: number = 2000;
+
     constructor(
         private readonly _userRepository: UserRepository,
         private readonly _redisHelperService: RedisHelperService,
         private readonly _jwtService: JwtService,
         @Inject(jwtConfig.KEY) private readonly _jwtConfig: JwtConfig,
+        @Inject(NOTIFICATION_SERVICE) private readonly _notificationGrpcClient: ClientGrpc,
     ) {}
 
     async onModuleInit() {
+        this._notificationService =
+            this._notificationGrpcClient.getService<notification.NotificationServiceClient>(
+                notification.NOTIFICATION_SERVICE_NAME,
+            );
+
         // * Add all users to redis
         await this._saveAllUsersToRedis();
     }
@@ -73,8 +91,8 @@ export class AuthService implements OnModuleInit {
                 createdAt: user.createdAt.toISOString(),
                 updatedAt: user.updatedAt.toISOString(),
             });
+            this.sendVerificationCode({ email: user.email });
             return {
-                // data: this._mapUserEntityToUserModel(user),
                 data: 'You registered successfully. you can login now',
                 success: true,
                 error: null,
@@ -90,6 +108,135 @@ export class AuthService implements OnModuleInit {
         };
     }
 
+    async sendVerificationCode({
+        email,
+    }: SendVerificationCodeDto): Promise<auth.SendVerificationCodeResponse> {
+        const user: UserEntity = await this._userRepository.findByEmail(email);
+        if (!user) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.NOT_FOUND,
+                    message: 'User not found',
+                },
+            };
+        }
+        if (user.status === UserStatusEnum.Verified) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.CONFLICT,
+                    message: 'User is already verified',
+                },
+            };
+        }
+
+        const code: string = generateRandomKey();
+        try {
+            const notificationResponse = this._notificationService
+                .sendEmailConfirmationCode({
+                    customerId: user.id,
+                    confirmationCode: code,
+                })
+                .pipe(
+                    timeout(this._timeout),
+                    catchError((error) => {
+                        console.error('Failed to send verification code:', error);
+                        return of(undefined);
+                    }),
+                );
+            await firstValueFrom(notificationResponse);
+        } catch (error) {
+            console.error('Error sending verification code:', error);
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+                    message: 'Something went wrong',
+                },
+            };
+        }
+
+        const redisKey: string = this._getRedisKeyForVerificationCode(email);
+        await this._redisHelperService.setCache(
+            redisKey,
+            code,
+            this._jwtConfig.verificationCodeTtl,
+        );
+
+        return {
+            data: 'Verification code sent successfully',
+            success: true,
+            error: null,
+        };
+    }
+
+    async verifyAccount(verifyAccountDto: VerifyAccountDto): Promise<auth.VerifyAccountResponse> {
+        const user: UserEntity = await this._userRepository.findByEmail(verifyAccountDto.email);
+        if (!user) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.NOT_FOUND,
+                    message: 'User not found',
+                },
+            };
+        }
+        if (user.status === UserStatusEnum.Verified) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.CONFLICT,
+                    message: 'User is already verified',
+                },
+            };
+        }
+        const redisKey: string = this._getRedisKeyForVerificationCode(verifyAccountDto.email);
+        const code: string = await this._redisHelperService.getCache(redisKey);
+        if (!code) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.NOT_FOUND,
+                    message: 'Verification code not found. Request new code',
+                },
+            };
+        }
+        if (code !== verifyAccountDto.code) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.UNAUTHORIZED,
+                    message: 'Invalid confirmation code',
+                },
+            };
+        }
+        const isUpdated: boolean = await this._userRepository.verifyUser(verifyAccountDto.email);
+        if (!isUpdated) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+                    message: 'Something went wrong',
+                },
+            };
+        }
+        await this._redisHelperService.removeCache(redisKey);
+        return {
+            data: 'Account verified successfully',
+            success: true,
+            error: null,
+        };
+    }
+
     async signin(userSigninDto: SigninDto): Promise<auth.SigninResponse> {
         const user: UserEntity = await this._userRepository.findByUsername(userSigninDto.username);
         if (!user) {
@@ -99,6 +246,16 @@ export class AuthService implements OnModuleInit {
                 error: {
                     statusCode: HttpStatus.NOT_FOUND,
                     message: 'User not found',
+                },
+            };
+        }
+        if (user.status === UserStatusEnum.NotVerified) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.UNAUTHORIZED,
+                    message: 'Please verify your account',
                 },
             };
         }
@@ -272,6 +429,15 @@ export class AuthService implements OnModuleInit {
 
     private async _comparePassword(password: string, hashedPassword: string): Promise<boolean> {
         return bcrypt.compare(password, hashedPassword);
+    }
+
+    private _getRedisKeyForVerificationCode(email: string): string {
+        return this._redisHelperService.getStandardKey(
+            RedisProjectEnum.Auth,
+            RedisPrefixesEnum.VerificationCode,
+            RedisSubPrefixesEnum.Single,
+            email,
+        );
     }
 
     private async _signupValidation(

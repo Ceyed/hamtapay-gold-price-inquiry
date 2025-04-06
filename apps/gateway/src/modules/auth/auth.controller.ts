@@ -1,4 +1,11 @@
-import { AssignRoleDto, RefreshTokenDto, SigninDto, SignupDto } from '@libs/auth';
+import {
+    AssignRoleDto,
+    RefreshTokenDto,
+    SendVerificationCodeDto,
+    SigninDto,
+    SignupDto,
+    VerifyAccountDto,
+} from '@libs/auth';
 import { auth, UserRoleEnum } from '@libs/shared';
 import { Body, Controller, Get, Post, Put, UseGuards } from '@nestjs/common';
 import { Observable } from 'rxjs';
@@ -13,6 +20,20 @@ export class AuthController {
     @Post('signup')
     signup(@Body() userSignupDto: SignupDto): Observable<auth.SignupResponse> {
         return this._authService.signup(userSignupDto);
+    }
+
+    @Post('verify-account')
+    verifyAccount(
+        @Body() verifyAccountDto: VerifyAccountDto,
+    ): Observable<auth.VerifyAccountResponse> {
+        return this._authService.verifyAccount(verifyAccountDto);
+    }
+
+    @Post('send-verification-code')
+    sendVerificationCode(
+        @Body() sendVerificationCodeDto: SendVerificationCodeDto,
+    ): Observable<auth.SendVerificationCodeResponse> {
+        return this._authService.sendVerificationCode(sendVerificationCodeDto);
     }
 
     @Post('signin')

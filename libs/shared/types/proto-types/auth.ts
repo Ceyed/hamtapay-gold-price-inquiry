@@ -11,6 +11,27 @@ import { Empty, ErrorInterface } from "./common";
 
 export const protobufPackage = "auth";
 
+export interface VerifyAccountInterface {
+  email: string;
+  code: string;
+}
+
+export interface VerifyAccountResponse {
+  data: string;
+  success: boolean;
+  error: ErrorInterface | undefined;
+}
+
+export interface SendVerificationCodeInterface {
+  email: string;
+}
+
+export interface SendVerificationCodeResponse {
+  data: string;
+  success: boolean;
+  error: ErrorInterface | undefined;
+}
+
 export interface SignupInterface {
   firstName: string;
   lastName: string;
@@ -77,6 +98,10 @@ export const AUTH_PACKAGE_NAME = "auth";
 export interface UsersServiceClient {
   signup(request: SignupInterface): Observable<SignupResponse>;
 
+  verifyAccount(request: VerifyAccountInterface): Observable<VerifyAccountResponse>;
+
+  sendVerificationCode(request: SendVerificationCodeInterface): Observable<SendVerificationCodeResponse>;
+
   signin(request: SigninInterface): Observable<SigninResponse>;
 
   refreshToken(request: RefreshTokenInterface): Observable<SigninResponse>;
@@ -88,6 +113,14 @@ export interface UsersServiceClient {
 
 export interface UsersServiceController {
   signup(request: SignupInterface): Promise<SignupResponse> | Observable<SignupResponse> | SignupResponse;
+
+  verifyAccount(
+    request: VerifyAccountInterface,
+  ): Promise<VerifyAccountResponse> | Observable<VerifyAccountResponse> | VerifyAccountResponse;
+
+  sendVerificationCode(
+    request: SendVerificationCodeInterface,
+  ): Promise<SendVerificationCodeResponse> | Observable<SendVerificationCodeResponse> | SendVerificationCodeResponse;
 
   signin(request: SigninInterface): Promise<SigninResponse> | Observable<SigninResponse> | SigninResponse;
 
@@ -102,7 +135,15 @@ export interface UsersServiceController {
 
 export function UsersServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["signup", "signin", "refreshToken", "assignRole", "getUserList"];
+    const grpcMethods: string[] = [
+      "signup",
+      "verifyAccount",
+      "sendVerificationCode",
+      "signin",
+      "refreshToken",
+      "assignRole",
+      "getUserList",
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("UsersService", method)(constructor.prototype[method], method, descriptor);

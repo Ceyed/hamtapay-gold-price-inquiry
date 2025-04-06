@@ -1,3 +1,4 @@
+import { UserStatusEnum } from '@libs/auth';
 import { UserRoleEnum, uuid } from '@libs/shared';
 import { Injectable } from '@nestjs/common';
 import { SignupDto } from 'libs/auth/dtos';
@@ -15,6 +16,20 @@ export class UserRepository extends Repository<UserEntity> {
             ...userSignupDto,
             role: UserRoleEnum.User,
         });
+    }
+
+    async verifyUser(email: string): Promise<boolean> {
+        const updateResult: UpdateResult = await this.update(
+            { email },
+            {
+                status: UserStatusEnum.Verified,
+            },
+        );
+        return !!updateResult.affected;
+    }
+
+    async findByEmail(email: string): Promise<UserEntity> {
+        return this.findOneBy({ email });
     }
 
     async duplicateData(username: string, email: string): Promise<number> {

@@ -6,12 +6,34 @@ import "libs/proto/common.proto";
 
 service UsersService {
     rpc signup(SignupInterface) returns (SignupResponse);
+    rpc verifyAccount(VerifyAccountInterface) returns (VerifyAccountResponse);
+    rpc sendVerificationCode(SendVerificationCodeInterface) returns (SendVerificationCodeResponse);
     rpc signin(SigninInterface) returns (SigninResponse);
     rpc refreshToken(RefreshTokenInterface) returns (SigninResponse);
     rpc assignRole(AssignRoleInterface) returns (AssignRoleResponse);
     rpc getUserList(common.Empty) returns (GetUserListResponse);
 }
 
+message VerifyAccountInterface {
+    string email = 1;
+    string code = 2;
+}
+
+message VerifyAccountResponse {
+    string data = 1;
+    bool success = 2;
+    common.ErrorInterface error = 3;
+}
+
+message SendVerificationCodeInterface {
+    string email = 1;
+}
+
+message SendVerificationCodeResponse {
+    string data = 1;
+    bool success = 2;
+    common.ErrorInterface error = 3;
+}
 
 message SignupInterface {
     string firstName = 1;
