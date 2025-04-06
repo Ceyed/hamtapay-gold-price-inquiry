@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { TypeormConfig } from 'libs/shared/config/typeorm.config';
 import { registerConfig } from '../../shared/utils/register.config';
 
 enum TYPEORM_CONFIG {
@@ -7,41 +7,6 @@ enum TYPEORM_CONFIG {
     AUTH_DATABASE_DB_NAME = 'AUTH_DATABASE_DB_NAME',
     AUTH_DATABASE_USERNAME = 'AUTH_DATABASE_USERNAME',
     AUTH_DATABASE_PASSWORD = 'AUTH_DATABASE_PASSWORD',
-}
-
-// TODO: Move to shared
-export class TypeormConfig {
-    @IsString()
-    connection = 'postgres' as const;
-
-    @IsNumber()
-    port = 5432;
-
-    @IsString()
-    @IsNotEmpty()
-    host: string;
-
-    @IsString()
-    @IsNotEmpty()
-    database: string;
-
-    @IsString()
-    @IsNotEmpty()
-    username: string;
-
-    @IsString()
-    @IsNotEmpty()
-    password: string;
-
-    @IsBoolean()
-    synchronize = false;
-
-    @IsString()
-    logging = 'all';
-
-    constructor(obj: Partial<TypeormConfig>) {
-        Object.assign(this, obj);
-    }
 }
 
 export const authTypeormConfig = registerConfig(TypeormConfig, () => {

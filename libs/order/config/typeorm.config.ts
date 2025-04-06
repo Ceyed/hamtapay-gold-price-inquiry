@@ -1,4 +1,4 @@
-import { TypeormConfig } from '@libs/auth';
+import { TypeormConfig } from 'libs/shared/config/typeorm.config';
 import { registerConfig } from '../../shared/utils/register.config';
 
 enum TYPEORM_CONFIG {
