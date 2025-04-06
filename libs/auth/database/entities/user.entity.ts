@@ -10,6 +10,16 @@ export class UserEntity extends BaseEntity {
     @Column()
     @IsString()
     @IsNotEmpty()
+    firstName: string;
+
+    @Column()
+    @IsString()
+    @IsNotEmpty()
+    lastName: string;
+
+    @Column()
+    @IsString()
+    @IsNotEmpty()
     username: string;
 
     @Column()

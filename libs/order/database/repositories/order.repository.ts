@@ -1,4 +1,3 @@
-import { GoldGramsEnum } from '@libs/pricing';
 import { Injectable } from '@nestjs/common';
 import { StockHistoryTypeEnum } from 'libs/order/enums';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
@@ -13,7 +12,7 @@ export class OrderRepository extends Repository<OrderEntity> {
 
     async registerOrderTransaction(
         customerId: uuid,
-        goldGrams: GoldGramsEnum,
+        product: ProductEntity,
         amount: number,
         price: number,
     ): Promise<OrderEntity> {
@@ -22,12 +21,6 @@ export class OrderRepository extends Repository<OrderEntity> {
         let order: OrderEntity = null;
 
         try {
-            const product: ProductEntity = await queryRunner.manager.findOne(ProductEntity, {
-                where: {
-                    goldGrams,
-                },
-            });
-
             order = await queryRunner.manager.save(OrderEntity, {
                 customerId,
                 productId: product.id,

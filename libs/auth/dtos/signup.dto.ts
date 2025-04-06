@@ -4,6 +4,14 @@ import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-valid
 export class SignupDto implements auth.SignupInterface {
     @IsString()
     @IsNotEmpty()
+    firstName: string;
+
+    @IsString()
+    @IsNotEmpty()
+    lastName: string;
+
+    @IsString()
+    @IsNotEmpty()
     @IsEmail()
     email: string;
 

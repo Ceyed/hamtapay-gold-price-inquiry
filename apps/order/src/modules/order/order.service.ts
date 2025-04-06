@@ -57,8 +57,9 @@ export class OrderService {
             return validationResult;
         }
 
-        const { customerId, goldGrams, amount } = createOrderDto;
-        const gramPrice: number = await this._getGramGoldPrice(goldGrams);
+        const { customerId, productId, amount } = createOrderDto;
+        const product: ProductEntity = await this._productRepository.findById(productId);
+        const gramPrice: number = await this._getGramGoldPrice(product.goldGrams);
         if (!gramPrice) {
             return {
                 data: null,
@@ -72,7 +73,7 @@ export class OrderService {
         const price: number = gramPrice * amount;
         const order: OrderEntity = await this._orderRepository.registerOrderTransaction(
             customerId,
-            goldGrams,
+            product,
             amount,
             price,
         );
@@ -233,7 +234,7 @@ export class OrderService {
 
     private async _createOrderValidation({
         customerId,
-        goldGrams,
+        productId,
         amount,
     }: CreateOrderDto): Promise<order.CreateOrderResponse | undefined> {
         const customer: UserType = await findUserById(this._redisHelperService, customerId);
@@ -249,7 +250,7 @@ export class OrderService {
         }
 
         // TODO: Read from redis
-        const product: ProductEntity = await this._productRepository.findByGoldGrams(goldGrams);
+        const product: ProductEntity = await this._productRepository.findById(productId);
         if (!product) {
             return {
                 data: null,

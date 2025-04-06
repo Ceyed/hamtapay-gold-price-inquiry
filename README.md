@@ -88,6 +88,7 @@ And join the Nx community:
 
 -   ts-proto
 -   different ports in docker compose
+-   Role exists on token
 
 ### TODO:
 

@@ -13,7 +13,7 @@ service OrderService {
 
 message CreateOrderInterface {
     string customerId = 1;
-    string goldGrams = 2;
+    string productId = 2;
     int32 amount = 3;
 }
 

@@ -1,4 +1,4 @@
-import { GoldGramsEnum } from '@libs/pricing';
+import { uuid } from '@libs/shared';
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { ProductEntity } from '../entities';
@@ -9,8 +9,8 @@ export class ProductRepository extends Repository<ProductEntity> {
         super(ProductEntity, _dataSource.createEntityManager());
     }
 
-    async findByGoldGrams(goldGrams: GoldGramsEnum): Promise<ProductEntity> {
-        return this.findOneBy({ goldGrams });
+    async findById(productId: uuid): Promise<ProductEntity> {
+        return this.findOneBy({ id: productId });
     }
 
     async findAll(withRelations = false): Promise<ProductEntity[]> {

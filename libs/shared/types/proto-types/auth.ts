@@ -7,14 +7,13 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { ErrorInterface } from "./common";
+import { Empty, ErrorInterface } from "./common";
 
 export const protobufPackage = "auth";
 
-export interface Empty {
-}
-
 export interface SignupInterface {
+  firstName: string;
+  lastName: string;
   username: string;
   password: string;
   email: string;

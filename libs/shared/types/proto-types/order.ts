@@ -13,7 +13,7 @@ export const protobufPackage = "order";
 
 export interface CreateOrderInterface {
   customerId: string;
-  goldGrams: string;
+  productId: string;
   amount: number;
 }
 

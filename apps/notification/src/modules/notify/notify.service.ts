@@ -119,23 +119,29 @@ export class NotifyService {
             case EmailTemplateEnum.InvoiceConfirmation:
                 return `
                 <h1>Invoice Confirmation</h1>
-                <p>Dear ${customer.username},</p>
+                <p>Dear ${customer.firstName} ${customer.lastName},</p>
                 <p>We are pleased to confirm that your invoice has been successfully created.</p>
                 <p>Invoice Grams: ${order.goldGrams}</p>
                 <p>Invoice Amount: ${order.amount}</p>
                 <p>Invoice Total Price: ${order.totalPrice}</p>
                 <p>Invoice Date: ${order.createdAt}</p>
+                <p>Thank you for choosing HGPI.</p>
+                <p>Best regards,</p>
+                <p>HGPI Team</p>
                 `;
             case EmailTemplateEnum.NotifyAdmins:
                 return `
                 <h1>Stock Alert</h1>
                 <p>Dear Admin,</p>
                 <p>We have less than 10% of ${order.goldGrams} stock left.</p>
+                <p>For the love of God, do something about it. We may loose money :/</p>
+                <p>Best regards,</p>
+                <p>HGPI Team</p>
                 `;
             case EmailTemplateEnum.ConfirmationCode:
                 return `
                 <h1>Confirmation Code</h1>
-                <p>Dear ${customer.username},</p>
+                <p>Dear ${customer.firstName} ${customer.lastName},</p>
                 <p>Welcome to HGPI</p>
                 <p>Your confirmation code is ${confirmationCode}.</p>
                 <p>Please enter this code to confirm your account.</p>

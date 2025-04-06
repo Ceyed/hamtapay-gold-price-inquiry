@@ -1,16 +1,15 @@
-import { GoldGramsEnum } from '@libs/pricing';
 import { order, uuid } from '@libs/shared';
 import { OmitType } from '@nestjs/mapped-types';
-import { IsEnum, IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 
 export class CreateOrderDto implements order.CreateOrderInterface {
     @IsString()
     @IsNotEmpty()
     customerId: uuid;
 
-    @IsEnum(GoldGramsEnum)
+    @IsString()
     @IsNotEmpty()
-    goldGrams: GoldGramsEnum;
+    productId: uuid;
 
     @IsNumber()
     @Min(1)

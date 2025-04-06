@@ -65,6 +65,8 @@ export class AuthService implements OnModuleInit {
             );
             await this._redisHelperService.setCache<UserType>(redisKey, {
                 id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 username: user.username,
                 email: user.email,
                 role: user.role,
@@ -204,6 +206,8 @@ export class AuthService implements OnModuleInit {
         );
         await this._redisHelperService.setCache<UserType>(redisKey, {
             id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
             username: user.username,
             email: user.email,
             role: assignRoleDto.role,
@@ -325,6 +329,8 @@ export class AuthService implements OnModuleInit {
             );
             await this._redisHelperService.setCache<UserType>(redisKey, {
                 id: user.id,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 username: user.username,
                 email: user.email,
                 role: user.role,
