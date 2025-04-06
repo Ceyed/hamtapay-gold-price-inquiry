@@ -20,9 +20,7 @@ export class CalculatePriceService implements OnModuleInit {
     constructor(
         private readonly _redisHelperService: RedisHelperService,
         @Inject(MARKET_DATA_SERVICE) private readonly _grpcClient: ClientGrpc,
-    ) {
-        this.calculatePrice({ currentStock: 1, totalStock: 9, grams: GoldGramsEnum.Gram24K });
-    }
+    ) {}
 
     onModuleInit() {
         this._marketDataService = this._grpcClient.getService<marketData.MarketDataServiceClient>(

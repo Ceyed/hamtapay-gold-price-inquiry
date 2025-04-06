@@ -1,6 +1,7 @@
+import { mailConfig } from '@libs/notification';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigType } from '@nestjs/config';
 import { MailSenderController } from './mail-sender.controller';
 import { MailSenderService } from './mail-sender.service';
 
@@ -8,22 +9,22 @@ import { MailSenderService } from './mail-sender.service';
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
+            load: [mailConfig],
         }),
         MailerModule.forRootAsync({
-            imports: [ConfigModule],
-            useFactory: (configService: ConfigService) => ({
-                // TODO: mailConfig
+            imports: [ConfigModule.forFeature(mailConfig)],
+            useFactory: (mailConfigService: ConfigType<typeof mailConfig>) => ({
                 transport: {
-                    host: configService.get('MAIL_HOST'),
+                    host: mailConfigService.host,
                     secure: true,
                     port: 465,
                     auth: {
-                        user: configService.get('MAIL_USER'),
-                        pass: configService.get('MAIL_PASS'),
+                        user: mailConfigService.user,
+                        pass: mailConfigService.pass,
                     },
                 },
             }),
-            inject: [ConfigService],
+            inject: [mailConfig.KEY],
         }),
     ],
     controllers: [MailSenderController],
