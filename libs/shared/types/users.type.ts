@@ -1,3 +1,4 @@
+import { UserStatusEnum } from 'libs/auth/enums';
 import { UserRoleEnum } from '../enums/user-role.enum';
 
 export type UserType = {
@@ -7,6 +8,7 @@ export type UserType = {
     username: string;
     email: string;
     role: UserRoleEnum;
+    status: UserStatusEnum;
     createdAt: string;
     updatedAt: string;
 };

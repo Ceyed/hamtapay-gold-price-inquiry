@@ -88,6 +88,7 @@ export class AuthService implements OnModuleInit {
                 username: user.username,
                 email: user.email,
                 role: user.role,
+                status: user.status,
                 createdAt: user.createdAt.toISOString(),
                 updatedAt: user.updatedAt.toISOString(),
             });
@@ -196,8 +197,10 @@ export class AuthService implements OnModuleInit {
                 },
             };
         }
-        const redisKey: string = this._getRedisKeyForVerificationCode(verifyAccountDto.email);
-        const code: string = await this._redisHelperService.getCache(redisKey);
+        const verificationCodeRedisKey: string = this._getRedisKeyForVerificationCode(
+            verifyAccountDto.email,
+        );
+        const code: string = await this._redisHelperService.getCache(verificationCodeRedisKey);
         if (!code) {
             return {
                 data: null,
@@ -229,7 +232,23 @@ export class AuthService implements OnModuleInit {
                 },
             };
         }
-        await this._redisHelperService.removeCache(redisKey);
+        const userRedisKey: string = GetUserRedisKey(
+            this._redisHelperService,
+            user.id,
+            this._mapUserRoleToRedisSubPrefix(user.role),
+        );
+        await this._redisHelperService.setCache<UserType>(userRedisKey, {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            status: UserStatusEnum.Verified,
+            createdAt: user.createdAt.toISOString(),
+            updatedAt: user.updatedAt.toISOString(),
+        });
+        await this._redisHelperService.removeCache(userRedisKey);
         return {
             data: 'Account verified successfully',
             success: true,
@@ -368,6 +387,7 @@ export class AuthService implements OnModuleInit {
             username: user.username,
             email: user.email,
             role: assignRoleDto.role,
+            status: user.status,
             createdAt: user.createdAt.toISOString(),
             updatedAt: user.updatedAt.toISOString(),
         });
@@ -500,6 +520,7 @@ export class AuthService implements OnModuleInit {
                 username: user.username,
                 email: user.email,
                 role: user.role,
+                status: user.status,
                 createdAt: user.createdAt.toISOString(),
                 updatedAt: user.updatedAt.toISOString(),
             });
