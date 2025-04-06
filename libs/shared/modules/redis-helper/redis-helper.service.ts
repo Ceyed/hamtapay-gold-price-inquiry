@@ -84,13 +84,7 @@ export class RedisHelperService {
         saveToRedis = true,
     ): Promise<T> {
         const valueFromRedis: T = await this.getCache<T>(key);
-        if (valueFromRedis) {
-            // TODO: Remove logs
-            console.log('from redis');
-            return valueFromRedis;
-        }
-
-        console.log('from db');
+        if (valueFromRedis) return valueFromRedis;
 
         const valueFromDb: T = await getDataCallback();
         if (!valueFromDb) return;

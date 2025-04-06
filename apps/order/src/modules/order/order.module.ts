@@ -8,7 +8,7 @@ import {
     StockHistoryRepository,
 } from '@libs/order';
 import { PRICING_SERVICE } from '@libs/pricing';
-import { notification, pricing, RedisHelperModule } from '@libs/shared';
+import { notification, pricing, RedisHelperModule, ServicesConfig } from '@libs/shared';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -25,7 +25,7 @@ import { OrderService } from './order.service';
                 name: PRICING_SERVICE,
                 transport: Transport.GRPC,
                 options: {
-                    url: '0.0.0.0:5002',
+                    url: ServicesConfig.pricing.url,
                     package: pricing.PRICING_PACKAGE_NAME,
                     protoPath: join(__dirname, 'proto', 'pricing.proto'),
                 },
@@ -34,7 +34,7 @@ import { OrderService } from './order.service';
                 name: NOTIFICATION_SERVICE,
                 transport: Transport.GRPC,
                 options: {
-                    url: '0.0.0.0:5005',
+                    url: ServicesConfig.notification.url,
                     package: notification.NOTIFICATION_PACKAGE_NAME,
                     protoPath: join(__dirname, 'proto', 'notification.proto'),
                 },

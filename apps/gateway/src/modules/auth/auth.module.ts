@@ -1,5 +1,5 @@
 import { AUTH_SERVICE } from '@libs/auth';
-import { auth } from '@libs/shared';
+import { auth, ServicesConfig } from '@libs/shared';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
@@ -14,8 +14,8 @@ import { AuthService } from './auth.service';
                 name: AUTH_SERVICE,
                 transport: Transport.GRPC,
                 options: {
+                    url: ServicesConfig.auth.url,
                     package: auth.AUTH_PACKAGE_NAME,
-                    url: '0.0.0.0:5004',
                     protoPath: join(__dirname, 'proto', 'auth.proto'),
                 },
             },

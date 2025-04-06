@@ -1,6 +1,6 @@
 import { jwtConfig, UserEntity, UserRepository } from '@libs/auth';
 import { NOTIFICATION_SERVICE } from '@libs/notification';
-import { notification, RedisHelperModule } from '@libs/shared';
+import { notification, RedisHelperModule, ServicesConfig } from '@libs/shared';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -21,7 +21,7 @@ import { AuthService } from './auth.service';
                 name: NOTIFICATION_SERVICE,
                 transport: Transport.GRPC,
                 options: {
-                    url: '0.0.0.0:5005',
+                    url: ServicesConfig.notification.url,
                     package: notification.NOTIFICATION_PACKAGE_NAME,
                     protoPath: join(__dirname, 'proto', 'notification.proto'),
                 },

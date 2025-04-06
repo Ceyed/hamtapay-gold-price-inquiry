@@ -1,4 +1,4 @@
-import { GetValidationPipeConfig } from '@libs/shared';
+import { GetValidationPipeConfig, ServicesConfig } from '@libs/shared';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import 'reflect-metadata';
@@ -11,9 +11,9 @@ async function bootstrap() {
 
     app.useGlobalPipes(GetValidationPipeConfig());
 
-    const port = process.env.PORT || 3000;
+    const port = ServicesConfig.gateway.port;
     await app.listen(port);
-    Logger.log(`🚀 Application is running on: http://localhost:${port}/${globalPrefix}`);
+    Logger.log(`🐼 Gateway service is running on: ${ServicesConfig.gateway.url}`);
 }
 
 bootstrap();

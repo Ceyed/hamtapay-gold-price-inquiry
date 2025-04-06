@@ -1,4 +1,5 @@
-import { GetValidationPipeConfig, auth } from '@libs/shared';
+import { auth, GetValidationPipeConfig, ServicesConfig } from '@libs/shared';
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
@@ -8,12 +9,13 @@ async function bootstrap() {
     const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
         transport: Transport.GRPC,
         options: {
-            url: '0.0.0.0:5004',
+            url: ServicesConfig.auth.url,
             protoPath: join(__dirname, 'proto', 'auth.proto'),
             package: auth.AUTH_PACKAGE_NAME,
         },
     });
     app.useGlobalPipes(GetValidationPipeConfig());
     await app.listen();
+    Logger.log(`🐼 Auth service is running on: ${ServicesConfig.auth.url}`);
 }
 bootstrap();

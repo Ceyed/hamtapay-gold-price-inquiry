@@ -1,4 +1,5 @@
-import { GetValidationPipeConfig, notification } from '@libs/shared';
+import { GetValidationPipeConfig, notification, ServicesConfig } from '@libs/shared';
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
@@ -8,13 +9,13 @@ async function bootstrap() {
     const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
         transport: Transport.GRPC,
         options: {
-            // TODO: Move to .env
-            url: '0.0.0.0:5005',
+            url: ServicesConfig.notification.url,
             protoPath: join(__dirname, 'proto', 'notification.proto'),
             package: notification.NOTIFICATION_PACKAGE_NAME,
         },
     });
     app.useGlobalPipes(GetValidationPipeConfig());
     await app.listen();
+    Logger.log(`🐼 Notification service is running on: ${ServicesConfig.notification.url}`);
 }
 bootstrap();

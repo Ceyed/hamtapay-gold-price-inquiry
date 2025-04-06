@@ -1,4 +1,5 @@
-import { GetValidationPipeConfig, pricing } from '@libs/shared';
+import { GetValidationPipeConfig, pricing, ServicesConfig } from '@libs/shared';
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
@@ -9,14 +10,14 @@ async function bootstrap() {
     const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
         transport: Transport.GRPC,
         options: {
-            // TODO: Move to .env
-            url: '127.0.0.1:5002',
+            url: ServicesConfig.pricing.url,
             protoPath: join(__dirname, 'proto', 'pricing.proto'),
             package: pricing.PRICING_PACKAGE_NAME,
         },
     });
     app.useGlobalPipes(GetValidationPipeConfig());
     await app.listen();
+    Logger.log(`🐼 Pricing service is running on: ${ServicesConfig.pricing.url}`);
 }
 
 bootstrap();

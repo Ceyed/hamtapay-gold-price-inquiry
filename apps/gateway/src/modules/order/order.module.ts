@@ -1,5 +1,5 @@
 import { ORDER_SERVICE } from '@libs/order';
-import { order } from '@libs/shared';
+import { order, ServicesConfig } from '@libs/shared';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
@@ -16,8 +16,8 @@ import { StockHistoryController } from './stock-history.controller';
                 name: ORDER_SERVICE,
                 transport: Transport.GRPC,
                 options: {
+                    url: ServicesConfig.order.url,
                     package: order.ORDER_PACKAGE_NAME,
-                    url: 'localhost:5001',
                     protoPath: join(__dirname, 'proto', 'order.proto'),
                 },
             },
