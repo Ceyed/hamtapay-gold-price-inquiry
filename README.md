@@ -95,6 +95,8 @@ And join the Nx community:
 [ ] firstname and lastname of users
 [ ] order registration
 [ ] list of orders
+[ ] list of products
+[ ] stockIn products
 [ ] role access control
 [ ] test
 [ ] document

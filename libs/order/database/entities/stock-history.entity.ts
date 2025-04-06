@@ -2,7 +2,7 @@ import { BaseEntity, uuid } from '@libs/shared';
 import { IsEnum, IsNumber, IsUUID, Min } from 'class-validator';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { StockHistoryTypeEnum } from './../../enums/stock-history-type.enum';
-import { InventoryEntity } from './inventory.entity';
+import { ProductEntity } from './product.entity';
 
 @Entity('stock_history')
 export class StockHistoryEntity extends BaseEntity {
@@ -19,7 +19,7 @@ export class StockHistoryEntity extends BaseEntity {
     @IsUUID()
     inventoryId: uuid;
 
-    @ManyToOne(() => InventoryEntity, (inventory) => inventory.stockHistories)
-    @JoinColumn({ name: 'inventoryId' })
-    inventory: InventoryEntity;
+    @ManyToOne(() => ProductEntity, (product) => product.stockHistories)
+    @JoinColumn({ name: 'productId' })
+    product: ProductEntity;
 }
