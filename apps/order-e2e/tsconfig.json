@@ -1,13 +1,10 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "files": [],
-  "include": [],
-  "references": [
-    {
-      "path": "./tsconfig.spec.json"
-    }
-  ],
-  "compilerOptions": {
-    "esModuleInterop": true
-  }
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "types": ["jest", "node"],
+        "esModuleInterop": true,
+        "moduleResolution": "node"
+    },
+    "include": ["src/**/*.ts", "jest.config.ts"],
+    "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]
 }

@@ -20,6 +20,7 @@ describe('Auth Service E2E Tests', () => {
     const gatewayUrl = `http://${gatewayHost}:${gatewayPort}/api`;
 
     beforeAll(async () => {
+        // TODO: Add health check for gateway
         try {
             await axios.get(gatewayUrl);
         } catch (error) {
