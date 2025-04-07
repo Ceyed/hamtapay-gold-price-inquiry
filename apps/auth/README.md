@@ -13,6 +13,27 @@ The Auth service provides the following functionality:
 -   Role assignment
 -   User listing
 
+## Authentication Flow
+
+### Two-Step Signup Process
+
+1. Initial Registration
+
+    - User registers with basic information
+    - Account is created as non-verified
+    - Verification code is sent to user's email
+
+2. Email Verification
+    - User must verify their email using the sent code
+    - Account is marked as verified upon successful verification
+    - Only verified users can login and place orders
+
+### Login Process
+
+-   Only verified users can login
+-   Successful login generates JWT tokens
+-   Tokens are used for subsequent authenticated requests
+
 ## Architecture
 
 The service is built using:
@@ -34,6 +55,16 @@ The service exposes the following gRPC endpoints:
 -   `refreshToken` - Refresh access token using refresh token
 -   `assignRole` - Assign role to a user
 -   `getUserList` - Get list of all users
+
+## Configuration
+
+Required environment variables:
+
+-   JWT secret key
+-   Token expiration times
+-   Database configuration
+-   Redis configuration
+-   Service URLs and ports
 
 ## Development
 
@@ -70,3 +101,4 @@ npx nx migration:test:run auth
 -   [Project README](../../README.md).
 -   [Gateway Service](../gateway/README.md)
 -   [Notification Service](../notification/README.md)
+-   [Order Service](../order/README.md)

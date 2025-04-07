@@ -37,7 +37,7 @@ The service includes scheduled tasks for fetching gold prices:
 To run the service locally:
 
 ```sh
-pnpm nx serve market-data
+npx nx serve market-data
 ```
 
 ## Related Documentation
