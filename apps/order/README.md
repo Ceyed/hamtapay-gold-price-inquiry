@@ -83,7 +83,9 @@ The service integrates with:
 
 ## Related Documentation
 
+-   [Project README](../../README.md)
 -   [Gateway Service](../gateway/README.md)
 -   [Auth Service](../auth/README.md)
 -   [Notification Service](../notification/README.md)
 -   [Pricing Service](../pricing/README.md)
+-   [Market Data Service](../market-data/README.md)

@@ -45,6 +45,9 @@ npx nx serve notification
 
 ## Related Documentation
 
+-   [Project README](../../README.md)
 -   [Gateway Service](../gateway/README.md)
 -   [Auth Service](../auth/README.md)
 -   [Order Service](../order/README.md)
+-   [Pricing Service](../pricing/README.md)
+-   [Market Data Service](../market-data/README.md)

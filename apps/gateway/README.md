@@ -59,5 +59,9 @@ npx nx serve gateway
 
 ## Related Documentation
 
+-   [Project README](../../README.md)
 -   [Auth Service](../auth/README.md)
+-   [Notification Service](../notification/README.md)
 -   [Order Service](../order/README.md)
+-   [Pricing Service](../pricing/README.md)
+-   [Market Data Service](../market-data/README.md)

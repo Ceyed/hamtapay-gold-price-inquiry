@@ -98,7 +98,9 @@ npx nx migration:test:run auth
 
 ## Related Documentation
 
--   [Project README](../../README.md).
+-   [Project README](../../README.md)
 -   [Gateway Service](../gateway/README.md)
 -   [Notification Service](../notification/README.md)
 -   [Order Service](../order/README.md)
+-   [Pricing Service](../pricing/README.md)
+-   [Market Data Service](../market-data/README.md)
