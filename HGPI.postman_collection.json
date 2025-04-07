@@ -1,0 +1,666 @@
+{
+    "info": {
+        "_postman_id": "5fe66079-1ac9-4b09-a448-15cab255d145",
+        "name": "HGPI",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "_exporter_id": "11359121"
+    },
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Signup",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"firstName\": \"S\",\n    \"lastName\": \"S\",\n    \"username\": \"ccc\",\n    \"password\": 11111111,\n    \"email\": \"saeed.sarmad.042@gmail.com\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/api/users/signup",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["api", "users", "signup"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Verify Account",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"saeed.sarmad.042@gmail.com\",\n    \"code\": \"ft7kqdtX\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/api/users/verify-account",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["api", "users", "verify-account"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Send Verification Code",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"saeed.sarmad.042@gmail.com\"\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/api/users/send-verification-code",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["api", "users", "send-verification-code"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Signin",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"username\": \"bbb\",\n    \"password\": 11111111\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/api/users/signin",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["api", "users", "signin"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Refresh Token",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZmExZDg4YS01M2RkLTQ5NjAtYjgzYy03YzNlODc1YjMyNzUiLCJpYXQiOjE3NDM5MzY1NzcsImV4cCI6MTc0NDAyMjk3NywiYXVkIjoibG9jYWxob3N0OjQyMDAiLCJpc3MiOiJsb2NhbGhvc3Q6NDIwMCJ9.o_20szgqZFGGdZZUO6XZeWmlTBSGDIF8u32MEzfCWMU\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/api/users/refresh-token",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["api", "users", "refresh-token"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Assign Role",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Cache-Control",
+                                "value": "no-cache",
+                                "name": "cache-control",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Postman-Token",
+                                "value": "<calculated when request is sent>",
+                                "name": "postman-token",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "name": "content-type",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Length",
+                                "value": "<calculated when request is sent>",
+                                "name": "content-length",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Host",
+                                "value": "<calculated when request is sent>",
+                                "name": "host",
+                                "type": "text"
+                            },
+                            {
+                                "key": "User-Agent",
+                                "value": "PostmanRuntime/7.39.1",
+                                "name": "user-agent",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "*/*",
+                                "name": "accept",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept-Encoding",
+                                "value": "gzip, deflate, br",
+                                "name": "accept-encoding",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Connection",
+                                "value": "keep-alive",
+                                "name": "connection",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZmExZDg4YS01M2RkLTQ5NjAtYjgzYy03YzNlODc1YjMyNzUiLCJyb2xlIjoiVXNlciIsImlhdCI6MTc0MzkzNjU5MiwiZXhwIjoxNzQzOTQwMTkyLCJhdWQiOiJsb2NhbGhvc3Q6NDIwMCIsImlzcyI6ImxvY2FsaG9zdDo0MjAwIn0.MDyMRWQBc9OU-6YQVpjfxbkNgZOsS0cdIarIPaSdj3k",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"userId\": \"75f1b231-0963-47b8-8c1f-9a203b9d8d8b\",\n    \"role\": \"User\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/api/users/assign-role",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["api", "users", "assign-role"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get users list",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Cache-Control",
+                                "value": "no-cache",
+                                "name": "cache-control",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Postman-Token",
+                                "value": "<calculated when request is sent>",
+                                "name": "postman-token",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Host",
+                                "value": "<calculated when request is sent>",
+                                "name": "host",
+                                "type": "text"
+                            },
+                            {
+                                "key": "User-Agent",
+                                "value": "PostmanRuntime/7.39.1",
+                                "name": "user-agent",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "*/*",
+                                "name": "accept",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept-Encoding",
+                                "value": "gzip, deflate, br",
+                                "name": "accept-encoding",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Connection",
+                                "value": "keep-alive",
+                                "name": "connection",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjY2MxNmQ3MC03N2QxLTQwZDAtOWJmZi1iZmJlNTRkOWIwMGQiLCJyb2xlIjoiVXNlciIsImlhdCI6MTc0MzkzNzc4NSwiZXhwIjoxNzQzOTQxMzg1LCJhdWQiOiJsb2NhbGhvc3Q6NDIwMCIsImlzcyI6ImxvY2FsaG9zdDo0MjAwIn0.Lc-dZHngWBxVOnt8pcGoAHfwujx5RtYhbk-YrH-OQFU",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:3000/api/users/all/admin",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["api", "users", "all", "admin"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        },
+        {
+            "name": "Order",
+            "item": [
+                {
+                    "name": "Get all products",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "http://localhost:3000/api/products/all",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["api", "products", "all"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get all products by admin",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Cache-Control",
+                                "value": "no-cache",
+                                "name": "cache-control",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Postman-Token",
+                                "value": "<calculated when request is sent>",
+                                "name": "postman-token",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Host",
+                                "value": "<calculated when request is sent>",
+                                "name": "host",
+                                "type": "text"
+                            },
+                            {
+                                "key": "User-Agent",
+                                "value": "PostmanRuntime/7.39.1",
+                                "name": "user-agent",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "*/*",
+                                "name": "accept",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept-Encoding",
+                                "value": "gzip, deflate, br",
+                                "name": "accept-encoding",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Connection",
+                                "value": "keep-alive",
+                                "name": "connection",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxY2I2N2ZmZi05NWJhLTRhNjAtOWE3OC0wMmRkNWJkMzhhMGQiLCJyb2xlIjoiVXNlciIsImlhdCI6MTc0MzkzNTYwOCwiZXhwIjoxNzQzOTM5MjA4LCJhdWQiOiJsb2NhbGhvc3Q6NDIwMCIsImlzcyI6ImxvY2FsaG9zdDo0MjAwIn0.cvFq7O8nFp4onmtcSS55bWkja4p0U1c5KWrlLPImWqc",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:3000/api/products/all/admin",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["api", "products", "all", "admin"],
+                            "query": [
+                                {
+                                    "key": "Authorization",
+                                    "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZjVmZDg2My01MDhiLTQzNjItYjJhOS0yMGE2ZmNhMTUzYTkiLCJyb2xlIjoiVXNlciIsImlhdCI6MTc0NDA0MDk0MCwiZXhwIjoxNzQ0MDQ0NTQwLCJhdWQiOiJsb2NhbGhvc3Q6NDIwMCIsImlzcyI6ImxvY2FsaG9zdDo0MjAwIn0.Pt3sfQYoBSyQ1uKh5lX3cWBc-EbdbOI_Gp2PIExUstw",
+                                    "disabled": true
+                                }
+                            ]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Stock In Product by admin",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Cache-Control",
+                                "value": "no-cache",
+                                "name": "cache-control",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Postman-Token",
+                                "value": "<calculated when request is sent>",
+                                "name": "postman-token",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "name": "content-type",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Length",
+                                "value": "<calculated when request is sent>",
+                                "name": "content-length",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Host",
+                                "value": "<calculated when request is sent>",
+                                "name": "host",
+                                "type": "text"
+                            },
+                            {
+                                "key": "User-Agent",
+                                "value": "PostmanRuntime/7.39.1",
+                                "name": "user-agent",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "*/*",
+                                "name": "accept",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept-Encoding",
+                                "value": "gzip, deflate, br",
+                                "name": "accept-encoding",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Connection",
+                                "value": "keep-alive",
+                                "name": "connection",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjY2MxNmQ3MC03N2QxLTQwZDAtOWJmZi1iZmJlNTRkOWIwMGQiLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3NDM5Mzg4MTksImV4cCI6MTc0Mzk0MjQxOSwiYXVkIjoibG9jYWxob3N0OjQyMDAiLCJpc3MiOiJsb2NhbGhvc3Q6NDIwMCJ9.MANc_CjDtDX2E_AedOr5ZBDwjOjyiYlCR8s1XfSxWks",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"productId\": \"0c9391c5-b306-4d59-8153-8e7ca86b1445\",\n    \"amount\": 2\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/api/products/stock-in",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["api", "products", "stock-in"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "New order",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Cache-Control",
+                                "value": "no-cache",
+                                "name": "cache-control",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Postman-Token",
+                                "value": "<calculated when request is sent>",
+                                "name": "postman-token",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "name": "content-type",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Length",
+                                "value": "<calculated when request is sent>",
+                                "name": "content-length",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Host",
+                                "value": "<calculated when request is sent>",
+                                "name": "host",
+                                "type": "text"
+                            },
+                            {
+                                "key": "User-Agent",
+                                "value": "PostmanRuntime/7.39.1",
+                                "name": "user-agent",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "*/*",
+                                "name": "accept",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept-Encoding",
+                                "value": "gzip, deflate, br",
+                                "name": "accept-encoding",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Connection",
+                                "value": "keep-alive",
+                                "name": "connection",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmYjJiNGQ5ZC0wMjRlLTRiM2QtOTcyMy0zZGVkYzNjZjU0NWUiLCJyb2xlIjoiVXNlciIsImlhdCI6MTc0Mzk1NDkwNiwiZXhwIjoxNzQzOTU4NTA2LCJhdWQiOiJsb2NhbGhvc3Q6NDIwMCIsImlzcyI6ImxvY2FsaG9zdDo0MjAwIn0.Otj0doTEo27c7o-JuXzLu6HlcVE-LFojyDIgy_H4GKs",
+                                "type": "text"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"productId\": \"85460e3a-1ea0-4ad4-9d68-85161d7cc598\",\n    \"amount\": 2\n}\n",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "url": {
+                            "raw": "http://localhost:3000/api/orders",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["api", "orders"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get all orders by admin",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Cache-Control",
+                                "value": "no-cache",
+                                "name": "cache-control",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Postman-Token",
+                                "value": "<calculated when request is sent>",
+                                "name": "postman-token",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Host",
+                                "value": "<calculated when request is sent>",
+                                "name": "host",
+                                "type": "text"
+                            },
+                            {
+                                "key": "User-Agent",
+                                "value": "PostmanRuntime/7.39.1",
+                                "name": "user-agent",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "*/*",
+                                "name": "accept",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept-Encoding",
+                                "value": "gzip, deflate, br",
+                                "name": "accept-encoding",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Connection",
+                                "value": "keep-alive",
+                                "name": "connection",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwYzFlODA5ZS03MDgxLTQ5NjMtOTU1MC0xZTBhYzQzM2UyMzgiLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3NDQwMjYwMTQsImV4cCI6MTc0NDAyOTYxNCwiYXVkIjoibG9jYWxob3N0OjQyMDAiLCJpc3MiOiJsb2NhbGhvc3Q6NDIwMCJ9.X3UcWv84g7RzAoRbcFPa7Sb4rdoAnY9ZQG3_jWw0RWI",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:3000/api/orders/all/admin",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["api", "orders", "all", "admin"]
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Get all stock history by admin",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Cache-Control",
+                                "value": "no-cache",
+                                "name": "cache-control",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Postman-Token",
+                                "value": "<calculated when request is sent>",
+                                "name": "postman-token",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Host",
+                                "value": "<calculated when request is sent>",
+                                "name": "host",
+                                "type": "text"
+                            },
+                            {
+                                "key": "User-Agent",
+                                "value": "PostmanRuntime/7.39.1",
+                                "name": "user-agent",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "*/*",
+                                "name": "accept",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Accept-Encoding",
+                                "value": "gzip, deflate, br",
+                                "name": "accept-encoding",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Connection",
+                                "value": "keep-alive",
+                                "name": "connection",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjY2MxNmQ3MC03N2QxLTQwZDAtOWJmZi1iZmJlNTRkOWIwMGQiLCJyb2xlIjoiQWRtaW4iLCJpYXQiOjE3NDM5Mzg4MTksImV4cCI6MTc0Mzk0MjQxOSwiYXVkIjoibG9jYWxob3N0OjQyMDAiLCJpc3MiOiJsb2NhbGhvc3Q6NDIwMCJ9.MANc_CjDtDX2E_AedOr5ZBDwjOjyiYlCR8s1XfSxWks",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "http://localhost:3000/api/stock/history/admin",
+                            "protocol": "http",
+                            "host": ["localhost"],
+                            "port": "3000",
+                            "path": ["api", "stock", "history", "admin"]
+                        }
+                    },
+                    "response": []
+                }
+            ]
+        }
+    ]
+}

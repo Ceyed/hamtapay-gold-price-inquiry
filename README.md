@@ -1,106 +1,137 @@
 # HamtapayGoldPriceInquiry
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A microservices-based system for gold price inquiry and order management.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+## Project Overview
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/nest?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+This project is built using a microservices architecture with the following components:
 
-## Finish your remote caching setup
+-   [Gateway Service](./apps/gateway/README.md) - API Gateway and main entry point
+-   [Auth Service](./apps/auth/README.md) - Authentication and authorization
+-   [Market Data Service](./apps/market-data/README.md) - Gold price and market data
+-   [Order Service](./apps/order/README.md) - Order management
+-   [Pricing Service](./apps/pricing/README.md) - Price calculations
+-   [Notification Service](./apps/notification/README.md) - User notifications
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/QB4XoR6H3p)
+## Getting Started
 
-## Run tasks
+### Prerequisites
 
-To run the dev server for your app, use:
+-   Node.js (v18 or later)
+-   Docker and Docker Compose
+-   pnpm
 
-```sh
-npx nx serve HamtapayGoldPriceInquiry
-```
+### Installation
 
-To create a production bundle:
+1. Clone the repository
+2. Install dependencies:
+    ```sh
+    pnpm install
+    ```
 
-```sh
-npx nx build HamtapayGoldPriceInquiry
-```
+### Development Environment
 
-To see all available targets to run for a project, run:
+1. Copy environment file:
 
-```sh
-npx nx show project HamtapayGoldPriceInquiry
-```
+    ```sh
+    cp .env.sample .env
+    ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+2. Start the services:
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+    ```sh
+    docker-compose -f docker-compose.yaml --env-file .env up -d
+    ```
 
-## Add new projects
+3. Run database migrations:
 
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
+    ```sh
+    npx nx migration:run auth
+    npx nx migration:run order
+    ```
 
-Use the plugin's generator to create new projects.
+4. Run all services:
 
-To generate a new application, use:
+    ```sh
+    npx nx run-many --target=serve --all
+    ```
 
-```sh
-npx nx g @nx/nest:app demo
-```
+    Or run services individually:
 
-To generate a new library, use:
+    ```sh
+    npx nx serve gateway
+    npx nx serve auth
+    npx nx serve order
+    # ... etc
+    ```
 
-```sh
-npx nx g @nx/node:lib mylib
-```
+### Test Environment
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+1. Copy test environment file:
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+    ```sh
+    cp .env.sample .env.test
+    ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+2. Start the test services:
 
-## Install Nx Console
+    ```sh
+    docker-compose -f docker-compose.test.yaml --env-file .env.test up -d
+    ```
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+3. Run test database migrations:
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+    ```sh
+    npx nx migration:test:run auth
+    npx nx migration:test:run order
+    ```
 
-## Useful links
+4. Run all services in test mode:
 
-Learn more:
+    ```sh
+    npx nx run-many --target=serve --all --configuration=test
+    ```
 
--   [Learn more about this workspace setup](https://nx.dev/nx-api/nest?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
--   [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
--   [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
--   [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+    Or run test services individually:
 
-And join the Nx community:
+    ```sh
+    npx nx serve gateway --configuration=test
+    npx nx serve auth --configuration=test
+    npx nx serve order --configuration=test
+    # ... etc
+    ```
 
--   [Discord](https://go.nx.dev/community)
--   [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
--   [Our Youtube channel](https://www.youtube.com/@nxdevtools)
--   [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+5. Run end-to-end tests:
+    ```sh
+    npx nx e2e auth-e2e
+    npx nx e2e order-e2e
+    ```
 
-### NOTES
+## API Documentation
 
-`protoc --plugin=./node_modules/.bin/protoc-gen-ts_proto --ts_proto_out=./ --ts_proto_opt=nestJs=true ./libs/proto/auth.proto`
+A Postman collection export is available in the root directory (`HGPI.postman_collection.json`). You can import this file into Postman to access all API endpoints with pre-configured requests.
 
-### Talk about in doc
+## Project Structure
 
--   ts-proto
--   different ports in docker compose
--   Role exists on token
--   known issues: pagination, filters
--   Gateway app require typeorm config
+-   `apps/` - Microservices applications
+-   `libs/` - Shared libraries and utilities
+-   `docker-compose.yaml` - Docker configuration for services
+-   `docker-compose.test.yaml` - Docker configuration for testing
+-   `postman_collection.json` - Postman collection for API endpoints
 
-### TODO:
+## Documentation
 
-[x] 2 step registration
-[x] firstname and lastname of users
-[x] order registration
-[x] list of orders
-[x] list of products
-[x] role based access control
-[x] stockIn products
-[x] list of stock histories
-[ ] test
-[ ] document
+Each service has its own README file with detailed information about its functionality, configuration, and API endpoints. The documentation is organized as follows:
+
+-   [Gateway Service](./apps/gateway/README.md)
+-   [Auth Service](./apps/auth/README.md)
+-   [Market Data Service](./apps/market-data/README.md)
+-   [Order Service](./apps/order/README.md)
+-   [Pricing Service](./apps/pricing/README.md)
+-   [Notification Service](./apps/notification/README.md)
+
+## Known Issues
+
+-   There are no Pagination implementation for list routes
+-   No filters on list routes
+-   Gateway app requires TypeORM configuration
