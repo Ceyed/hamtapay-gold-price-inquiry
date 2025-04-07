@@ -1,6 +1,6 @@
-import { registerConfig } from '@libs/shared';
 import { IsNotEmpty, IsString } from 'class-validator';
 import 'dotenv/config';
+import { registerConfig } from 'libs/shared/utils/register.config';
 
 enum GOLD_API_CONFIG {
     GOLD_API_KEY = 'GOLD_API_KEY',

@@ -1,6 +1,7 @@
-import { getEnvFileAddress, registerConfig } from '@libs/shared';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import * as dotenv from 'dotenv';
+import { getEnvFileAddress } from 'libs/shared/utils/get-env-file-address.utils';
+import { registerConfig } from 'libs/shared/utils/register.config';
 import * as path from 'path';
 
 enum JWT_CONFIG {

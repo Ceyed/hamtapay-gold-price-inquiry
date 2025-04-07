@@ -18,6 +18,7 @@ import { NOTIFICATION_SERVICE } from '@libs/notification';
 import {
     auth,
     common,
+    DEFAULT_USERS,
     GetUserRedisKey,
     LoggerService,
     LogModuleEnum,
@@ -383,6 +384,18 @@ export class AuthService implements OnModuleInit {
             LogModuleEnum.Auth,
             `Assigning role: ${JSON.stringify(assignRoleDto)}`,
         );
+
+        // * Default admin and user can not change
+        if ([DEFAULT_USERS.at(0)?.id, DEFAULT_USERS.at(1)?.id].includes(assignRoleDto.userId)) {
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.FORBIDDEN,
+                    message: 'YOU.. SHALL NOT.. PASS!! (Default admin and user can not change)',
+                },
+            };
+        }
 
         const user: UserEntity = await this._userRepository.findById(assignRoleDto.userId);
         if (!user) {

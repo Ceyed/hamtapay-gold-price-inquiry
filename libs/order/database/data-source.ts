@@ -1,4 +1,4 @@
-import { getEnvFileAddress } from '@libs/shared';
+import { getEnvFileAddress } from 'libs/shared/utils/get-env-file-address.utils';
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { DataSource } from 'typeorm';

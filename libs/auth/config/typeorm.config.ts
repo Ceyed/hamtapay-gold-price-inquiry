@@ -1,7 +1,8 @@
-import { getEnvFileAddress, TypeormConfig } from '@libs/shared';
 import * as dotenv from 'dotenv';
+import { getEnvFileAddress } from 'libs/shared/utils/get-env-file-address.utils';
 import * as path from 'path';
 import { registerConfig } from '../../shared/utils/register.config';
+import { TypeormConfig } from './../../shared/config/typeorm.config';
 
 dotenv.config({ path: path.resolve(process.cwd(), getEnvFileAddress()) });
 

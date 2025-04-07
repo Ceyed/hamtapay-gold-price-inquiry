@@ -1,5 +1,5 @@
-import { AppNodeEnv } from '@libs/shared';
 import { TEST_EMAIL_VERIFICATION_CODE } from '../constants/test-email-verification-code.constant';
+import { AppNodeEnv } from './../../shared/enums/app-node-env.enum';
 
 export function generateRandomKey(): string {
     if (process.env.NODE_ENV === AppNodeEnv.Test) {

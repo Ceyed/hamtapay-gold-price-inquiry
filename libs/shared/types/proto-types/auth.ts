@@ -5,155 +5,172 @@
 // source: libs/proto/auth.proto
 
 /* eslint-disable */
-import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { Observable } from "rxjs";
-import { Empty, ErrorInterface } from "./common";
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
+import { Empty, ErrorInterface } from './common';
 
-export const protobufPackage = "auth";
+export const protobufPackage = 'auth';
 
 export interface VerifyAccountInterface {
-  email: string;
-  code: string;
+    email: string;
+    code: string;
 }
 
 export interface VerifyAccountResponse {
-  data: string;
-  success: boolean;
-  error: ErrorInterface | undefined;
+    data: string;
+    success: boolean;
+    error: ErrorInterface | undefined;
 }
 
 export interface SendVerificationCodeInterface {
-  email: string;
+    email: string;
 }
 
 export interface SendVerificationCodeResponse {
-  data: string;
-  success: boolean;
-  error: ErrorInterface | undefined;
+    data: string;
+    success: boolean;
+    error: ErrorInterface | undefined;
 }
 
 export interface SignupInterface {
-  firstName: string;
-  lastName: string;
-  username: string;
-  password: string;
-  email: string;
+    firstName: string;
+    lastName: string;
+    username: string;
+    password: string;
+    email: string;
 }
 
 export interface SigninInterface {
-  username: string;
-  password: string;
+    username: string;
+    password: string;
 }
 
 export interface RefreshTokenInterface {
-  refreshToken: string;
+    refreshToken: string;
 }
 
 export interface AssignRoleInterface {
-  userId: string;
-  role: string;
+    userId: string;
+    role: string;
 }
 
 export interface GetUserListResponse {
-  data: UserModel[];
-  success: boolean;
-  error: ErrorInterface | undefined;
+    data: UserModel[];
+    success: boolean;
+    error: ErrorInterface | undefined;
 }
 
 export interface SignupResponse {
-  data: string;
-  success: boolean;
-  error: ErrorInterface | undefined;
+    data: string;
+    success: boolean;
+    error: ErrorInterface | undefined;
 }
 
 export interface SigninResponse {
-  data: TokensInterface | undefined;
-  success: boolean;
-  error: ErrorInterface | undefined;
+    data: TokensInterface | undefined;
+    success: boolean;
+    error: ErrorInterface | undefined;
 }
 
 export interface TokensInterface {
-  accessToken: string;
-  refreshToken: string;
+    accessToken: string;
+    refreshToken: string;
 }
 
 export interface AssignRoleResponse {
-  data: string;
-  success: boolean;
-  error: ErrorInterface | undefined;
+    data: string;
+    success: boolean;
+    error: ErrorInterface | undefined;
 }
 
 export interface UserModel {
-  id: string;
-  createdAt: string;
-  updatedAt: string;
-  username: string;
-  password: string;
-  email: string;
-  role: string;
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    username: string;
+    password: string;
+    email: string;
+    role: string;
 }
 
-export const AUTH_PACKAGE_NAME = "auth";
+export const AUTH_PACKAGE_NAME = 'auth';
 
 export interface UsersServiceClient {
-  signup(request: SignupInterface): Observable<SignupResponse>;
+    signup(request: SignupInterface): Observable<SignupResponse>;
 
-  verifyAccount(request: VerifyAccountInterface): Observable<VerifyAccountResponse>;
+    verifyAccount(request: VerifyAccountInterface): Observable<VerifyAccountResponse>;
 
-  sendVerificationCode(request: SendVerificationCodeInterface): Observable<SendVerificationCodeResponse>;
+    sendVerificationCode(
+        request: SendVerificationCodeInterface,
+    ): Observable<SendVerificationCodeResponse>;
 
-  signin(request: SigninInterface): Observable<SigninResponse>;
+    signin(request: SigninInterface): Observable<SigninResponse>;
 
-  refreshToken(request: RefreshTokenInterface): Observable<SigninResponse>;
+    refreshToken(request: RefreshTokenInterface): Observable<SigninResponse>;
 
-  assignRole(request: AssignRoleInterface): Observable<AssignRoleResponse>;
+    assignRole(request: AssignRoleInterface): Observable<AssignRoleResponse>;
 
-  getUserList(request: Empty): Observable<GetUserListResponse>;
+    getUserList(request: Empty): Observable<GetUserListResponse>;
 }
 
 export interface UsersServiceController {
-  signup(request: SignupInterface): Promise<SignupResponse> | Observable<SignupResponse> | SignupResponse;
+    signup(
+        request: SignupInterface,
+    ): Promise<SignupResponse> | Observable<SignupResponse> | SignupResponse;
 
-  verifyAccount(
-    request: VerifyAccountInterface,
-  ): Promise<VerifyAccountResponse> | Observable<VerifyAccountResponse> | VerifyAccountResponse;
+    verifyAccount(
+        request: VerifyAccountInterface,
+    ): Promise<VerifyAccountResponse> | Observable<VerifyAccountResponse> | VerifyAccountResponse;
 
-  sendVerificationCode(
-    request: SendVerificationCodeInterface,
-  ): Promise<SendVerificationCodeResponse> | Observable<SendVerificationCodeResponse> | SendVerificationCodeResponse;
+    sendVerificationCode(
+        request: SendVerificationCodeInterface,
+    ):
+        | Promise<SendVerificationCodeResponse>
+        | Observable<SendVerificationCodeResponse>
+        | SendVerificationCodeResponse;
 
-  signin(request: SigninInterface): Promise<SigninResponse> | Observable<SigninResponse> | SigninResponse;
+    signin(
+        request: SigninInterface,
+    ): Promise<SigninResponse> | Observable<SigninResponse> | SigninResponse;
 
-  refreshToken(request: RefreshTokenInterface): Promise<SigninResponse> | Observable<SigninResponse> | SigninResponse;
+    refreshToken(
+        request: RefreshTokenInterface,
+    ): Promise<SigninResponse> | Observable<SigninResponse> | SigninResponse;
 
-  assignRole(
-    request: AssignRoleInterface,
-  ): Promise<AssignRoleResponse> | Observable<AssignRoleResponse> | AssignRoleResponse;
+    assignRole(
+        request: AssignRoleInterface,
+    ): Promise<AssignRoleResponse> | Observable<AssignRoleResponse> | AssignRoleResponse;
 
-  getUserList(request: Empty): Promise<GetUserListResponse> | Observable<GetUserListResponse> | GetUserListResponse;
+    getUserList(
+        request: Empty,
+    ): Promise<GetUserListResponse> | Observable<GetUserListResponse> | GetUserListResponse;
 }
 
 export function UsersServiceControllerMethods() {
-  return function (constructor: Function) {
-    const grpcMethods: string[] = [
-      "signup",
-      "verifyAccount",
-      "sendVerificationCode",
-      "signin",
-      "refreshToken",
-      "assignRole",
-      "getUserList",
-    ];
-    for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("UsersService", method)(constructor.prototype[method], method, descriptor);
-    }
-    const grpcStreamMethods: string[] = [];
-    for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("UsersService", method)(constructor.prototype[method], method, descriptor);
-    }
-  };
+    return function (constructor: Function) {
+        const grpcMethods: string[] = [
+            'signup',
+            'verifyAccount',
+            'sendVerificationCode',
+            'signin',
+            'refreshToken',
+            'assignRole',
+            'getUserList',
+        ];
+        for (const method of grpcMethods) {
+            const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+            GrpcMethod('UsersService', method)(constructor.prototype[method], method, descriptor);
+        }
+        const grpcStreamMethods: string[] = [];
+        for (const method of grpcStreamMethods) {
+            const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+            GrpcStreamMethod('UsersService', method)(
+                constructor.prototype[method],
+                method,
+                descriptor,
+            );
+        }
+    };
 }
 
-export const USERS_SERVICE_NAME = "UsersService";
+export const USERS_SERVICE_NAME = 'UsersService';

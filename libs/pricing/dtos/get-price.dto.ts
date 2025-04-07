@@ -1,5 +1,5 @@
-import { pricing } from '@libs/shared';
 import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { pricing } from 'libs/shared/types/proto-types';
 import { GoldGramsEnum } from '../enums/gold-grams.enum';
 
 export class CalculatePriceDto implements pricing.CalculatePriceInterface {

@@ -1,5 +1,5 @@
-import { GoldGramsEnum } from '@libs/pricing';
 import { MigrationInterface, QueryRunner } from 'typeorm';
+import { GoldGramsEnum } from './../../../pricing/enums/gold-grams.enum';
 
 export class DefaultProducts1743926355759 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {

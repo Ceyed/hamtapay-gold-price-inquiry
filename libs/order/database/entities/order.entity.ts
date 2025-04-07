@@ -1,6 +1,7 @@
-import { BaseEntity, uuid } from '@libs/shared';
 import { IsNumber, IsUUID, Min } from 'class-validator';
+import { uuid } from 'libs/shared/types/uuid.type';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { BaseEntity } from './../../../shared/entities/base.entity';
 import { ProductEntity } from './product.entity';
 
 @Entity('order')

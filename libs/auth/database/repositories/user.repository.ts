@@ -1,9 +1,10 @@
-import { UserStatusEnum } from '@libs/auth';
-import { UserRoleEnum, uuid } from '@libs/shared';
 import { Injectable } from '@nestjs/common';
 import { SignupDto } from 'libs/auth/dtos';
 import { DataSource, Repository, UpdateResult } from 'typeorm';
 import { UserEntity } from '../entities';
+import { UserRoleEnum } from './../../../shared/enums/user-role.enum';
+import { uuid } from './../../../shared/types/uuid.type';
+import { UserStatusEnum } from './../../enums/user-status.enum';
 
 @Injectable()
 export class UserRepository extends Repository<UserEntity> {

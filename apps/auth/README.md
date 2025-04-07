@@ -13,6 +13,23 @@ The Auth service provides the following functionality:
 -   Role assignment
 -   User listing
 
+### Default Users
+
+For convenience, the system comes with two pre-configured users:
+
+1. Admin User
+
+    - Username: `admin`
+    - Password: `123`
+    - Role: Administrator
+    - Access: Full system access
+
+2. Regular User
+    - Username: `user`
+    - Password: `123`
+    - Role: User
+    - Access: Standard user privileges
+
 ## Authentication Flow
 
 ### Two-Step Signup Process

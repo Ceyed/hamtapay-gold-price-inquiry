@@ -1,7 +1,7 @@
-import { GoldGramsEnum } from '@libs/pricing';
-import { BaseEntity } from '@libs/shared';
 import { IsEnum, IsNumber, Min } from 'class-validator';
 import { Column, Entity, OneToMany } from 'typeorm';
+import { GoldGramsEnum } from './../../../pricing/enums/gold-grams.enum';
+import { BaseEntity } from './../../../shared/entities/base.entity';
 import { OrderEntity } from './order.entity';
 import { StockHistoryEntity } from './stock-history.entity';
 

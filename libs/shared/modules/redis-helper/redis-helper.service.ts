@@ -1,10 +1,10 @@
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
-import { uuid } from '@libs/shared';
 import { Injectable } from '@nestjs/common';
 import Redis from 'ioredis';
 import { RedisPrefixesEnum } from 'libs/shared/enums/redis-prefixes.enum';
 import { RedisProjectEnum } from 'libs/shared/enums/redis-project.enum';
 import { RedisSubPrefixesEnum } from 'libs/shared/enums/redis-sub-prefixes.enum';
+import { uuid } from './../../types/uuid.type';
 
 @Injectable()
 export class RedisHelperService {

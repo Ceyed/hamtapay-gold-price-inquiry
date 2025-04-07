@@ -1,12 +1,15 @@
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { BaseEntity } from 'libs/shared/entities/base.entity';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Index, Unique } from 'typeorm';
 import { UserRoleEnum } from '../../../../libs/shared/enums';
 import { UserStatusEnum } from '../../enums/user-status.enum';
 
 @Entity({
     name: 'user',
 })
+@Index('user_email_index', ['email'], { unique: true })
+@Index('user_username_index', ['username'], { unique: true })
+@Unique(['email', 'username'])
 export class UserEntity extends BaseEntity {
     @Column()
     @IsString()

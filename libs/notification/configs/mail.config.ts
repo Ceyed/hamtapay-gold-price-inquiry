@@ -1,6 +1,6 @@
-import { registerConfig } from '@libs/shared';
 import { IsNotEmpty, IsString } from 'class-validator';
 import 'dotenv/config';
+import { registerConfig } from 'libs/shared/utils/register.config';
 
 enum MAIL_CONFIG {
     MAIL_HOST = 'MAIL_HOST',

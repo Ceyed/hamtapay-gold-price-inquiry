@@ -1,5 +1,5 @@
-import { notification } from '@libs/shared';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { notification } from 'libs/shared/types/proto-types';
 
 export class OrderRegisteredDto implements notification.OrderRegisteredInterface {
     @IsString()

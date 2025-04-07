@@ -1,7 +1,7 @@
-import { uuid } from '@libs/shared';
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { ProductEntity } from '../entities';
+import { uuid } from './../../../shared/types/uuid.type';
 
 @Injectable()
 export class ProductRepository extends Repository<ProductEntity> {
