@@ -53,7 +53,7 @@ export class AuthController {
         return this._authService.assignRole(assignRoleDto);
     }
 
-    @Get('all')
+    @Get('all/admin')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles(UserRoleEnum.Admin)
     getUserList(): Observable<auth.GetUserListResponse> {
