@@ -1,7 +1,9 @@
+import { getEnvFileAddress } from '@libs/shared';
 import * as dotenv from 'dotenv';
+import * as path from 'path';
 import { DataSource } from 'typeorm';
 
-dotenv.config();
+dotenv.config({ path: path.resolve(process.cwd(), getEnvFileAddress()) });
 
 const orderDataSource = new DataSource({
     type: 'postgres',

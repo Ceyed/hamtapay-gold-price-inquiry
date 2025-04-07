@@ -8,8 +8,8 @@
         "build": {
             "executor": "nx:run-commands",
             "options": {
-                "command": "webpack-cli --config apps/market-data/webpack.config.js",
-                "cwd": ".",
+                "command": "webpack-cli build",
+                "args": ["node-env=production"],
                 "assets": [
                     {
                         "input": "libs/proto",
@@ -25,7 +25,13 @@
             },
             "configurations": {
                 "development": {
-                    "command": "webpack-cli --config apps/market-data/webpack.config.js --env node-env=development"
+                    "args": ["node-env=development"]
+                },
+                "production": {
+                    "args": ["node-env=production"]
+                },
+                "test": {
+                    "args": ["node-env=test"]
                 }
             }
         },
@@ -43,6 +49,9 @@
                 },
                 "production": {
                     "buildTarget": "market-data:build:production"
+                },
+                "test": {
+                    "buildTarget": "market-data:build:test"
                 }
             }
         }
