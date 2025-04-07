@@ -117,7 +117,8 @@ A Postman collection export is available in the root directory (`HGPI.postman_co
 -   `libs/` - Shared libraries and utilities
 -   `docker-compose.yaml` - Docker configuration for services
 -   `docker-compose.test.yaml` - Docker configuration for testing
--   `postman_collection.json` - Postman collection for API endpoints
+-   `HGPI.postman_collection.json` - Postman collection for API endpoints
+-   `libs/shared/config/services.config.ts` - Service configuration with ports and URLs
 
 ## Documentation
 
