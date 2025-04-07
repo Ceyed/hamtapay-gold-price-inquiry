@@ -9,7 +9,13 @@ describe('Order Service E2E Tests', () => {
     // TODO: default admin user on migration
     const adminUsername = 'test1744025128580';
     const adminPassword = 'Test@123456';
-    let accessToken: string;
+    let adminAccessToken: string;
+
+    const userUsername = 'test1744024739831';
+    const userPassword = 'Test@123456';
+    let userAccessToken: string;
+
+    let products;
 
     const gatewayHost = process.env.GATEWAY_HOST;
     const gatewayPort = process.env.GATEWAY_PORT;
@@ -31,147 +37,306 @@ describe('Order Service E2E Tests', () => {
                 username: adminUsername,
                 password: adminPassword,
             });
-            accessToken = loginResponse.data.data.accessToken;
-            console.log('Successfully authenticated with gateway');
+            adminAccessToken = loginResponse.data.data.accessToken;
+        } catch (error) {
+            console.error('Failed to authenticate with gateway. Please check:', error);
+            throw error;
+        }
+
+        try {
+            const loginResponse = await axios.post(`${gatewayUrl}/users/signin`, {
+                username: userUsername,
+                password: userPassword,
+            });
+            userAccessToken = loginResponse.data.data.accessToken;
         } catch (error) {
             console.error('Failed to authenticate with gateway. Please check:', error);
             throw error;
         }
     });
 
-    describe('Order Management', () => {
-        // describe('Create Order', () => {
-        //     it('should create a new order', async () => {
-        //         const createOrderDto = {
-        //             products: [
-        //                 {
-        //                     productId: '1',
-        //                     quantity: 2,
-        //                 },
-        //             ],
-        //         };
-        //         const response = await axios.post(`${gatewayUrl}/orders`, createOrderDto, {
-        //             headers: {
-        //                 Authorization: `Bearer ${accessToken}`,
-        //             },
-        //         });
-        //         expect(response.status).toBe(HttpStatus.CREATED);
-        //         expect(response.data.success).toBe(true);
-        //         expect(response.data.data).toHaveProperty('orderId');
-        //     });
+    describe('Product Management', () => {
+        describe('Get Product List', () => {
+            it('should get list of products', async () => {
+                const response = await axios.get(`${gatewayUrl}/products/all`, {
+                    headers: {
+                        Authorization: `Bearer ${adminAccessToken}`,
+                    },
+                });
+                const expectedResult = {
+                    data: expect.any(Array),
+                    success: true,
+                };
 
-        //     it('should fail to create order with invalid product', async () => {
-        //         const createOrderDto = {
-        //             products: [
-        //                 {
-        //                     productId: 'invalid-id',
-        //                     quantity: 2,
-        //                 },
-        //             ],
-        //         };
-        //         const response = await axios.post(`${gatewayUrl}/orders`, createOrderDto, {
-        //             headers: {
-        //                 Authorization: `Bearer ${accessToken}`,
-        //             },
-        //         });
-        //         expect(response.status).toBe(HttpStatus.BAD_REQUEST);
-        //         expect(response.data.success).toBe(false);
-        //     });
-        // });
+                expect(response.status).toBe(HttpStatus.OK);
+                expect(response.data).toEqual(expectedResult);
+                expect(Array.isArray(response.data.data)).toBe(true);
 
-        describe('Product Management', () => {
-            describe('Get Product List', () => {
-                it('should get list of products', async () => {
-                    const response = await axios.get(`${gatewayUrl}/products/all`, {
+                products = response.data.data;
+            });
+        });
+        describe('Get Product List By Admin', () => {
+            it('should get list of products with more details', async () => {
+                const response = await axios.get(`${gatewayUrl}/products/all/admin`, {
+                    headers: {
+                        Authorization: `Bearer ${adminAccessToken}`,
+                    },
+                });
+                const expectedResult = {
+                    data: expect.any(Array),
+                    success: true,
+                };
+
+                expect(response.status).toBe(HttpStatus.OK);
+                expect(response.data).toEqual(expectedResult);
+                expect(Array.isArray(response.data.data)).toBe(true);
+            });
+        });
+        describe('Get Admin Product List By User', () => {
+            it('should not get list of products with more details', async () => {
+                try {
+                    await axios.get(`${gatewayUrl}/products/all/admin`, {
                         headers: {
-                            Authorization: `Bearer ${accessToken}`,
+                            Authorization: `Bearer ${userAccessToken}`,
                         },
                     });
+                    fail('Expected request to fail with 403 Forbidden');
+                } catch (error) {
+                    expect(error.response).toBeDefined();
+                    expect(error.response.status).toBe(HttpStatus.FORBIDDEN);
+
                     const expectedResult = {
-                        data: expect.any(Array),
-                        success: true,
+                        message: 'Forbidden resource',
+                        error: 'Forbidden',
+                        statusCode: 403,
                     };
 
-                    expect(response.status).toBe(HttpStatus.OK);
-                    expect(response.data).toEqual(expectedResult);
-                });
-            });
-            //     describe('Get Product List By Admin', () => {
-            //         it('should get list of products with admin details', async () => {
-            //             const response = await axios.get(`${gatewayUrl}/products/admin`, {
-            //                 headers: {
-            //                     Authorization: `Bearer ${accessToken}`,
-            //                 },
-            //             });
-            //             expect(response.status).toBe(HttpStatus.OK);
-            //             expect(response.data.success).toBe(true);
-            //             expect(Array.isArray(response.data.data)).toBe(true);
-            //         });
-            //     });
-            //     describe('Stock Management', () => {
-            //         it('should add stock to product', async () => {
-            //             const stockInProductDto = {
-            //                 productId: '1',
-            //                 quantity: 10,
-            //             };
-            //             const response = await axios.post(
-            //                 `${gatewayUrl}/products/stock-in`,
-            //                 stockInProductDto,
-            //                 {
-            //                     headers: {
-            //                         Authorization: `Bearer ${accessToken}`,
-            //                     },
-            //                 },
-            //             );
-            //             expect(response.status).toBe(HttpStatus.CREATED);
-            //             expect(response.data.success).toBe(true);
-            //         });
-            //         it('should get stock history', async () => {
-            //             const response = await axios.get(`${gatewayUrl}/products/stock-history`, {
-            //                 headers: {
-            //                     Authorization: `Bearer ${accessToken}`,
-            //                 },
-            //             });
-            //             expect(response.status).toBe(HttpStatus.OK);
-            //             expect(response.data.success).toBe(true);
-            //             expect(Array.isArray(response.data.data)).toBe(true);
-            //         });
-            //     });
-        });
-
-        describe('Get Order List', () => {
-            it('should get list of orders', async () => {
-                try {
-                    const response = await axios.get(`${gatewayUrl}/orders/all/admin`, {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                        },
-                    });
-
-                    expect(response.status).toBe(HttpStatus.OK);
-                    expect(response.data).toBeDefined();
-                    expect(response.data.success).toBeDefined();
-                    expect(response.data.success).toBe(true);
-
-                    // TODO
-                    // const r = {
-                    //     success: true,
-                    // };
-                } catch (error) {
-                    if (error.response) {
-                        console.error('Error response:', {
-                            status: error.response.status,
-                            data: error.response.data,
-                            headers: error.response.headers,
-                        });
-                    } else if (error.request) {
-                        console.error('No response received:', error.request);
-                    } else {
-                        console.error('Error setting up request:', error.message);
-                    }
-                    throw error;
+                    expect(error.response.data).toEqual(expectedResult);
                 }
             });
+        });
+    });
+    describe('Stock Management', () => {
+        it('should add stock to product', async () => {
+            try {
+                const stockInProductDto = {
+                    productId: products[0].id,
+                    amount: 20,
+                };
+                const response = await axios.post(
+                    `${gatewayUrl}/products/stock-in`,
+                    stockInProductDto,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${adminAccessToken}`,
+                        },
+                    },
+                );
+
+                expect(response.status).toBe(HttpStatus.CREATED);
+                expect(response.data.success).toBe(true);
+            } catch (error) {
+                console.error('Error adding stock:', error.response?.data || error.message);
+                throw error;
+            }
+        });
+        it('should not add stock to product by user', async () => {
+            try {
+                const stockInProductDto = {
+                    productId: products[0].id,
+                    amount: 20,
+                };
+                await axios.post(`${gatewayUrl}/products/stock-in`, stockInProductDto, {
+                    headers: {
+                        Authorization: `Bearer ${userAccessToken}`,
+                    },
+                });
+                fail('Expected request to fail with 403 Forbidden');
+            } catch (error) {
+                expect(error.response).toBeDefined();
+                expect(error.response.status).toBe(HttpStatus.FORBIDDEN);
+
+                const expectedResult = {
+                    message: 'Forbidden resource',
+                    error: 'Forbidden',
+                    statusCode: 403,
+                };
+
+                expect(error.response.data).toEqual(expectedResult);
+            }
+        });
+        it('should get stock history', async () => {
+            try {
+                const response = await axios.get(`${gatewayUrl}/stock/history/admin`, {
+                    headers: {
+                        Authorization: `Bearer ${adminAccessToken}`,
+                    },
+                });
+
+                expect(response.status).toBe(HttpStatus.OK);
+                expect(response.data.success).toBe(true);
+
+                if (response.data.data !== undefined) {
+                    expect(Array.isArray(response.data.data)).toBe(true);
+                }
+            } catch (error) {
+                console.error(
+                    'Error getting stock history:',
+                    error.response?.data || error.message,
+                );
+                throw error;
+            }
+        });
+        it('should not get stock history by user', async () => {
+            try {
+                await axios.get(`${gatewayUrl}/stock/history/admin`, {
+                    headers: {
+                        Authorization: `Bearer ${userAccessToken}`,
+                    },
+                });
+                fail('Expected request to fail with 403 Forbidden');
+            } catch (error) {
+                expect(error.response).toBeDefined();
+                expect(error.response.status).toBe(HttpStatus.FORBIDDEN);
+
+                const expectedResult = {
+                    message: 'Forbidden resource',
+                    error: 'Forbidden',
+                    statusCode: 403,
+                };
+
+                expect(error.response.data).toEqual(expectedResult);
+            }
+        });
+    });
+
+    describe('Get Order List', () => {
+        it('should get list of orders', async () => {
+            try {
+                const response = await axios.get(`${gatewayUrl}/orders/all/admin`, {
+                    headers: {
+                        Authorization: `Bearer ${adminAccessToken}`,
+                    },
+                });
+
+                expect(response.status).toBe(HttpStatus.OK);
+                expect(response.data).toBeDefined();
+                expect(response.data.success).toBeDefined();
+                expect(response.data.success).toBe(true);
+
+                // * If there are orders, verify the structure
+                if (response.data.data && Array.isArray(response.data.data)) {
+                    response.data.data.forEach((order) => {
+                        expect(order).toHaveProperty('id');
+                        expect(order).toHaveProperty('createdAt');
+                        expect(order).toHaveProperty('updatedAt');
+                        expect(order).toHaveProperty('customerId');
+                        expect(order).toHaveProperty('goldGrams');
+                        expect(order).toHaveProperty('amount');
+                        expect(order).toHaveProperty('gramPrice');
+                        expect(order).toHaveProperty('totalPrice');
+                    });
+                }
+            } catch (error) {
+                if (error.response) {
+                    console.error('Error response:', {
+                        status: error.response.status,
+                        data: error.response.data,
+                        headers: error.response.headers,
+                    });
+                } else if (error.request) {
+                    console.error('No response received:', error.request);
+                } else {
+                    console.error('Error setting up request:', error.message);
+                }
+                throw error;
+            }
+        });
+        it('should not get list of orders by user', async () => {
+            const response = await axios
+                .get(`${gatewayUrl}/orders/all/admin`, {
+                    headers: {
+                        Authorization: `Bearer ${userAccessToken}`,
+                    },
+                })
+                .catch((error) => error.response);
+
+            const expectedResult = {
+                message: 'Forbidden resource',
+                error: 'Forbidden',
+                statusCode: 403,
+            };
+
+            expect(response.status).toBe(HttpStatus.FORBIDDEN);
+            expect(response.data).toEqual(expectedResult);
+        });
+    });
+
+    describe('Create Order', () => {
+        it('should not create a new order on invalid product id', async () => {
+            const createOrderDto = {
+                productId: '00000000-0000-0000-0000-000000000000',
+                amount: 1,
+            };
+            const response = await axios.post(`${gatewayUrl}/orders`, createOrderDto, {
+                headers: {
+                    Authorization: `Bearer ${adminAccessToken}`,
+                },
+            });
+
+            const expectedResult = {
+                success: false,
+                error: {
+                    statusCode: HttpStatus.NOT_FOUND,
+                    message: 'Product not found',
+                },
+            };
+
+            expect(response.status).toBe(HttpStatus.CREATED);
+            expect(response.data).toEqual(expectedResult);
+        });
+
+        it('should not create a new order on insufficient stock', async () => {
+            const createOrderDto = {
+                productId: products.at(0).id,
+                amount: 1000000,
+            };
+            const response = await axios.post(`${gatewayUrl}/orders`, createOrderDto, {
+                headers: {
+                    Authorization: `Bearer ${adminAccessToken}`,
+                },
+            });
+
+            const expectedResult = {
+                success: false,
+                error: {
+                    statusCode: HttpStatus.NOT_FOUND,
+                    message: 'Insufficient stock',
+                },
+            };
+
+            expect(response.status).toBe(HttpStatus.CREATED);
+            expect(response.data).toEqual(expectedResult);
+        });
+
+        it('should create a new order', async () => {
+            const createOrderDto = {
+                productId: products.at(0).id,
+                amount: 1,
+            };
+            const response = await axios.post(`${gatewayUrl}/orders`, createOrderDto, {
+                headers: {
+                    Authorization: `Bearer ${adminAccessToken}`,
+                },
+            });
+
+            const expectedResult = {
+                data: expect.any(Object),
+                success: true,
+            };
+
+            expect(response.status).toBe(HttpStatus.CREATED);
+            expect(response.data).toEqual(expectedResult);
         });
     });
 });
