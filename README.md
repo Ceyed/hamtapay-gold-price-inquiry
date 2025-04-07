@@ -53,55 +53,47 @@ This project is built using a microservices architecture with the following comp
 4. Run all services:
 
     ```sh
-    npx nx run-many --target=serve --all
-    ```
-
-    Or run services individually:
-
-    ```sh
     npx nx serve gateway
     npx nx serve auth
+    npx nx serve notification
     npx nx serve order
-    # ... etc
+    npx nx serve market-data
+    npx nx serve pricing
     ```
 
 ### Test Environment
 
-1. Copy test environment file:
+1.  Copy test environment file:
 
     ```sh
     cp .env.sample .env.test
     ```
 
-2. Start the test services:
+2.  Start the test services:
 
     ```sh
     docker-compose -f docker-compose.test.yaml --env-file .env.test up -d
     ```
 
-3. Run test database migrations:
+3.  Run test database migrations:
 
     ```sh
     npx nx migration:test:run auth
     npx nx migration:test:run order
     ```
 
-4. Run all services in test mode:
-
-    ```sh
-    npx nx run-many --target=serve --all --configuration=test
-    ```
-
-    Or run test services individually:
+4.  Run all services in test mode:
 
     ```sh
     npx nx serve gateway --configuration=test
     npx nx serve auth --configuration=test
+    npx nx serve notification --configuration=test
     npx nx serve order --configuration=test
-    # ... etc
+    npx nx serve market-data --configuration=test
+    npx nx serve pricing --configuration=test
     ```
 
-5. Run end-to-end tests:
+5.  Run end-to-end tests:
     ```sh
     npx nx e2e auth-e2e
     npx nx e2e order-e2e
