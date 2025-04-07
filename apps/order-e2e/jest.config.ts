@@ -8,4 +8,7 @@ export default {
     },
     moduleFileExtensions: ['ts', 'js', 'html'],
     coverageDirectory: '../../coverage/apps/order-e2e',
+    moduleNameMapper: {
+        '^@libs/(.*)$': '<rootDir>/../../libs/$1',
+    },
 };

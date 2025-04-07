@@ -1,3 +1,4 @@
+import { DEFAULT_USERS } from '@libs/shared';
 import { HttpStatus } from '@nestjs/common';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
@@ -7,12 +8,12 @@ dotenv.config({ path: path.resolve(__dirname, '../../../../.env.test') });
 
 describe('Order Service E2E Tests', () => {
     // TODO: default admin user on migration
-    const adminUsername = 'test1744025128580';
-    const adminPassword = 'Test@123456';
+    const adminUsername = DEFAULT_USERS.at(0).username;
+    const adminPassword = DEFAULT_USERS.at(0).rawPassword;
     let adminAccessToken: string;
 
-    const userUsername = 'test1744024739831';
-    const userPassword = 'Test@123456';
+    const userUsername = DEFAULT_USERS.at(1).username;
+    const userPassword = DEFAULT_USERS.at(1).rawPassword;
     let userAccessToken: string;
 
     let products;

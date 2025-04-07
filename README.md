@@ -152,6 +152,8 @@ This project was developed under a tight deadline and involved a large scope, co
 
 At the time, I had limited experience with microservices and had never worked with tools like Nx, gRPC, or end-to-end testing. As a result, a significant portion of the time was spent learning these technologies. The first day and a half were dedicated to researching project structure, exploring best practices, and seeking advice from friends.
 
+I had to skip some of the tests due to a time crunch. I covered the basics, but there are a few more I wanted to add
+
 Despite the challenges, the project provided a valuable learning experience and helped me grow significantly as a developer.
 
 ## Known Issues
