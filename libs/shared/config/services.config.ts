@@ -1,3 +1,9 @@
+import * as dotenv from 'dotenv';
+import { getEnvFileAddress } from 'libs/shared/utils/get-env-file-address.utils';
+import * as path from 'path';
+
+dotenv.config({ path: path.resolve(process.cwd(), getEnvFileAddress()) });
+
 export const ServicesConfig = {
     gateway: {
         port: process.env.GATEWAY_PORT || 3000,

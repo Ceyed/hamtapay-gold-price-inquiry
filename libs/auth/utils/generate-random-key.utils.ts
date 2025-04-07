@@ -1,4 +1,11 @@
+import { AppNodeEnv } from '@libs/shared';
+import { TEST_EMAIL_VERIFICATION_CODE } from '../constants/test-email-verification-code.constant';
+
 export function generateRandomKey(): string {
+    if (process.env.NODE_ENV === AppNodeEnv.Test) {
+        return TEST_EMAIL_VERIFICATION_CODE;
+    }
+
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let result = '';
 

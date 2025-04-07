@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+    postgres-auth-test:
+        image: postgres:17.0
+        container_name: postgres-auth-test
+        environment:
+            POSTGRES_DB: ${AUTH_DATABASE_DB_NAME}
+            POSTGRES_USER: ${AUTH_DATABASE_USERNAME}
+            POSTGRES_PASSWORD: ${AUTH_DATABASE_PASSWORD}
+            POSTGRES_HOST_AUTH_METHOD: trust
+        volumes:
+            - pgdata-auth-test:/var/lib/postgresql/data
+        ports:
+            - '${AUTH_DATABASE_PORT}:5432'
+        command: postgres -c 'listen_addresses=*'
+        networks:
+            - test-network
+        healthcheck:
+            test:
+                ['CMD-SHELL', 'pg_isready -U ${AUTH_DATABASE_USERNAME} -d ${AUTH_DATABASE_DB_NAME}']
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+    postgres-order-test:
+        image: postgres:17.0
+        container_name: postgres-order-test
+        environment:
+            POSTGRES_DB: ${ORDER_DATABASE_DB_NAME}
+            POSTGRES_USER: ${ORDER_DATABASE_USERNAME}
+            POSTGRES_PASSWORD: ${ORDER_DATABASE_PASSWORD}
+            POSTGRES_HOST_AUTH_METHOD: trust
+        volumes:
+            - pgdata-order-test:/var/lib/postgresql/data
+        ports:
+            - '${ORDER_DATABASE_PORT}:5432'
+        command: postgres -c 'listen_addresses=*'
+        networks:
+            - test-network
+        healthcheck:
+            test:
+                [
+                    'CMD-SHELL',
+                    'pg_isready -U ${ORDER_DATABASE_USERNAME} -d ${ORDER_DATABASE_DB_NAME}',
+                ]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+
+    redis-test:
+        image: redis:7.4.1
+        container_name: redis-test
+        ports:
+            - '${REDIS_PORT}:6379'
+        volumes:
+            - redis-test-data:/data
+        networks:
+            - test-network
+        healthcheck:
+            test: ['CMD', 'redis-cli', 'ping']
+            interval: 5s
+            timeout: 3s
+            retries: 5
+
+networks:
+    test-network:
+        driver: bridge
+
+volumes:
+    pgdata-auth-test:
+    pgdata-order-test:
+    redis-test-data:

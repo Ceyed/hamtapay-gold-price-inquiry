@@ -1,6 +1,7 @@
-import { registerConfig } from '@libs/shared';
+import { getEnvFileAddress, registerConfig } from '@libs/shared';
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import 'dotenv/config';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
 
 enum JWT_CONFIG {
     JWT_SECRET = 'JWT_SECRET',
@@ -41,6 +42,8 @@ export class JwtConfig {
         Object.assign(this, obj);
     }
 }
+
+dotenv.config({ path: path.resolve(process.cwd(), getEnvFileAddress()) });
 
 export const jwtConfig = registerConfig(JwtConfig, () => {
     return new JwtConfig({

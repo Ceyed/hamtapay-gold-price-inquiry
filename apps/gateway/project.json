@@ -26,6 +26,12 @@
             "configurations": {
                 "development": {
                     "args": ["node-env=development"]
+                },
+                "production": {
+                    "args": ["node-env=production"]
+                },
+                "test": {
+                    "args": ["node-env=test"]
                 }
             }
         },
@@ -43,6 +49,9 @@
                 },
                 "production": {
                     "buildTarget": "gateway:build:production"
+                },
+                "test": {
+                    "buildTarget": "gateway:build:test"
                 }
             }
         }

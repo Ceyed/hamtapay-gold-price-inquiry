@@ -1,4 +1,4 @@
-import { GetValidationPipeConfig, ServicesConfig } from '@libs/shared';
+import { AppNodeEnv, GetValidationPipeConfig, ServicesConfig } from '@libs/shared';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import 'reflect-metadata';
@@ -13,7 +13,8 @@ async function bootstrap() {
 
     const port = ServicesConfig.gateway.port;
     await app.listen(port);
-    Logger.log(`🐼 Gateway service is running on: ${ServicesConfig.gateway.url}`);
+    const testEnvMessage: string = process.env.NODE_ENV === AppNodeEnv.Test ? ' [TEST]' : '';
+    Logger.log(`🐼${testEnvMessage} Gateway service is running on: ${ServicesConfig.gateway.url}`);
 }
 
 bootstrap();

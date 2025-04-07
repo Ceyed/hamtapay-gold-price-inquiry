@@ -90,6 +90,7 @@ And join the Nx community:
 -   different ports in docker compose
 -   Role exists on token
 -   known issues: pagination, filters
+-   Gateway app require typeorm config
 
 ### TODO:
 

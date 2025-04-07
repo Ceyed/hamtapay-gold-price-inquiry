@@ -1,3 +1,4 @@
+export * from './app-node-env.enum';
 export * from './log-types.enum';
 export * from './redis-prefixes.enum';
 export * from './redis-project.enum';

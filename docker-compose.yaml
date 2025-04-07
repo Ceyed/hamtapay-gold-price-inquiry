@@ -1,7 +1,5 @@
 version: '3.8'
 
-# TODO: Read from .env (if possible)
-
 services:
     postgres-auth:
         image: postgres:17.0

@@ -1,4 +1,4 @@
-import { GetValidationPipeConfig, pricing, ServicesConfig } from '@libs/shared';
+import { AppNodeEnv, GetValidationPipeConfig, pricing, ServicesConfig } from '@libs/shared';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
@@ -17,7 +17,8 @@ async function bootstrap() {
     });
     app.useGlobalPipes(GetValidationPipeConfig());
     await app.listen();
-    Logger.log(`🐼 Pricing service is running on: ${ServicesConfig.pricing.url}`);
+    const testEnvMessage: string = process.env.NODE_ENV === AppNodeEnv.Test ? ' [TEST]' : '';
+    Logger.log(`🐼${testEnvMessage} Pricing service is running on: ${ServicesConfig.pricing.url}`);
 }
 
 bootstrap();

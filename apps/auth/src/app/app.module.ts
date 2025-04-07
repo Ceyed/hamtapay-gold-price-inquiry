@@ -1,13 +1,21 @@
 import { authTypeormConfig, jwtConfig } from '@libs/auth';
+import { getEnvFileAddress } from '@libs/shared';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import * as dotenv from 'dotenv';
 import * as path from 'path';
 import { DataSourceOptions } from 'typeorm';
 import { AuthModule } from '../modules/auth/auth.module';
 
+dotenv.config({ path: path.resolve(process.cwd(), getEnvFileAddress()) });
+
 @Module({
     imports: [
+        ConfigModule.forRoot({
+            isGlobal: true,
+            envFilePath: getEnvFileAddress(),
+        }),
         ConfigModule.forFeature(authTypeormConfig),
         ConfigModule.forFeature(jwtConfig),
         TypeOrmModule.forRootAsync({
