@@ -9,6 +9,7 @@ import { DataSourceOptions } from 'typeorm';
 import { AuthModule } from '../modules/auth/auth.module';
 import { CommonModule } from '../modules/common/common.module';
 import { OrderModule } from '../modules/order/order.module';
+import { AppController } from './app.controller';
 
 dotenv.config({ path: path.resolve(process.cwd(), getEnvFileAddress()) });
 
@@ -49,7 +50,6 @@ dotenv.config({ path: path.resolve(process.cwd(), getEnvFileAddress()) });
         AuthModule,
         OrderModule,
     ],
-    controllers: [],
-    providers: [],
+    controllers: [AppController],
 })
 export class AppModule {}

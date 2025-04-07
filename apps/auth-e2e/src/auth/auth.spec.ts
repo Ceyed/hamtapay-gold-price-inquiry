@@ -20,14 +20,17 @@ describe('Auth Service E2E Tests', () => {
     const gatewayUrl = `http://${gatewayHost}:${gatewayPort}/api`;
 
     beforeAll(async () => {
-        // TODO: Add health check for gateway
+        // * Check gateway health before running tests
         try {
-            await axios.get(gatewayUrl);
+            const healthResponse = await axios.get(`${gatewayUrl}/health`);
+            console.log('Gateway health check:', healthResponse.data);
+
+            if (healthResponse.status !== HttpStatus.OK || healthResponse.data.status !== 'ok') {
+                throw new Error('Gateway is not healthy');
+            }
         } catch (error) {
-            console.error(
-                'Gateway service is not running. Please start it with: npx nx serve gateway --configuration=test',
-            );
-            throw error;
+            console.error('Gateway health check failed:', error.message);
+            throw new Error('Gateway service is not available. Please ensure it is running.');
         }
     });
 

@@ -9,7 +9,6 @@ export class NotifyController implements notification.NotificationServiceControl
     constructor(private readonly _notifyService: NotifyService) {}
 
     async orderRegistered(orderRegisteredDto: OrderRegisteredDto): Promise<void> {
-        console.log('orderRegisteredDto', orderRegisteredDto);
         await this._notifyService.orderRegistered(orderRegisteredDto);
     }
 
