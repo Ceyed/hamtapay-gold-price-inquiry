@@ -6,6 +6,7 @@ import "libs/proto/common.proto";
 
 service PricingService {
     rpc calculatePrice(CalculatePriceInterface) returns (CalculatePriceResponse);
+    rpc getRawPrices(common.Empty) returns (GetRawPricesResponse);
 }
 
 message CalculatePriceInterface {
@@ -18,4 +19,37 @@ message CalculatePriceResponse {
     double data = 1;
     bool success = 2;
     common.ErrorInterface error = 3;
+}
+
+message GetRawPricesResponse {
+    PricingGoldPriceDataProtoType data = 1;
+    bool success = 2;
+    common.ErrorInterface error = 3;
+}
+
+// TODO: Move to common
+message PricingGoldPriceDataProtoType {
+    int64 timestamp = 1;
+    string metal = 2;
+    string currency = 3;
+    string exchange = 4;
+    string symbol = 5;
+    double prev_close_price = 6;
+    double open_price = 7;
+    double low_price = 8;
+    double high_price = 9;
+    int64 open_time = 10;
+    double price = 11;
+    double ch = 12;
+    double chp = 13;
+    double ask = 14;
+    double bid = 15;
+    double priceGram24k = 16;
+    double priceGram22k = 17;
+    double priceGram21k = 18;
+    double priceGram20k = 19;
+    double priceGram18k = 20;
+    double priceGram16k = 21;
+    double priceGram14k = 22;
+    double priceGram10k = 23;
 }

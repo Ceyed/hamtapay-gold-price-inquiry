@@ -45,6 +45,8 @@ export class InquiryService {
 
     private async _fetchGoldPrice(): Promise<marketData.GoldPriceResponse> {
         try {
+            this._loggerService.info(LogModuleEnum.MarketData, 'Fetching gold price');
+
             // * Get gold price from GoldAPI
             const response = await fetch('https://www.goldapi.io/api/XAU/USD', {
                 headers: {
@@ -69,7 +71,7 @@ export class InquiryService {
 
             // * Store in DB/cache
             const redisKey: string = GetGoldPricesRedisKey(this._redisHelperService);
-            this._redisHelperService.setCache(redisKey, prices);
+            this._redisHelperService.setCache(redisKey, prices, 300);
 
             return {
                 data: prices,

@@ -52,6 +52,8 @@ export class OrderService {
             this._notificationGrpcClient.getService<notification.NotificationServiceClient>(
                 notification.NOTIFICATION_SERVICE_NAME,
             );
+
+        this.getProductList().then((r) => console.log(r));
     }
 
     async createOrder(createOrderDto: CreateOrderDto): Promise<order.CreateOrderResponse> {
@@ -169,8 +171,42 @@ export class OrderService {
         this._loggerService.info(LogModuleEnum.Order, 'Getting product list');
 
         const products: ProductEntity[] = await this._productRepository.findAll();
+        let prices: pricing.PricingGoldPriceDataProtoType | undefined;
+
+        // * Getting raw prices from pricing app
+        try {
+            const response: Observable<pricing.GetRawPricesResponse> = this._pricingService
+                .getRawPrices({})
+                .pipe(
+                    timeout(this._timeout),
+                    catchError(() => of(undefined)),
+                );
+            const res: pricing.GetRawPricesResponse = await firstValueFrom(response);
+            this._loggerService.debug(
+                LogModuleEnum.Pricing,
+                `Market data received, ${JSON.stringify(res.data)}`,
+            );
+            prices = res.data;
+        } catch {
+            prices = undefined;
+        }
+        if (!prices) {
+            this._loggerService.error(
+                LogModuleEnum.Pricing,
+                'Gold price data unavailable after timeout',
+            );
+            return {
+                data: null,
+                success: false,
+                error: {
+                    statusCode: HttpStatus.SERVICE_UNAVAILABLE,
+                    message: 'Gold price data unavailable after timeout',
+                },
+            };
+        }
+
         return {
-            data: products.map((product) => this._mapProductToProductType(product)),
+            data: products.map((product) => this._mapProductToProductType(product, prices)),
             success: true,
             error: null,
         };
@@ -231,7 +267,10 @@ export class OrderService {
         };
     }
 
-    private _mapProductToProductType(product: ProductEntity): order.ProductProtoType {
+    private _mapProductToProductType(
+        product: ProductEntity,
+        prices?: pricing.PricingGoldPriceDataProtoType,
+    ): order.ProductProtoType {
         return {
             id: product.id,
             createdAt: product.createdAt.toISOString(),
@@ -241,6 +280,7 @@ export class OrderService {
             totalStock: product.totalStock,
             orders: [],
             stockHistories: [],
+            ...(prices && { rawPrice: prices[`priceGram${product.goldGrams}`] }),
         };
     }
 

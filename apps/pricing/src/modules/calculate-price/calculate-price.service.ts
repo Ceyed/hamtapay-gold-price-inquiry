@@ -101,6 +101,68 @@ export class CalculatePriceService implements OnModuleInit {
         };
     }
 
+    async getRawPrices(): Promise<pricing.GetRawPricesResponse> {
+        this._loggerService.debug(LogModuleEnum.Pricing, 'Getting raw prices');
+
+        const redisKey: string = GetGoldPricesRedisKey(this._redisHelperService);
+        let prices: marketData.GoldPriceDataProtoType = await this._redisHelperService.getCache(
+            redisKey,
+        );
+
+        if (prices === undefined) {
+            // * Wait for market data with 2 seconds timeout
+            this._loggerService.debug(LogModuleEnum.Pricing, 'Waiting for market data');
+            try {
+                const response: Observable<marketData.GoldPriceResponse> = this._marketDataService
+                    .getGoldPrice({})
+                    .pipe(
+                        timeout(this._waitTime),
+                        catchError(() => of(undefined)),
+                    );
+                const res: marketData.GoldPriceResponse = await firstValueFrom(response);
+                this._loggerService.debug(
+                    LogModuleEnum.Pricing,
+                    `Market data received, ${JSON.stringify(res.data)}`,
+                );
+                prices = res.data;
+            } catch {
+                prices = undefined;
+            }
+            if (!prices) {
+                this._loggerService.error(
+                    LogModuleEnum.Pricing,
+                    'Gold price data unavailable after timeout',
+                );
+                return {
+                    data: null,
+                    success: false,
+                    error: {
+                        statusCode: HttpStatus.SERVICE_UNAVAILABLE,
+                        message: 'Gold price data unavailable after timeout',
+                    },
+                };
+            }
+        }
+
+        prices = {
+            ...prices,
+            priceGram24k: prices['price_gram_24k'],
+            priceGram22k: prices['price_gram_22k'],
+            priceGram21k: prices['price_gram_21k'],
+            priceGram20k: prices['price_gram_20k'],
+            priceGram18k: prices['price_gram_18k'],
+            priceGram16k: prices['price_gram_16k'],
+            priceGram14k: prices['price_gram_14k'],
+            priceGram10k: prices['price_gram_10k'],
+        };
+
+        return {
+            data: prices,
+            success: true,
+            error: null,
+        };
+    }
+
     private _getRequestedGoldGram(prices: GoldPriceDataType, grams: GoldGramsEnum): number {
         switch (grams) {
             case GoldGramsEnum.Gram24K:

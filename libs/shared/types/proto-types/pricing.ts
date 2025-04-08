@@ -7,7 +7,7 @@
 /* eslint-disable */
 import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
 import { Observable } from "rxjs";
-import { ErrorInterface } from "./common";
+import { Empty, ErrorInterface } from "./common";
 
 export const protobufPackage = "pricing";
 
@@ -23,21 +23,58 @@ export interface CalculatePriceResponse {
   error: ErrorInterface | undefined;
 }
 
+export interface GetRawPricesResponse {
+  data: PricingGoldPriceDataProtoType | undefined;
+  success: boolean;
+  error: ErrorInterface | undefined;
+}
+
+/** TODO: Move to common */
+export interface PricingGoldPriceDataProtoType {
+  timestamp: number;
+  metal: string;
+  currency: string;
+  exchange: string;
+  symbol: string;
+  prevClosePrice: number;
+  openPrice: number;
+  lowPrice: number;
+  highPrice: number;
+  openTime: number;
+  price: number;
+  ch: number;
+  chp: number;
+  ask: number;
+  bid: number;
+  priceGram24k: number;
+  priceGram22k: number;
+  priceGram21k: number;
+  priceGram20k: number;
+  priceGram18k: number;
+  priceGram16k: number;
+  priceGram14k: number;
+  priceGram10k: number;
+}
+
 export const PRICING_PACKAGE_NAME = "pricing";
 
 export interface PricingServiceClient {
   calculatePrice(request: CalculatePriceInterface): Observable<CalculatePriceResponse>;
+
+  getRawPrices(request: Empty): Observable<GetRawPricesResponse>;
 }
 
 export interface PricingServiceController {
   calculatePrice(
     request: CalculatePriceInterface,
   ): Promise<CalculatePriceResponse> | Observable<CalculatePriceResponse> | CalculatePriceResponse;
+
+  getRawPrices(request: Empty): Promise<GetRawPricesResponse> | Observable<GetRawPricesResponse> | GetRawPricesResponse;
 }
 
 export function PricingServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ["calculatePrice"];
+    const grpcMethods: string[] = ["calculatePrice", "getRawPrices"];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod("PricingService", method)(constructor.prototype[method], method, descriptor);

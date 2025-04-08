@@ -13,4 +13,8 @@ export class CalculatePriceController implements pricing.PricingServiceControlle
     ): Promise<pricing.CalculatePriceResponse> {
         return this._calculatePriceService.calculatePrice(calculatePriceDto);
     }
+
+    async getRawPrices(): Promise<pricing.GetRawPricesResponse> {
+        return this._calculatePriceService.getRawPrices();
+    }
 }
