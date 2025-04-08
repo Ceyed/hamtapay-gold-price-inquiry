@@ -16,7 +16,7 @@ export class InquiryService {
         @Inject(goldApiConfig.KEY) private readonly _goldApiConfig: GoldApiConfig,
         private readonly _loggerService: LoggerService,
     ) {
-        this._fetchGoldPrice();
+        this._fetchGoldPrice(true);
     }
 
     // ? Runs every 5 minutes, Monday–Friday, from 9:00 to 16:55
@@ -26,7 +26,7 @@ export class InquiryService {
             LogModuleEnum.MarketData,
             '[Cron in Business Hours] Fetching gold price..',
         );
-        this._fetchGoldPrice();
+        this._fetchGoldPrice(true);
     }
 
     // ? Runs once every hour on weekends
@@ -36,14 +36,14 @@ export class InquiryService {
             LogModuleEnum.MarketData,
             '[Cron in Off Hours] Fetching gold price..',
         );
-        this._fetchGoldPrice();
+        this._fetchGoldPrice(false);
     }
 
     async getGoldPrice(): Promise<marketData.GoldPriceResponse> {
-        return this._fetchGoldPrice();
+        return this._fetchGoldPrice(true);
     }
 
-    private async _fetchGoldPrice(): Promise<marketData.GoldPriceResponse> {
+    private async _fetchGoldPrice(isBusinessHours: boolean): Promise<marketData.GoldPriceResponse> {
         try {
             this._loggerService.info(LogModuleEnum.MarketData, 'Fetching gold price');
 
@@ -71,7 +71,10 @@ export class InquiryService {
 
             // * Store in DB/cache
             const redisKey: string = GetGoldPricesRedisKey(this._redisHelperService);
-            this._redisHelperService.setCache(redisKey, prices, 300);
+
+            // * 5 minutes for business hours, 1 hour for off hours
+            const ttl: 300 | 3600 = isBusinessHours ? 300 : 3600;
+            this._redisHelperService.setCache(redisKey, prices, ttl);
 
             return {
                 data: prices,
