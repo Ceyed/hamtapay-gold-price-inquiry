@@ -170,6 +170,32 @@ I had to skip some of the tests due to a time crunch. I covered the basics, but 
 
 Despite the challenges, the project provided a valuable learning experience and helped me grow significantly as a developer.
 
+## 🧪 Testing Strategy
+
+This project implements a comprehensive testing strategy using both End-to-End (E2E) and Unit tests to ensure reliability and maintainability:
+
+### End-to-End Tests
+
+-   **Purpose**: E2E tests simulate real user interactions and verify that all services work together correctly
+-   **Coverage**: Critical user flows like authentication, order creation, and price calculations
+-   **Benefits**:
+    -   Validates complete user journeys
+    -   Ensures microservices communicate properly
+    -   Catches integration issues early
+    -   Tests the system as a whole
+
+### Unit Tests
+
+-   **Purpose**: Unit tests focus on testing individual components and services in isolation
+-   **Coverage**: Business logic, data transformations, and service-specific functionality
+-   **Benefits**:
+    -   Faster execution and feedback
+    -   Easier to maintain and debug
+    -   Ensures individual components work correctly
+    -   Helps catch bugs early in development
+
+This dual approach to testing provides multiple layers of quality assurance and helps maintain a robust, production-ready system.
+
 ## ⚠️ Known Issues
 
 -   There are no Pagination implementation for list routes

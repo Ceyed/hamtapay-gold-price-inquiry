@@ -7,7 +7,6 @@ import * as path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '../../../../.env.test') });
 
 describe('Order Service E2E Tests', () => {
-    // TODO: default admin user on migration
     const adminUsername = DEFAULT_USERS.at(0).username;
     const adminPassword = DEFAULT_USERS.at(0).rawPassword;
     let adminAccessToken: string;
