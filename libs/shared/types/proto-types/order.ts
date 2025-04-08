@@ -86,6 +86,7 @@ export interface ProductProtoType {
   goldGrams: string;
   currentStock: number;
   totalStock: number;
+  rawPrice: number;
   orders: OrderProtoType[];
   stockHistories: StockHistoryProtoType[];
 }

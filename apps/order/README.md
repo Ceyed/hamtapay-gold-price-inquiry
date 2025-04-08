@@ -26,7 +26,7 @@ The service is built using:
 
 ### Product Management
 
--   Product listing
+-   Product listing with raw gold price
 -   Admin-specific product views (more detailed)
 
 ### Stock Operations

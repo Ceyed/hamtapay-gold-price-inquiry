@@ -52,8 +52,6 @@ export class OrderService {
             this._notificationGrpcClient.getService<notification.NotificationServiceClient>(
                 notification.NOTIFICATION_SERVICE_NAME,
             );
-
-        this.getProductList().then((r) => console.log(r));
     }
 
     async createOrder(createOrderDto: CreateOrderDto): Promise<order.CreateOrderResponse> {
@@ -296,6 +294,7 @@ export class OrderService {
                   this._mapStockHistoryToStockHistoryType(history),
               )
             : [];
+
         return {
             id: product.id,
             createdAt: product.createdAt.toISOString(),
@@ -303,6 +302,7 @@ export class OrderService {
             goldGrams: product.goldGrams,
             currentStock: product.currentStock,
             totalStock: product.totalStock,
+            rawPrice: 0,
             orders,
             stockHistories,
         };

@@ -76,6 +76,28 @@ describe('Order Service E2E Tests', () => {
                 expect(response.data).toEqual(expectedResult);
                 expect(Array.isArray(response.data.data)).toBe(true);
 
+                response.data.data.forEach((product) => {
+                    expect(product).toHaveProperty('id');
+                    expect(product).toHaveProperty('createdAt');
+                    expect(product).toHaveProperty('updatedAt');
+                    expect(product).toHaveProperty('goldGrams');
+                    expect(product).toHaveProperty('currentStock');
+                    expect(product).toHaveProperty('totalStock');
+                    expect(product).toHaveProperty('rawPrice');
+
+                    expect(typeof product.id).toBe('string');
+                    expect(typeof product.createdAt).toBe('string');
+                    expect(typeof product.updatedAt).toBe('string');
+                    expect(typeof product.goldGrams).toBe('string');
+                    expect(typeof product.currentStock).toBe('number');
+                    expect(typeof product.totalStock).toBe('number');
+                    expect(typeof product.rawPrice).toBe('number');
+
+                    expect(product.currentStock).toBeGreaterThanOrEqual(0);
+                    expect(product.totalStock).toBeGreaterThanOrEqual(0);
+                    expect(product.rawPrice).toBeGreaterThan(0);
+                });
+
                 products = response.data.data;
             });
         });
@@ -94,6 +116,25 @@ describe('Order Service E2E Tests', () => {
                 expect(response.status).toBe(HttpStatus.OK);
                 expect(response.data).toEqual(expectedResult);
                 expect(Array.isArray(response.data.data)).toBe(true);
+
+                response.data.data.forEach((product) => {
+                    expect(product).toHaveProperty('id');
+                    expect(product).toHaveProperty('createdAt');
+                    expect(product).toHaveProperty('updatedAt');
+                    expect(product).toHaveProperty('goldGrams');
+                    expect(product).toHaveProperty('currentStock');
+                    expect(product).toHaveProperty('totalStock');
+
+                    expect(typeof product.id).toBe('string');
+                    expect(typeof product.createdAt).toBe('string');
+                    expect(typeof product.updatedAt).toBe('string');
+                    expect(typeof product.goldGrams).toBe('string');
+                    expect(typeof product.currentStock).toBe('number');
+                    expect(typeof product.totalStock).toBe('number');
+
+                    expect(product.currentStock).toBeGreaterThanOrEqual(0);
+                    expect(product.totalStock).toBeGreaterThanOrEqual(0);
+                });
             });
         });
         describe('Get Admin Product List By User', () => {
