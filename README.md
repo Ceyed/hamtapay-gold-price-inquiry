@@ -51,6 +51,10 @@ This project implements a modern microservices architecture with six core servic
 -   **Databases**:
     -   PostgreSQL for persistent storage
     -   Redis for caching and temporary data
+        -   **Persistence Configuration**:
+            -   AOF (Append Only File) enabled with 1-second sync interval
+            -   RDB snapshots: every 15min (1 key change), 5min (10 keys), 1min (10000 keys)
+            -   Memory limit: 256MB with LRU eviction policy
 -   **Authentication**: JWT
 -   **Email**: Nodemailer
 
