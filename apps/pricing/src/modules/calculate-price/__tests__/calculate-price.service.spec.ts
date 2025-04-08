@@ -4,7 +4,7 @@ import { CalculatePriceDto, GoldGramsEnum } from '@libs/pricing';
 import { GoldPriceDataType, LoggerService, RedisHelperService } from '@libs/shared';
 import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { of } from 'rxjs';
+import { delay, of } from 'rxjs';
 import { CalculatePriceService } from '../calculate-price.service';
 
 describe('CalculatePriceService', () => {
@@ -169,6 +169,27 @@ describe('CalculatePriceService', () => {
         it('should handle unavailable market data', async () => {
             redisHelperService.getCache.mockResolvedValue(undefined);
             marketDataService.getGoldPrice.mockReturnValue(of(undefined));
+
+            const result = await service.getRawPrices();
+
+            expect(result.success).toBe(false);
+            expect(result.data).toBeNull();
+            expect(result.error).toEqual({
+                statusCode: HttpStatus.SERVICE_UNAVAILABLE,
+                message: 'Gold price data unavailable after timeout',
+            });
+        });
+
+        it('should handle market data service timeout', async () => {
+            redisHelperService.getCache.mockResolvedValue(undefined);
+
+            marketDataService.getGoldPrice.mockReturnValue(
+                of({
+                    data: mockGoldPrices,
+                    success: true,
+                    error: null,
+                }).pipe(delay(3000)),
+            );
 
             const result = await service.getRawPrices();
 
