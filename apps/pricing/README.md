@@ -57,6 +57,14 @@ To run the service locally:
 npx nx serve pricing
 ```
 
+## Testing
+
+To run unit tests for the service:
+
+```sh
+npx nx test pricing
+```
+
 ## Dependencies
 
 The service integrates with:

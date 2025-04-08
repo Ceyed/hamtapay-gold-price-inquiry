@@ -134,9 +134,17 @@ This project implements a modern microservices architecture with six core servic
     ```
 
 5. Run end-to-end tests:
+
     ```sh
     npx nx e2e auth-e2e
     npx nx e2e order-e2e
+    ```
+
+6. Run unit tests for the services:
+
+    ```sh
+    npx nx test market-data
+    npx nx test pricing
     ```
 
 ## 📚 Documentation

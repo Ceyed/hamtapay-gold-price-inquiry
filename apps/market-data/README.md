@@ -40,6 +40,14 @@ To run the service locally:
 npx nx serve market-data
 ```
 
+## Testing
+
+To run unit tests for the service:
+
+```sh
+npx nx test market-data
+```
+
 ## Related Documentation
 
 -   [Project README](../../README.md)
