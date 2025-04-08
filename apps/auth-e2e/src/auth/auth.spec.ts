@@ -1,4 +1,5 @@
 import { TEST_EMAIL_VERIFICATION_CODE } from '@libs/auth';
+import { ServicesConfig } from '@libs/shared';
 import { HttpStatus } from '@nestjs/common';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
@@ -15,9 +16,7 @@ describe('Auth Service E2E Tests', () => {
         lastName: 'User',
     };
 
-    const gatewayHost = process.env.GATEWAY_HOST;
-    const gatewayPort = process.env.GATEWAY_PORT;
-    const gatewayUrl = `http://${gatewayHost}:${gatewayPort}/api`;
+    const gatewayUrl = `http://${ServicesConfig.gateway.url}/api`;
 
     beforeAll(async () => {
         // * Check gateway health before running tests

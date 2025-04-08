@@ -1,4 +1,4 @@
-import { DEFAULT_USERS } from '@libs/shared';
+import { DEFAULT_USERS, ServicesConfig } from '@libs/shared';
 import { HttpStatus } from '@nestjs/common';
 import axios from 'axios';
 import * as dotenv from 'dotenv';
@@ -17,9 +17,7 @@ describe('Order Service E2E Tests', () => {
 
     let products;
 
-    const gatewayHost = process.env.GATEWAY_HOST;
-    const gatewayPort = process.env.GATEWAY_PORT;
-    const gatewayUrl = `http://${gatewayHost}:${gatewayPort}/api`;
+    const gatewayUrl = `http://${ServicesConfig.gateway.url}/api`;
 
     beforeAll(async () => {
         // * Check gateway health before running tests
