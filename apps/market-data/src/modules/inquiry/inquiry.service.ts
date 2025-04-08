@@ -16,7 +16,7 @@ export class InquiryService {
         @Inject(goldApiConfig.KEY) private readonly _goldApiConfig: GoldApiConfig,
         private readonly _loggerService: LoggerService,
     ) {
-        this._fetchGoldPrice(true);
+        this._fetchGoldPrice();
     }
 
     // ? Runs every 5 minutes, Monday–Friday, from 9:00 to 16:55
@@ -36,14 +36,14 @@ export class InquiryService {
             LogModuleEnum.MarketData,
             '[Cron in Off Hours] Fetching gold price..',
         );
-        this._fetchGoldPrice(false);
+        this._fetchGoldPrice();
     }
 
     async getGoldPrice(): Promise<marketData.GoldPriceResponse> {
-        return this._fetchGoldPrice(true);
+        return this._fetchGoldPrice();
     }
 
-    private async _fetchGoldPrice(isBusinessHours: boolean): Promise<marketData.GoldPriceResponse> {
+    private async _fetchGoldPrice(isBusinessHours = false): Promise<marketData.GoldPriceResponse> {
         try {
             this._loggerService.info(LogModuleEnum.MarketData, 'Fetching gold price');
 
