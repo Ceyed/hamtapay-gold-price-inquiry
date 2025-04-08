@@ -1,0 +1,13 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "outDir": "../../dist/out-tsc",
+        "module": "commonjs",
+        "types": ["jest", "node"],
+        "emitDecoratorMetadata": true,
+        "target": "es2021",
+        "esModuleInterop": true,
+        "allowJs": true
+    },
+    "include": ["jest.setup.ts", "**/*.test.ts", "**/*.spec.ts", "**/*.d.ts"]
+}

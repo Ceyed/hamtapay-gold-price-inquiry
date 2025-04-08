@@ -54,6 +54,14 @@
                     "buildTarget": "pricing:build:test"
                 }
             }
+        },
+        "test": {
+            "executor": "@nx/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "jestConfig": "apps/pricing/jest.config.ts",
+                "passWithNoTests": true
+            }
         }
     }
 }
